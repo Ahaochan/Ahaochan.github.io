@@ -560,13 +560,13 @@
       
 
       
-        <h1 id="设置纯色背景"><a href="#设置纯色背景" class="headerlink" title="设置纯色背景"></a>设置纯色背景</h1><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">style</span> <span class="attr">type</span>=<span class="string">"text/css"</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="undefined">    body &#123;</span></span><br><span class="line"><span class="undefined">        background-color:gray;</span></span><br><span class="line"><span class="undefined">    &#125;</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">style</span>&gt;</span></span><br></pre></td></tr></table></figure>
+        <h1 id="设置纯色背景"><a href="#设置纯色背景" class="headerlink" title="设置纯色背景"></a>设置纯色背景</h1><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">style</span> <span class="attr">type</span>=<span class="string">"text/css"</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="undefined">    body &#123;</span></span><br><span class="line"><span class="css">        <span class="selector-tag">background-color</span><span class="selector-pseudo">:gray</span>;</span></span><br><span class="line"><span class="undefined">    &#125;</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">style</span>&gt;</span></span><br></pre></td></tr></table></figure>
 <a id="more"></a>
 <h1 id="设置图片背景"><a href="#设置图片背景" class="headerlink" title="设置图片背景"></a>设置图片背景</h1><p>如果同时设置纯色背景和图片背景，则纯色背景在图片背景之下。并且图片背景会平铺整个屏幕。</p>
 <ul>
 <li><code>background-repeat</code>属性可以设置平铺方式，<code>repeat-x</code>、<code>repeat-y</code>、<code>no-repeat</code>。</li>
 <li><code>background-position</code>属性可以设置图片背景的位置。<code>top</code>、<code>bottom</code>等。</li>
-<li><code>background-attachment</code>属性可以设置图片是否随文档滚动。<code>fixed</code>、<code>scroll</code>。<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">style</span> <span class="attr">type</span>=<span class="string">"text/css"</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="undefined">    body &#123;</span></span><br><span class="line"><span class="undefined">        background-image:url(http://cn.bing.com/sa/simg/CN_Logo_Gray.png);</span></span><br><span class="line"><span class="undefined">        background-repeat:no-repeat;</span></span><br><span class="line"><span class="undefined">        background-position:center;</span></span><br><span class="line"><span class="undefined">        background-attachment:fixed;</span></span><br><span class="line"><span class="undefined">    &#125;</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">style</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<li><code>background-attachment</code>属性可以设置图片是否随文档滚动。<code>fixed</code>、<code>scroll</code>。<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">style</span> <span class="attr">type</span>=<span class="string">"text/css"</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="undefined">    body &#123;</span></span><br><span class="line"><span class="undefined">        background-image:url(http://cn.bing.com/sa/simg/CN_Logo_Gray.png);</span></span><br><span class="line"><span class="css">        <span class="selector-tag">background-repeat</span><span class="selector-pseudo">:no-repeat</span>;</span></span><br><span class="line"><span class="css">        <span class="selector-tag">background-position</span><span class="selector-pseudo">:center</span>;</span></span><br><span class="line"><span class="css">        <span class="selector-tag">background-attachment</span><span class="selector-pseudo">:fixed</span>;</span></span><br><span class="line"><span class="undefined">    &#125;</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">style</span>&gt;</span></span><br></pre></td></tr></table></figure>
 </li>
 </ul>
 
@@ -1585,9 +1585,10 @@
   
 
   
-
-  <script>AV.initialize("", "");</script>
   <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <p></p>
+  <p></p>
+  <script>AV.initialize("", "");</script>
   <script>
     function showTime(Counter) {
       var query = new AV.Query(Counter);
