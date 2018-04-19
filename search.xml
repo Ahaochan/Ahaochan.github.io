@@ -389,9 +389,9 @@
       </tags>
   </entry>
   <entry>
-    <title><![CDATA[使用静态构造器取代new]]></title>
-    <url>%2Fposts%2Fuse_static_method_to_replace_new_object.html</url>
-    <content type="text"><![CDATA[前言一般创建对象都是new出来的, Spring提供的是xml反射(或者使用注解)创建, 将创建对象的任务交给Spring完成。不懂Spring可以将其理解为一个存储对象的容器。控制反转并不是什么高大上的东西, 我们也可以做一个小的控制反转的例子。 使用静态构造器取代new比如有个学生类, 将构造函数私有化, 同时创建一个静态的create方法。1234567public class Student&#123; private Student()&#123; &#125; public static Student create()&#123; return new Student(); &#125;&#125; 这样做有什么好处呢?很明显, 我们能给构造函数命名了。维护者不再需要去猜测new Student(true)是什么意思。 还体现了职责分离, 创建对象的具体过程交给了对象类自己完成, 外部调用者不需要关心创建对象的流程。这里为了体现差异, 将方法名写为中文, 实际开发不推荐写中文。123456789101112public class Student&#123; boolean 优秀; private Student(boolean status)&#123; this.优秀 = status; &#125; public static Student 获得一个优秀学生()&#123; return new Student(true); &#125; public static Student 获得一个不好学生()&#123; return new Student(false); &#125;&#125;]]></content>
+    <title><![CDATA[什么是链式调用]]></title>
+    <url>%2Fposts%2Fwhat_is_Methods_Chaining_in_Java.html</url>
+    <content type="text"><![CDATA[前言Java8流行的函数式编程使用的方式类似于a.b().c().d(), 仿佛能无穷无尽点下去。其实这个代码很简单, 换一种写法大概就懂了this.getClass().getSimpleName().length();。在wiki上也有介绍: Fluent_interface 实现其实链式调用很简单, 就是一个return 对象;的事情。比如return this;等。123456789101112131415161718192021public class Student&#123; private String name; private int age; public static create()&#123; return new Student(); &#125; public void setName(String name)&#123; this.name = name; // 普通的设置属性 &#125; public void setAge(int age)&#123; this.age = age; // 普通的设置属性 &#125; public Student name(String name)&#123; this.name = name; // 链式的设置属性 return this; &#125; public Student age(int age)&#123; this.name = name; // 链式的设置属性 return this; &#125;&#125; 调用结果如下123456789public class Main&#123; public static void main(String[] args)&#123; Student s1 = new Student(); s1.setName("stu1"); s1.setAge(12); // 明显链式调用方法比较优雅 Student s2 = Student.create().name("stu2").age(12); &#125;&#125; 优势和缺陷显而易见, 使用链式调用的代码更加简洁优雅, 方法间的关联度紧密。同样缺陷也在这里, 每个方法都依赖上一个方法, 如果有一个返回空指针, 那么就会报错。需要代码编写人员的功底比较强。当然, return this;是不可能空指针异常的。]]></content>
       <categories>
         <category>Java SE</category>
       </categories>
@@ -400,9 +400,9 @@
       </tags>
   </entry>
   <entry>
-    <title><![CDATA[什么是链式调用]]></title>
-    <url>%2Fposts%2Fwhat_is_Methods_Chaining_in_Java.html</url>
-    <content type="text"><![CDATA[前言Java8流行的函数式编程使用的方式类似于a.b().c().d(), 仿佛能无穷无尽点下去。其实这个代码很简单, 换一种写法大概就懂了this.getClass().getSimpleName().length();。在wiki上也有介绍: Fluent_interface 实现其实链式调用很简单, 就是一个return 对象;的事情。比如return this;等。123456789101112131415161718192021public class Student&#123; private String name; private int age; public static create()&#123; return new Student(); &#125; public void setName(String name)&#123; this.name = name; // 普通的设置属性 &#125; public void setAge(int age)&#123; this.age = age; // 普通的设置属性 &#125; public Student name(String name)&#123; this.name = name; // 链式的设置属性 return this; &#125; public Student age(int age)&#123; this.name = name; // 链式的设置属性 return this; &#125;&#125; 调用结果如下123456789public class Main&#123; public static void main(String[] args)&#123; Student s1 = new Student(); s1.setName("stu1"); s1.setAge(12); // 明显链式调用方法比较优雅 Student s2 = Student.create().name("stu2").age(12); &#125;&#125; 优势和缺陷显而易见, 使用链式调用的代码更加简洁优雅, 方法间的关联度紧密。同样缺陷也在这里, 每个方法都依赖上一个方法, 如果有一个返回空指针, 那么就会报错。需要代码编写人员的功底比较强。当然, return this;是不可能空指针异常的。]]></content>
+    <title><![CDATA[使用静态构造器取代new]]></title>
+    <url>%2Fposts%2Fuse_static_method_to_replace_new_object.html</url>
+    <content type="text"><![CDATA[前言一般创建对象都是new出来的, Spring提供的是xml反射(或者使用注解)创建, 将创建对象的任务交给Spring完成。不懂Spring可以将其理解为一个存储对象的容器。控制反转并不是什么高大上的东西, 我们也可以做一个小的控制反转的例子。 使用静态构造器取代new比如有个学生类, 将构造函数私有化, 同时创建一个静态的create方法。1234567public class Student&#123; private Student()&#123; &#125; public static Student create()&#123; return new Student(); &#125;&#125; 这样做有什么好处呢?很明显, 我们能给构造函数命名了。维护者不再需要去猜测new Student(true)是什么意思。 还体现了职责分离, 创建对象的具体过程交给了对象类自己完成, 外部调用者不需要关心创建对象的流程。这里为了体现差异, 将方法名写为中文, 实际开发不推荐写中文。123456789101112public class Student&#123; boolean 优秀; private Student(boolean status)&#123; this.优秀 = status; &#125; public static Student 获得一个优秀学生()&#123; return new Student(true); &#125; public static Student 获得一个不好学生()&#123; return new Student(false); &#125;&#125;]]></content>
       <categories>
         <category>Java SE</category>
       </categories>
