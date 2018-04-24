@@ -1,0 +1,849 @@
+---
+title: DispatcherServlet源码分析
+tags:
+  - SpringMVC
+categories:
+  - Java
+  - JavaWeb
+date: 2017-07-04 23:22:42
+---
+
+# 前言
+SpringMVC 的入口是 `DispatcherServlet` , 在 `web.xml` 中配置好, 拦截所有url. 
+<!-- more -->
+
+
+# DispatcherServlet 继承树
+![DispatcherServlet 继承树](https://yuml.me/diagram/nofunky/class/[FrameworkServlet]^-[DispatcherServlet],[HttpServletBean]^-[FrameworkServlet],[HttpServlet]^-[HttpServletBean])
+
+# HttpServletBean 详解
+`HttpServletBean` 简单扩展了 `HttpServlet` , 实现了 `EnvironmentAware`
+ 和 `EnvironmentCapable` 接口。
+它将其在 `web.xml` 中的 `servlet` 标签中的配置参数 `init-param` 视为
+ `bean属性` .
+```java
+// org.springframework.web.servlet.HttpServletBean
+public abstract class HttpServletBean
+        extends HttpServlet implements EnvironmentCapable, EnvironmentAware {
+    //省略部分代码
+}
+// org.springframework.context.EnvironmentAware
+public interface EnvironmentAware extends Aware {
+    // 往 Bean 中注入 Environment 
+    void setEnvironment(Environment environment);
+}
+// org.springframework.beans.factory.AWare
+public interface Aware {
+    // XxxAware 表示往 Bean 中注入 Xxx 
+}
+// org.springframework.core.env.EnvironmentCapable
+public interface EnvironmentCapable{
+    // 对外暴露 Environment 
+    Environment getEnvironment();
+}
+```
+`Aware` 是一个空接口，标志 Spring 可以注入某些 Bean 
+ `EnvironmentAware` 和 `EnvironmentCapable` 的区别
+
+- `EnvironmentAware` 由 Spring 框架往 Bean 内 `注入Environment` 
+- `EnvironmentCapable`  通过 getEnvironment 往外面 `暴露Environment`
+
+HttpServletBean 对 `EnvironmentAware` 和 `EnvironmentCapable` 的实现如下.
+```java
+// org.springframework.web.servlet.HttpServletBean
+public abstract class HttpServletBean
+        extends HttpServlet implements EnvironmentCapable, EnvironmentAware {
+    private ConfigurableEnvironment environment;
+    // 省略部分代码
+    @Override
+    public void setEnvironment(Environment environment) {
+        this.environment = (ConfigurableEnvironment) environment;
+    }	
+    @Override
+    public ConfigurableEnvironment getEnvironment() {
+        if (this.environment == null) {
+            this.environment = createEnvironment();
+        }
+        return this.environment;
+    }	
+    protected ConfigurableEnvironment createEnvironment() {
+        // 默认实现类是 StandardServletEnvironment
+        return new StandardServletEnvironment();
+    }
+}
+```
+
+## Environment 详解(封装参数, 可以跳过)
+可以看到 `ConfigurableEnvironment` 接口的实现类是
+ `StandardServletEnvironment`
+里面的 `propertySources` 属性封装了 5 个属性
+
+- ServletContext ( 封装 context-param )
+- ServletConfig ( 封装 init-param )
+- JndiProperty
+- 系统环境变量
+- JVM 系统属性变量
+
+**继承树**
+![Environment 继承树](https://yuml.me/diagram/nofunky/class/[StandardEnvironment]^-[StandardServletEnvironment],[AbstractEnvironment]^-[StandardEnvironment],[<<ConfigurableWebEnvironment>>;interface]^-[StandardServletEnvironment],[<<ConfigurableEnvironment>>;interface]^-[<<ConfigurableWebEnvironment>>;interface],[<<ConfigurableEnvironment>>;interface]^-[AbstractEnvironment])
+
+
+先明确一个概念, Environment 是用来装载 `属性` 的.
+那么观察下子类 `StandardServletEnvironment` 和父类`StandardEnvironment` 的源码, 发现主要的方法就是
+ `customizePropertySources()`
+```java
+// org.springframework.web.context.support.StandardServletEnvironment
+public class StandardServletEnvironment
+        extends StandardEnvironment implements ConfigurableWebEnvironment {
+    /** Servlet 的 init-param 的 param-name，用于获取 param-value */
+    public static final String SERVLET_CONTEXT_PROPERTY_SOURCE_NAME = "servletContextInitParams";
+    public static final String SERVLET_CONFIG_PROPERTY_SOURCE_NAME = "servletConfigInitParams";
+    public static final String JNDI_PROPERTY_SOURCE_NAME = "jndiProperties";
+    // 省略部分代码
+    @Override
+    protected void customizePropertySources(MutablePropertySources propertySources) {
+        // 装载 ServletConfig
+        propertySources.addLast(new StubPropertySource(SERVLET_CONFIG_PROPERTY_SOURCE_NAME));
+        // 装载 ServletContext
+        propertySources.addLast(new StubPropertySource(SERVLET_CONTEXT_PROPERTY_SOURCE_NAME));
+        // 装载 JndiProperties
+        if (JndiLocatorDelegate.isDefaultJndiEnvironmentAvailable()) {
+            propertySources.addLast(new JndiPropertySource(JNDI_PROPERTY_SOURCE_NAME));
+        }
+        // StandardEnvironment 负责装载 系统环境变量 和 JVM 系统属性变量
+        super.customizePropertySources(propertySources);
+    }
+    @Override
+    public void initPropertySources(ServletContext servletContext, ServletConfig servletConfig) {
+        // FrameworkServlet 在刷新时调用, 后面讲解
+        // 将ServletContext和ServletConfig注入PropertySources中
+        WebApplicationContextUtils.initServletPropertySources(getPropertySources(), servletContext, servletConfig);
+	}
+}
+// org.springframework.core.env.StandardEnvironment
+public class StandardEnvironment extends AbstractEnvironment {
+    /** Servlet 的 init-param 的 param-name，用于获取 param-value  */
+    public static final String SYSTEM_ENVIRONMENT_PROPERTY_SOURCE_NAME = "systemEnvironment";
+    public static final String SYSTEM_PROPERTIES_PROPERTY_SOURCE_NAME = "systemProperties";
+    @Override
+    protected void customizePropertySources(MutablePropertySources propertySources) {
+        // 装载 系统环境变量
+        propertySources.addLast(new MapPropertySource(SYSTEM_PROPERTIES_PROPERTY_SOURCE_NAME, getSystemProperties()));
+        // 装载 JVM 系统属性变量
+        propertySources.addLast(new SystemEnvironmentPropertySource(SYSTEM_ENVIRONMENT_PROPERTY_SOURCE_NAME, getSystemEnvironment()));
+    }
+}
+```
+可以猜测出方法的参数 `propertySources` 是一个装载 `属性` 的集合. 那么propertySources 一定不为 `null` , 也就是 propertySources 被初始化过.
+初始化一般发生在 `构造方法` 或者 `field 直接 new` 中.
+但是 StandardServletEnvironment 并没有构造方法, 其父类
+ StandardEnvironment 也没有构造方法.
+那么只能看最顶层的父类 `AbstractEnvironment` .
+```java
+// org.springframework.core.env.AbstractEnvironment
+public abstract class AbstractEnvironment implements ConfigurableEnvironment {
+    // 省略部分代码
+    private final MutablePropertySources propertySources = new MutablePropertySources(this.logger);
+    public AbstractEnvironment() {
+        customizePropertySources(this.propertySources);
+    }
+    protected void customizePropertySources(MutablePropertySources propertySources) {
+    }
+}
+```
+又看到了熟悉的 `customizePropertySources()` 方法. 
+可以看到 `propertySources` 是在 field 直接 `new` 出来的.
+propertySources 的实现类是 `MutablePropertySources` , 里面有一个
+ `CopyOnWriteArrayList` 集合，集合中的 `PropertySource` 是一个  `键值对` .
+```java
+// org.springframework.core.env.MutablePropertySources
+public class MutablePropertySources implements PropertySources {
+    private final List<PropertySource<?>> propertySourceList = new CopyOnWriteArrayList<PropertySource<?>>();
+}
+
+// org.springframework.core.env.PropertySources
+public interface PropertySources extends Iterable<PropertySource<?>> {
+    boolean contains(String name);
+    PropertySource<?> get(String name);
+}
+
+// org.springframework.core.env.PropertySource
+public abstract class PropertySource<T> {
+    
+    // 以 键值对 形式存储
+    protected final String name;
+    protected final T source;
+
+    // 省略 构造器 和 getter 和 setter 方法
+    // hashcode 和 equals 只判断 name 属性
+	
+    public boolean containsProperty(String name) {
+        return (getProperty(name) != null);
+    }
+    // 交给内部类子类 StubPropertySource 和 ComparisonPropertySource 实现
+    public abstract Object getProperty(String name);
+
+    // 类似占位符, 在实际的属性不能被及时初始化时保留，并在 Context 刷新时进行替换
+    public static class StubPropertySource extends PropertySource<Object> {
+        public StubPropertySource(String name) {
+            super(name, new Object());
+        }
+        @Override
+        public String getProperty(String name) {
+            return null;
+        }
+    }
+
+    // 类似占位符, 在实际的属性不能被及时初始化时保留，并在 Context 刷新时进行替换
+    static class ComparisonPropertySource extends StubPropertySource {
+        // 省略部分代码
+    }
+	
+    public static PropertySource<?> named(String name) {
+        return new ComparisonPropertySource(name);
+    }
+}
+```
+
+总结说, 就是 `AbstractEnvironment` 类的 `MutablePropertySources` 中的
+ `CopyOnWriteArrayList` 集合中, 装载了 5 个属性
+
+- ServletContext ( StandardServletEnvironment 装载, 封装 context-param )
+- ServletConfig ( StandardServletEnvironment 装载, 封装 init-param )
+- JndiProperty ( StandardServletEnvironment 装载 )
+- 系统环境变量 ( StandardEnvironment 装载 )
+- JVM 系统属性变量 ( StandardEnvironment 装载 )
+
+
+## HttpServletBean 的初始化
+被 `Environment` 带偏了, 回归正题 `HttpServletBean`
+
+在上一篇文章提到,  `GenericeServlet` 有一个 `无参init()` 方法交给子类实现.
+在 HttpServletBean 中重写了 `无参init()` 并加上了 `final` 禁止子类重写.
+```java
+public abstract class HttpServletBean
+        extends HttpServlet implements EnvironmentCapable, EnvironmentAware {
+    @Override
+    public final void init() throws ServletException {
+        // ServletConfig 由 Web 容器注入,  requiredProperties 为必须的属性
+        // 将 Servlet 的 init-param 封装进内部类 ServletConfigPropertyValues 中
+        PropertyValues pvs = new ServletConfigPropertyValues(getServletConfig(), this.requiredProperties);
+        if (!pvs.isEmpty()) {
+            try {
+                // bw 表示 HttpServletBean 对象实例
+                BeanWrapper bw = PropertyAccessorFactory.forBeanPropertyAccess(this);
+                ResourceLoader resourceLoader = new ServletContextResourceLoader(getServletContext());
+                bw.registerCustomEditor(Resource.class, new ResourceEditor(resourceLoader, getEnvironment()));
+                // 模板方法, 交给子类实现 (然而 DispatcherServlet 和
+ FrameworkServlet 没有重写)
+                initBeanWrapper(bw);
+                // 将 pvs 中配置的初始化键值对 ( 如 contextConfigLocation ) 设置到 bw ( DispatcherServlet ) 中
+                // 如 bw.setPropertyValue("key", "value"); (注意是
+ setPropertyValue , 不是 setPropertyValues )
+                // 等价于 bw.setKey("value")
+                bw.setPropertyValues(pvs, true);
+            } catch (BeansException ex) {
+                throw ex;
+            }
+        }
+
+        // 交给子类 FrameworkServlet 初始化
+        initServletBean();
+    }
+	
+    private static class ServletConfigPropertyValues extends MutablePropertyValues {
+        public ServletConfigPropertyValues(ServletConfig config, Set<String> requiredProperties)
+            throws ServletException {
+
+            // 假设所有的属性都缺失
+            Set<String> missingProps = (!CollectionUtils.isEmpty(requiredProperties) ?
+                new HashSet<String>(requiredProperties) : null);
+			
+            // 遍历 web.xml 中该 Servlet 的所有 init-param 属性
+            // 并从 [缺失属性] 集合 missingProps 中移除
+            Enumeration<String> paramNames = config.getInitParameterNames();
+            while (paramNames.hasMoreElements()) {
+                String property = paramNames.nextElement();
+                Object value = config.getInitParameter(property);
+                // 填入父类的 propertyValueList 集合中
+                addPropertyValue(new PropertyValue(property, value));
+                if (missingProps != null) {
+                    // 移除缺失属性
+                    missingProps.remove(property);
+                }
+            }
+
+            // 如果有属性缺失, 则抛出异常
+            if (!CollectionUtils.isEmpty(missingProps)) {
+                throw new ServletException("Initialization from ServletConfig for servlet '" + config.getServletName() + "' failed; the following required properties were missing: " + 
+ StringUtils.collectionToDelimitedString(missingProps, ", "));
+            }
+        }
+    }
+}
+```
+`requiredProperties` 默认为空, 在 `DispatcherServlet继承树` 找不到填充数据.
+从上面可以看到 HttpServletBean 在 `init()初始化` 通过`ServletConfigPropertyValues` 将 `init-param` 的键值对设置到
+ DispatcherServlet 中
+
+# FrameworkServlet 的初始化
+`FrameworkServlet` 继承自 `HttpServletBean` , 实现了
+ `ApplicationContextAware` 接口. 
+从 HttpServletBean 中可以知道 `FrameworkServlet` 的初始化入口是
+ `initServletBean()` .
+ `FrameworkServlet` 主要是完成了 `WebApplicationContext` 的初始化.
+
+```java
+// org.springframework.web.servlet.FrameworkServlet
+public abstract class FrameworkServlet
+        extends HttpServletBean implements ApplicationContextAware {
+    // 省略部分代码
+    private WebApplicationContext webApplicationContext;
+    @Override
+    protected final void initServletBean() throws ServletException {
+        // 初始化 WebApplicationContext
+        this.webApplicationContext = initWebApplicationContext();
+        // 模板方法, 交由子类实现初始化
+        initFrameworkServlet();
+    }
+	
+    protected void initFrameworkServlet() throws ServletException {
+        // 然而 DispatcherServlet 并没有重写
+    }
+	
+    protected WebApplicationContext initWebApplicationContext() {
+        // 获取 Spring 根容器
+        WebApplicationContext rootContext = WebApplicationContextUtils.getWebApplicationContext(getServletContext());
+        WebApplicationContext wac = null;
+
+        // Servlet3.0 通过 ServletContext#addServlet 动态注册 Servlet 的情况
+        // 如果已经通过构造方法创建 webApplicationContext 
+        if (this.webApplicationContext != null) {
+            wac = this.webApplicationContext;
+            // 省略部分代码
+        }
+        
+        if (wac == null) {
+            // 从 ServletContext#getAttribute 获取 WebApplicationContext 
+            wac = findWebApplicationContext();
+        }
+      
+        if (wac == null) {
+            // 如果 WebApplicationContext 还没有创建, 就创建一个
+            wac = createWebApplicationContext(rootContext);
+        }
+
+        // 当 ContextRefreshedEvent 事件没有触发时( 可以理解为通过第二种方法创建 )
+        // 调用 DispatcherServlet 重写的 onRefresh 方法
+        // 建议看完 WebApplicationContext 三种创建过程后再从这里往下看
+        if (!this.refreshEventReceived) {
+            onRefresh(wac);
+        }
+
+        if (this.publishContext) {
+            // 默认为true, 标识是否将 WebApplicationContext 保存在 ServletContext 中
+            String attrName = getServletContextAttributeName();
+            getServletContext().setAttribute(attrName, wac);
+        }
+
+        return wac;
+    }
+}
+
+// org.springframework.web.context.support.WebApplicationContextUtils
+public abstract class WebApplicationContextUtils {
+    // 默认情况 Spring 会将 Spring 容器设置成 ServletContext 的属性
+    // 获取 Spring 容器使用 ServletContext#getAttribute 即可
+    public static WebApplicationContext getWebApplicationContext(ServletContext sc) {
+        return getWebApplicationContext(sc, "org.springframework.web.context.WebApplicationContext.ROOT");
+    }
+    public static WebApplicationContext getWebApplicationContext(ServletContext sc, String attrName) {
+        Object attr = sc.getAttribute(attrName);
+        return (WebApplicationContext) attr;
+    }
+}
+```
+`initWebApplicationContext` 主要完成以下工作
+1. 获取 Spring 根容器
+1. 通过 `三种` 方式创建 `WebApplicationContext` 实例
+1. 当 `ContextRefreshedEvent` 事件没有触发时 ( 即通过 `第二种` 方式创建 `WebApplicationContext` ), 调用 `onRefresh()`
+1. 将 `WebApplicationContext` 实例设置到 `ServletContext` 中.
+
+## 创建 WebApplicatioContext 实例
+### Servlet3.0 动态注册 Servlet 时注入 WebApplicationContext
+第一种方式适用于 `Servlet3.0` 通过 `ServletContext#addServlet` 动态注册 `Servlet` 的情况。通过构造方法创建再注入 FrameworkServlet , 这样就不用关心 WebApplicationContext的创建了。
+```java
+// org.springframework.web.servlet.FrameworkServlet
+public abstract class FrameworkServlet
+        extends HttpServletBean implements ApplicationContextAware {
+    // 省略部分代码
+    private WebApplicationContext webApplicationContext;
+    public FrameworkServlet() {
+    }
+    public FrameworkServlet(WebApplicationContext webApplicationContext) {
+        this.webApplicationContext = webApplicationContext;
+    }
+
+    protected WebApplicationContext initWebApplicationContext() {
+        // 省略部分代码
+
+        if (this.webApplicationContext != null) {
+            wac = this.webApplicationContext;
+            if (wac instanceof ConfigurableWebApplicationContext) {
+                ConfigurableWebApplicationContext cwac = (ConfigurableWebApplicationContext) wac;
+                if (!cwac.isActive()) {
+                    // webApplicationContext尚未被刷新
+                    if (cwac.getParent() == null) {
+                        // 设置Spring根容器为父Context
+                        cwac.setParent(rootContext);
+                    }
+                    // 设置和刷新WebApplicationContext
+                    // 在第三种创建方式时讲这个方法
+                    configureAndRefreshWebApplicationContext(cwac);
+                }
+            }
+        }
+
+        // 省略部分代码
+        return wac;
+    }
+}
+```
+
+### 在 ServletContext#getAttribute 中获取 WebApplicationContext
+当第一种方法找不到 WebApplicationContext 时, 说明该 Servlet 不是动态注册的。
+尝试从 ServletContext 中获取 WebApplicationContext 
+```java
+// org.springframework.web.servlet.FrameworkServlet
+public abstract class FrameworkServlet
+        extends HttpServletBean implements ApplicationContextAware {
+    // 省略部分代码
+    private WebApplicationContext webApplicationContext;
+
+    protected WebApplicationContext initWebApplicationContext() {
+        // 省略部分代码
+
+        // 省略第一种方式创建 WebApplicationContext 的代码
+
+        // 如果为空，说明该 Servlet 不是动态注册的，在 ServletContext 中查找 WebApplicationContext
+        // 说明 WebApplicationContext 已经以别的方式初始化并注册在 contextAttribute 下，直接使用  
+        if (wac == null) {
+            wac = findWebApplicationContext();
+        }
+
+        // 省略部分代码
+        return wac;
+    }
+    // 从ContextAttribute 获取 WebApplicationContext
+    protected WebApplicationContext findWebApplicationContext() {
+        String attrName = getContextAttribute();
+        WebApplicationContext wac = WebApplicationContextUtils.getWebApplicationContext(getServletContext(), attrName);
+        return wac;
+    }
+}
+```
+
+### 最终手段, 自己创建
+```java
+// org.springframework.web.servlet.FrameworkServlet
+public abstract class FrameworkServlet
+        extends HttpServletBean implements ApplicationContextAware {
+    // 省略部分代码
+    private WebApplicationContext webApplicationContext;
+
+    protected WebApplicationContext initWebApplicationContext() {
+        // 省略部分代码
+
+        // 省略第一种方式, Servlet 动态注册 获取
+        // 省略第二种方式, 从 ServletContext#getContextAttribute 获取
+
+        // 默认的方式, 自己创建
+        if (wac == null) {
+            wac = createWebApplicationContext(rootContext);
+        }
+
+        // 省略部分代码
+        return wac;
+    }
+    protected WebApplicationContext createWebApplicationContext(WebApplicationContext parent) {
+        return createWebApplicationContext((ApplicationContext) parent);
+    }
+    protected WebApplicationContext createWebApplicationContext(ApplicationContext parent) {
+        // 默认 XmlWebApplicationContext.class
+        Class<?> contextClass = getContextClass();
+        // 通过反射创建 XmlWebApplicationContext 的实例
+        ConfigurableWebApplicationContext wac =
+ (ConfigurableWebApplicationContext) BeanUtils.instantiateClass(contextClass);
+
+        // 设置 Environment , 在 HttpServletBean 中初始化
+        wac.setEnvironment(getEnvironment());
+        // 默认设置 Spring 根容器为父 Context
+        wac.setParent(parent);
+        // 设置 web.xml 中的 springMVC 的 contextConfigLocation, 在 HttpServletBean 中获取
+        // 默认为 WEB-INF/[ServletName]-Servlet.xml
+        wac.setConfigLocation(getContextConfigLocation());
+
+        // 配置和刷新 WebApplicationContext
+        configureAndRefreshWebApplicationContext(wac);
+
+        return wac;
+    }
+    protected void configureAndRefreshWebApplicationContext(ConfigurableWebApplicationContext wac) {
+        // 为 WebApplicationContext 设置唯一标识 id 
+        if (ObjectUtils.identityToString(wac).equals(wac.getId())) {
+            if (this.contextId != null) {
+                wac.setId(this.contextId);
+            } else { 
+                wac.setId(ConfigurableWebApplicationContext.APPLICATION_CONTEXT_ID_PREFIX +
+                        ObjectUtils.getDisplayString(getServletContext().getContextPath()) + '/' + getServletName());
+            }
+        }
+        // 设置 ServletContext
+        wac.setServletContext(getServletContext());
+        // 设置 ServletConfig
+        wac.setServletConfig(getServletConfig());
+        // 设置 命名空间Namespace
+        wac.setNamespace(getNamespace());
+        // 添加监听器, 装饰模式, 实际调用ContextRefreshListener, 监听 ContextRefreshedEvent事件
+        wac.addApplicationListener(new SourceFilteringListener(wac, new ContextRefreshListener()));
+
+        ConfigurableEnvironment env = wac.getEnvironment();
+        if (env instanceof ConfigurableWebEnvironment) {
+            // 底下有源码, 负责刷新 PropertySources 中的 ServletContext 和 ServletConfig
+            ((ConfigurableWebEnvironment) env).initPropertySources(getServletContext(), getServletConfig());
+        }
+
+        // 在刷新之前对 WebApplicationContext 进行 Bean 后处理
+        // 模板方法, DispatcherServlet 未重写
+        postProcessWebApplicationContext(wac);
+        // 通过在 web.xml 里配置 globalInitializerClasses 和 contextInitializerClasses 来初始化 applicationContext 
+        applyInitializers(wac);
+        // 初始化 SpringMVC 各种的相关配置，各种注入的 Controller，配置文件等  
+        wac.refresh();
+    }
+    // 内部类, 负责监听ContextRefreshedEvent事件
+    private class ContextRefreshListener implements ApplicationListener<ContextRefreshedEvent> {
+        @Override
+        public void onApplicationEvent(ContextRefreshedEvent event) {
+            FrameworkServlet.this.onApplicationEvent(event);
+        }
+    }
+    public void onApplicationEvent(ContextRefreshedEvent event) {
+        // 标识刷新完成
+        this.refreshEventReceived = true;
+        onRefresh(event.getApplicationContext());
+    }
+    protected void onRefresh(ApplicationContext context) {
+        // 交给子类 DispatcherServlet 实现
+    }
+    // 通过在 web.xml 里配置 globalInitializerClasses 和 contextInitializerClasses 来初始化 applicationContext 
+    protected void applyInitializers(ConfigurableApplicationContext wac) {
+        // 获取 globalInitializerClasses
+        String globalClassNames = getServletContext().getInitParameter("globalInitializerClasses");
+        if (globalClassNames != null) {
+            for (String className : StringUtils.tokenizeToStringArray(globalClassNames, ",; \t\n")) {
+                this.contextInitializers.add(loadInitializer(className, wac));
+            }
+        }
+        // 获取 contextInitializerClasses
+        if (this.contextInitializerClasses != null) {
+            for (String className : StringUtils.tokenizeToStringArray(this.contextInitializerClasses, ",; \t\n")) {
+                this.contextInitializers.add(loadInitializer(className, wac));
+            }
+        }
+        // 排序( 可通过 @Order 指定顺序 ) 并 调用 initialize 初始化
+        AnnotationAwareOrderComparator.sort(this.contextInitializers);
+        for (ApplicationContextInitializer<ConfigurableApplicationContext> initializer : this.contextInitializers) {
+            initializer.initialize(wac);
+        }
+    }
+    // 初始化实现了 ApplicationContextInitializer 接口的类
+    private ApplicationContextInitializer<ConfigurableApplicationContext> loadInitializer(
+        String className, ConfigurableApplicationContext wac) {
+            // 初始化类
+            Class<?> initializerClass = ClassUtils.forName(className, wac.getClassLoader());
+            // 判断是否实现了 ApplicationContextInitializer 接口
+            Class<?> initializerContextClass = GenericTypeResolver.resolveTypeArgument(initializerClass, ApplicationContextInitializer.class);
+            // 省略 if 语句
+            // 返回类对象实例
+            return BeanUtils.instantiateClass(initializerClass, ApplicationContextInitializer.class);
+	}
+}
+// org.springframework.web.context.support.StandardServletEnvironment
+public class StandardServletEnvironment
+        extends StandardEnvironment implements ConfigurableWebEnvironment {
+    @Override
+    public void initPropertySources(ServletContext servletContext, ServletConfig servletConfig) {
+        // 注意在 HttpServletBean 初始化时已经将 propertySource 初始化了, 有疑问返回 HttpServletBean 初始化章节查看
+        // FrameworkServlet 在刷新时调用
+        // 将 ServletContext 和 ServletConfig 注入 PropertySources 中
+        WebApplicationContextUtils.initServletPropertySources(getPropertySources(), servletContext, servletConfig);
+    }
+}
+// org.springframework.web.context.support.WebApplicationContextUtils 
+public abstract class WebApplicationContextUtils {
+    // 将 ServletContext 和 ServletConfig 覆盖到 propertySources 中
+    public static void initServletPropertySources(MutablePropertySources propertySources, ServletContext servletContext, ServletConfig servletConfig) {
+        propertySources.replace("servletContextInitParams",
+            new ServletContextPropertySource("servletContextInitParams", servletContext));
+        propertySources.replace("servletConfigInitParams",
+            new ServletConfigPropertySource("servletConfigInitParams", servletConfig));
+	}
+```
+最后，可以回头看看 `initWebApplicationContext` 方法, 重新梳理一遍。
+
+# DispatcherServlet 的初始化
+FrameworkServlet提供了几个扩展点
+- initFrameworkServlet();
+- onRefresh(WebApplicationContext wac);
+- postProcessWebApplicationContext(WebApplicationContext)
+
+DispatcherServlet实现了`onRefresh(WebApplicationContext wac);`方法。
+```java
+// org.springframework.web.servlet.DispatcherServlet
+public class DispatcherServlet extends FrameworkServlet {
+    @Override
+    protected void onRefresh(ApplicationContext context) {
+        initStrategies(context);
+    }
+
+    //  默认实现看底部 DispatcherServlet.properties
+    protected void initStrategies(ApplicationContext context) {
+        // 初始化文件上传处理类, 默认为 null
+        initMultipartResolver(context);
+        // 初始化本地 Resolver , 默认为 AcceptHeaderLocaleResolver
+        initLocaleResolver(context);
+        // 初始化主题 Resolver , 默认为 FixedThemeResolver
+        initThemeResolver(context);
+        // 初始化 HandlerMapping , 默认为 BeanNameUrlHandlerMapping
+        initHandlerMappings(context);
+        // 初始化 HandlerAdapters , 默认为 SimpleControllerHandlerAdapter
+        initHandlerAdapters(context);
+        // 初始化异常处理的 handler , 默认为 无异常的resolver
+        initHandlerExceptionResolvers(context);
+        // 初始化请求路径转换为 ViewName 的Translator, 默认为 DefaultRequestToViewNameTranslator
+        initRequestToViewNameTranslator(context);
+        // 初始化 ViewResolvers 这个就是针对视图处理的 Resolvers , 默认为处理 jsp 的 InternalResourceViewResolver
+        initViewResolvers(context);
+        // 初始化 主要管理flashmap，比如RedirectAttributes 的属性会放到这个里面，默认使用的是SessionFlashMapManager
+        initFlashMapManager(context);
+    }
+
+    // 所有的初始化方法都如下
+    // 获取 Bean , 获取失败则使用默认的Bean
+    private void initLocaleResolver(ApplicationContext context) {
+        try {
+            this.localeResolver = context.getBean(LOCALE_RESOLVER_BEAN_NAME, LocaleResolver.class);
+        } catch (NoSuchBeanDefinitionException ex) {
+            this.localeResolver = getDefaultStrategy(context, LocaleResolver.class);
+        }
+    }
+
+    // 获取默认的 Bean
+    protected <T> T getDefaultStrategy(ApplicationContext context, Class<T> strategyInterface) {
+        List<T> strategies = getDefaultStrategies(context, strategyInterface);
+        // 只允许有一个Bean
+        if (strategies.size() != 1) {
+            throw new BeanInitializationException("DispatcherServlet needs exactly 1 strategy for interface [" + strategyInterface.getName() + "]");
+        }
+        return strategies.get(0);
+    }
+
+    // 获取默认的 Bean
+    protected <T> List<T> getDefaultStrategies(ApplicationContext context, Class<T> strategyInterface) {
+        // 类名
+        String key = strategyInterface.getName();
+        // 获取默认属性, 在DispatcherServlet.properties中
+        String value = defaultStrategies.getProperty(key);
+        if (value != null) {
+            // 将获取的默认属性用逗号分割为字符串数组
+            String[] classNames = StringUtils.commaDelimitedListToStringArray(value);
+            List<T> strategies = new ArrayList<T>(classNames.length);
+           // 装入 list 中返回
+            for (String className : classNames) {
+                Class<?> clazz = ClassUtils.forName(className, DispatcherServlet.class.getClassLoader());
+                Object strategy = createDefaultStrategy(context, clazz);
+                strategies.add((T) strategy);
+            } 
+            return strategies;
+        } else {
+            return new LinkedList<T>();
+        }
+    }
+    // 从 DispatcherServlet.properties 中获取, 不能自定义
+    // Properties 继承自 Hashtable
+    private static final Properties defaultStrategies;
+    static {
+        ClassPathResource resource = new ClassPathResource("DispatcherServlet.properties", DispatcherServlet.class);
+        defaultStrategies = PropertiesLoaderUtils.loadProperties(resource);
+    }
+
+    protected Object createDefaultStrategy(ApplicationContext context, Class<?> clazz) {
+        return context.getAutowireCapableBeanFactory().createBean(clazz);
+    }
+}
+```
+
+org.springframework.web.servlet.DispatcherServlet.properties
+```
+# Default implementation classes for DispatcherServlet's strategy interfaces.
+# Used as fallback when no matching beans are found in the DispatcherServlet context.
+# Not meant to be customized by application developers.
+
+org.springframework.web.servlet.LocaleResolver=org.springframework.web.servlet.i18n.AcceptHeaderLocaleResolver
+
+org.springframework.web.servlet.ThemeResolver=org.springframework.web.servlet.theme.FixedThemeResolver
+
+# DefaultAnnotationHandlerMapping 在 Spring 3.2 之后过时
+org.springframework.web.servlet.HandlerMapping=org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping,\
+	org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping
+
+# AnnotationMethodHandlerAdapter 在 Spring 3.2 之后过时
+org.springframework.web.servlet.HandlerAdapter=org.springframework.web.servlet.mvc.HttpRequestHandlerAdapter,\
+	org.springframework.web.servlet.mvc.SimpleControllerHandlerAdapter,\
+	org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter
+
+# AnnotationMethodHandlerExceptionResolver 在 Spring 3.2 之后过时
+org.springframework.web.servlet.HandlerExceptionResolver=org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerExceptionResolver,\
+	org.springframework.web.servlet.mvc.annotation.ResponseStatusExceptionResolver,\
+	org.springframework.web.servlet.mvc.support.DefaultHandlerExceptionResolver
+
+org.springframework.web.servlet.RequestToViewNameTranslator=org.springframework.web.servlet.view.DefaultRequestToViewNameTranslator
+
+org.springframework.web.servlet.ViewResolver=org.springframework.web.servlet.view.InternalResourceViewResolver
+
+org.springframework.web.servlet.FlashMapManager=org.springframework.web.servlet.support.SessionFlashMapManager
+```
+
+# FrameworkServlet 的请求 service()
+在HttpServlet详解中提到了HttpServlet重写了service方法, 可以进行get、post等请求。
+HttpServletBean中没有重写service方法。
+在`FrameworkServlet`中重写了service方法, 并重写了除了`doHead`外所有`doXxx`的方法, 增加了`patch`请求类型。
+```java
+// org.springframework.web.servlet.FrameworkServlet
+public abstract class FrameworkServlet
+        extends HttpServletBean implements ApplicationContextAware {
+    @Override
+    protected void service(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        // Http请求类型的枚举类
+        HttpMethod httpMethod = HttpMethod.resolve(request.getMethod());
+        // 在HttpServlet的基础上增加patch请求类型
+        if (HttpMethod.PATCH == httpMethod || httpMethod == null) {
+            processRequest(request, response);
+        } else {
+            super.service(request, response);
+        }
+    }
+    @Override
+    protected final void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        // get、post、put、delete、options、trace、pathc都使用这个方法
+        processRequest(request, response);
+    }
+}
+
+// org.springframework.http.HttpMethod
+public enum HttpMethod {
+    GET, HEAD, POST, PUT, PATCH, DELETE, OPTIONS, TRACE;
+    private static final Map<String, HttpMethod> mappings = new HashMap<String, HttpMethod>(8);
+    static {
+        for (HttpMethod httpMethod : values()) {
+            mappings.put(httpMethod.name(), httpMethod);
+        }
+    }
+    public static HttpMethod resolve(String method) {
+        return (method != null ? mappings.get(method) : null);
+    }
+    public boolean matches(String method) {
+        return (this == resolve(method));
+    }
+}
+```
+`doOptions`和`doTrace`可以设置`dispatchOptionsRequest` 和`dispatchTraceRequest`参数决定自己处理还是交给父类。
+可以看到所有的请求方法都调用了`processRequest(request, response);`方法。
+```java
+// org.springframework.web.servlet.FrameworkServlet
+public abstract class FrameworkServlet
+    protected final void processRequest(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        long startTime = System.currentTimeMillis();
+        Throwable failureCause = null;
+
+        // LocaleContextHolder中有ThreadLocal属性, 获取当前线程的LocaleContext
+        // LocaleContext 用于获取 Local, 用于国际化
+        LocaleContext previousLocaleContext = LocaleContextHolder.getLocaleContext();
+        // 获取当前请求的LocaleContext
+        LocaleContext localeContext = buildLocaleContext(request);
+
+        // RequestContextHolder中有ThreadLocal属性, 获取当前现成的RequestAttributes请求参数
+        RequestAttributes previousAttributes = RequestContextHolder.getRequestAttributes();
+        // 
+        ServletRequestAttributes requestAttributes = buildRequestAttributes(request, response, previousAttributes);
+
+        WebAsyncManager asyncManager = WebAsyncUtils.getAsyncManager(request);
+        asyncManager.registerCallableInterceptor(FrameworkServlet.class.getName(), new RequestBindingInterceptor());
+
+        initContextHolders(request, localeContext, requestAttributes);
+
+        try {
+            // 实际的请求入口, 交由DispatcherServlet实现
+            doService(request, response);
+        } catch (ServletException ex) {
+            failureCause = ex;
+            throw ex;
+        } catch (IOException ex) {
+            failureCause = ex;
+            throw ex;
+        } catch (Throwable ex) {
+            failureCause = ex;
+            throw new NestedServletException("Request processing failed", ex);
+        } finally {
+            resetContextHolders(request, previousLocaleContext, previousAttributes);
+            if (requestAttributes != null) {
+                requestAttributes.requestCompleted();
+            }
+            // 发布ServletRequestHandledEvent消息
+            publishRequestHandledEvent(request, response, startTime, failureCause);
+        }
+    }
+
+    protected LocaleContext buildLocaleContext(HttpServletRequest request) {
+        return new SimpleLocaleContext(request.getLocale());
+    }
+    protected ServletRequestAttributes buildRequestAttributes(
+            HttpServletRequest request, HttpServletResponse response, RequestAttributes previousAttributes) {
+        if (previousAttributes == null || previousAttributes instanceof ServletRequestAttributes) {
+            return new ServletRequestAttributes(request, response);
+        } else {
+            return null;  // preserve the pre-bound RequestAttributes instance
+        }
+    }
+}
+
+// org.springframework.context.i18n.SimpleLocalContext
+public class SimpleLocaleContext implements LocaleContext {
+    private final Locale locale;
+    public SimpleLocaleContext(Locale locale) {
+        this.locale = locale;
+    }
+    @Override
+    public Locale getLocale() {
+        return this.locale;
+    }
+    @Override
+    public String toString() {
+        return (this.locale != null ? this.locale.toString() : "-");
+    }
+}
+
+// org.springframework.context.i18n.LocalContext
+public interface LocaleContext {
+	Locale getLocale();
+}
+```
+
+# 参考资料
+- [Spring 源码解析之DispatcherServlet源码解析(五)](http://blog.csdn.net/king_is_everyone/article/details/51541706)
+- [SpringMVC学习记录2](http://www.cnblogs.com/abcwt112/p/5283674.html)
+- [看透SpringMVC源代码分析与实践]
