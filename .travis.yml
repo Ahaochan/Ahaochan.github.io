@@ -12,6 +12,7 @@ cache:
   yarn: true
   directories:
     - node_modules
+    - theme
 before_install:
 #  配置git
 - git config --global user.name "Ahaochan"
