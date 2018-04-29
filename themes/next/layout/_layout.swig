@@ -100,12 +100,5 @@
   {% include '_third-party/exturl.swig' %}
   {% include '_third-party/bookmark.swig' %}
   {% include '_third-party/copy-code.swig' %}
-
-  {% if theme.custom_file_path.js %}
-    {% set custom_sidebar = '../../../../' + theme.custom_file_path.js %}
-  {% else %}
-    {% set custom_sidebar = '../_custom/sidebar.swig' %}
-  {% endif %}
-  {% include custom_sidebar %}
 </body>
 </html>
