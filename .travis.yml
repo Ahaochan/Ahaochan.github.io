@@ -1,7 +1,10 @@
 # 使用语言
 language: node_js
+# 指定需要sudo权限
+sudo: required
 # node版本
-node_js: stable
+node_js:
+  - 7.9.0
 # 设置只监听哪个分支
 branches:
   only:
