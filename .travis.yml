@@ -19,9 +19,6 @@ before_install:
 #  配置git
 - git config --global user.name "Ahaochan"
 - git config --global user.email "844394093@qq.com"
-# next.yml配置文件解密
-- openssl aes-256-cbc -K $encrypted_3873d9e40d23_key -iv $encrypted_3873d9e40d23_iv
-  -in source/_data/next.yml.enc -out source/_data/next.yml -d
 # 由于使用了yarn，所以需要下载，如不用yarn这两行可以删除
 - curl -o- -L https://yarnpkg.com/install.sh | bash
 - export PATH=$HOME/.yarn/bin:$PATH
@@ -34,6 +31,20 @@ before_install:
 - npm install hexo-symbols-count-time --save
 - npm install hexo-generator-sitemap --save
 - npm install hexo-generator-baidu-sitemap --save
+- npm install hexo-deployer-git --save
+- npm install hexo-leancloud-counter-security --save
+# next.yml配置文件解密
+- openssl aes-256-cbc -K $encrypted_3873d9e40d23_key -iv $encrypted_3873d9e40d23_iv
+  -in source/_data/next.yml.enc -out source/_data/next.yml -d
+# next主题下载
+- git clone https://github.com/theme-next/hexo-theme-next themes/next
+# next主题依赖下载
+- git clone https://github.com/theme-next/theme-next-pangu.git themes/next/source/lib/pangu
+- git clone https://github.com/theme-next/theme-next-reading-progress themes/next/source/lib/reading_progress
+- git clone https://github.com/theme-next/theme-next-fastclick themes/next/source/lib/fastclick
+- git clone https://github.com/theme-next/theme-next-jquery-lazyload themes/next/source/lib/jquery_lazyload
+- git clone https://github.com/theme-next/theme-next-pace themes/next/source/lib/pace
+- git clone https://github.com/theme-next/theme-next-canvas-nest themes/next/source/lib/canvas-nest
 install:
 # 不用yarn的话这里改成 npm i 即可
 - yarn
