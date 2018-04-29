@@ -34,8 +34,7 @@ before_install:
 - npm install hexo-deployer-git --save
 - npm install hexo-leancloud-counter-security --save
 # next.yml配置文件解密
-- openssl aes-256-cbc -K $encrypted_3873d9e40d23_key -iv $encrypted_3873d9e40d23_iv
-  -in source/_data/next.yml.enc -out source/_data/next.yml -d
+- openssl aes-256-cbc -K $encrypted_3873d9e40d23_key -iv $encrypted_3873d9e40d23_iv -in source/_data/next.yml.enc -out source/_data/next.yml -d
 # next主题下载
 - git clone https://github.com/theme-next/hexo-theme-next themes/next
 # next主题依赖下载
@@ -60,5 +59,4 @@ after_success:
 - git add --all .
 - git commit -m "Travis CI Auto Builder"
 # 这里的 REPO_TOKEN 即之前在 travis 项目的环境变量里添加的
-- git push --quiet --force https://$REPO_TOKEN@github.com/Ahaochan/Ahaochan.github.io.git
-  master
+- git push --quiet --force https://$REPO_TOKEN@github.com/Ahaochan/Ahaochan.github.io.git master
