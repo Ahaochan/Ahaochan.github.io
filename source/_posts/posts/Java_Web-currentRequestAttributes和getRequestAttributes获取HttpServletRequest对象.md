@@ -11,6 +11,8 @@ date: 2018-05-04 23:58:00
 `Spring`获取`HttpServletRequest`的方法有很多。
 比较常用的是使用`@Autowired`或者直接在方法参数里面注入。
 
+<!-- more -->
+
 # 问题场景
 从数据库`dao`层取出了`url`资源路径, 需要结合`ContextPath`进行补充。
 比如访问`http://localhost:8080/project/userList`, 项目路径是`project`。

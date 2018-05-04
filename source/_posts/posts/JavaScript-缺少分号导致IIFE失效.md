@@ -1,5 +1,5 @@
 ---
-title: jQuery的clone陷阱
+title: 缺少分号导致IIFE失效
 url: Missing_semicolon_causes_IIFE_not_working
 tags:
   - JavaScript
@@ -9,6 +9,9 @@ date: 2018-05-04 23:54:00
 ---
 # 正文
 先来看这两段代码, 执行之后可以看到控制台爆出**`log.(...) is not a function`的错误异常信息。
+
+<!-- more -->
+
 ```js
 window.onerror = undefined;
 // 1. 执行错误

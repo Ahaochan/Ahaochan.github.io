@@ -13,6 +13,8 @@ date: 2018-05-04 23:43:00
 
 **请注意，加密文件不适用于[pull requests from forks](https://docs.travis-ci.com/user/pull-requests#Pull-Requests-and-Security-Restrictions)。**
 
+<!-- more -->
+
 # 先决条件
 
 *   安装 Travis CI [命令行客户端](https://github.com/travis-ci/travis.rb#readme)

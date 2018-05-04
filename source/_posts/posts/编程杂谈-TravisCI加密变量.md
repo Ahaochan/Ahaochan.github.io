@@ -17,6 +17,8 @@ date: 2018-05-04 23:46:00
 
 **请注意，加密的环境变量不适用于[pull requests](https://docs.travis-ci.com/user/pull-requests#Pull-Requests-and-Security-Restrictions)。**
 
+<!-- more -->
+
 # 加密方案
 `Travis CI` 使用**非对称密码学**. 对于每个注册过的仓库`Repository`, `Travis CI` 会生成一对`RSA`密钥对. 
 `Travis CI` 拥有私钥, 但是可以让每个人都可以使用该公钥. 
