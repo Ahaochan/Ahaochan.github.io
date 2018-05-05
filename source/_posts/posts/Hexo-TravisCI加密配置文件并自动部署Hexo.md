@@ -6,7 +6,7 @@ tags:
   - Hexo
 categories:
   - Hexo
-date: 2017-11-05 12:47:32
+date: 2018-05-05 15:03:00
 ---
 # 前言
 [Travis-CI](https://travis-ci.org/)是一个可以将`Github`上的代码做持续集成的网站。
