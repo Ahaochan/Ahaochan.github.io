@@ -185,7 +185,7 @@ script:
 ```
 # 最后
 最后将所有文件`git push -u origin source`推送到远程的`source`分支上即可。
-如果失败, 可以在https://travis-ci.org/Ahaochan/Ahaochan.github.io/requests查看错误信息。
+如果失败, 可以在 https://travis-ci.org/Ahaochan/Ahaochan.github.io/requests 查看错误信息。
 
 
 # 参考资料
