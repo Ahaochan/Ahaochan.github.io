@@ -31,6 +31,8 @@ before_install:
 - npm install hexo-generator-baidu-sitemap --save
 - npm install hexo-deployer-git --save
 - npm install hexo-leancloud-counter-security --save
+# 配置 LeanCloud
+hexo lc-counter register $leancloud_username $leancloud_password
 # next.yml配置文件解密
 - openssl aes-256-cbc -K $encrypted_3873d9e40d23_key -iv $encrypted_3873d9e40d23_iv -in source/_data/next.yml.enc -out source/_data/next.yml -d
 # next主题下载
@@ -51,10 +53,4 @@ script:
 #- hexo g
 - hexo clean --config source/_data/next.yml
 - hexo g --config source/_data/next.yml
-after_success:
-- cd ./public
-- git init
-- git add --all .
-- git commit -m "Travis CI Auto Builder"
-# 这里的 REPO_TOKEN 即之前在 travis 项目的环境变量里添加的
-- git push --quiet --force https://$REPO_TOKEN@github.com/Ahaochan/Ahaochan.github.io.git master
+- hexo d --config source/_data/next.yml
