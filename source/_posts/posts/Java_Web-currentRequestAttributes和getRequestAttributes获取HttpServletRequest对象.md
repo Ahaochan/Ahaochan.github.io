@@ -5,7 +5,7 @@ tags:
   - Spring MVC
 categories:
   - Java Web
-date: 2018-05-04 23:58:00
+date: 2018-05-04 23:58:01
 ---
 # 前言
 `Spring`获取`HttpServletRequest`的方法有很多。
