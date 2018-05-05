@@ -31,8 +31,6 @@ before_install:
 - npm install hexo-generator-baidu-sitemap --save
 - npm install hexo-deployer-git --save
 - npm install hexo-leancloud-counter-security --save
-# 配置 LeanCloud
-- hexo lc-counter register $leancloud_username $leancloud_password
 # next.yml配置文件解密
 - openssl aes-256-cbc -K $encrypted_3873d9e40d23_key -iv $encrypted_3873d9e40d23_iv -in source/_data/next.yml.enc -out source/_data/next.yml -d
 # next主题下载
@@ -49,8 +47,8 @@ install:
 # 不用yarn的话这里改成 npm i 即可
 - yarn
 script:
-#- hexo clean
-#- hexo g
+# 配置 LeanCloud
+- hexo lc-counter register $leancloud_username $leancloud_password --config source/_data/next.yml
 - hexo clean --config source/_data/next.yml
 - hexo g --config source/_data/next.yml
 - hexo d --config source/_data/next.yml
