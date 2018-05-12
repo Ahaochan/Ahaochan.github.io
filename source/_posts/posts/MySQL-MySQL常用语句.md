@@ -15,22 +15,24 @@ date: 2016-12-20 08:15:25
 
 # 用户权限
 ```sql
-# 创建用户
-create user user_name@ip_address identified by 'password'; # 用户通过指定ip地址登录 
-create user user_name@'%'        identified by 'password'; # 用户通过任意ip地址登录 
+# 创建用户, 用户通过指定ip地址登录 
+create user user_name@ip_address identified by 'password'; 
+# 创建用户, 用户通过任意ip地址登录 
+create user user_name@'%'        identified by 'password'; 
 
-# 删除用户
-drop user user1@localhost; # 删除用户user1
+# 删除用户user1
+drop user user1@localhost; 
 
-# 用户授权
-grant create,alter,drop,insert,update,delete,select on mydb.* to user1@localhost; # 分配mydb所有表的指定权限给user1
-grant all on mydb.* to user2@localhost; # 分配mydb数据库所有表的所有权限给user2
+# 分配mydb所有表的指定权限给user1
+grant create,alter,drop,insert,update,delete,select on mydb.* to user1@localhost; 
+# 分配mydb数据库所有表的所有权限给user2
+grant all on mydb.* to user2@localhost; 
 
-# 撤销权限
-revoke create on mydb.* from user1@localhost; # 撤销user1对mydb所有表的create权限 
+# 撤销user1对mydb所有表的create权限 
+revoke create on mydb.* from user1@localhost; 
 
-# 查看权限
-show grants for user1@localhost; # 查看user1的权限 
+# 查看user1的权限 
+show grants for user1@localhost; 
 ```
 
 # 数据库
