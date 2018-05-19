@@ -1,5 +1,5 @@
 ---
-title: Travis-CI加密文件
+title: Travis-CI加密变量
 url: Travis_CI_Encrypting_keys
 tags:
   - Travis-CI

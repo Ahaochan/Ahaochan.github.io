@@ -34,7 +34,7 @@ before_install:
 # next.yml配置文件解密
 - openssl aes-256-cbc -K $encrypted_3873d9e40d23_key -iv $encrypted_3873d9e40d23_iv -in source/_data/next.yml.enc -out source/_data/next.yml -d
 # 将 GitHub Token 替换到 next.yml 中
-- sed -i "s/REPO_TOKEN/${REPO_TOKEN}/" _config.yml
+- sed -i "s/REPO_TOKEN/${REPO_TOKEN}/" source/_data/next.yml
 # next主题下载
 - git clone https://github.com/theme-next/hexo-theme-next themes/next
 # next主题依赖下载
