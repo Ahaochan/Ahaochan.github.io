@@ -90,7 +90,7 @@ $ travis login
 # 1. 确保在source分支下操作
 $ git checkout source
 # 2. 进入next.yml所在文件夹
-$ cd source/_data/next.yml
+$ cd source/_data
 # 3. 进行加密(如果想要加密多个文件, 需要将多个文件打包, 再在Travis-CI解压)
 $ travis encrypt-file next.yml
 # 4. 在.travis.yml中加入配置, 注意要指定source/_data/next.yml路径. (这里不要复制我的key, 每个人都不一样)
