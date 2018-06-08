@@ -74,7 +74,7 @@ public interface ModuleDAO {
         <!-- 给出需要扫描的Dao接口-->
         <property name="basePackage" value="com.ahao.**.dao"/>
         <property name="nameGenerator">
-            <bean class="com.nine.rivers.galaxy.spring.beans.PackageBeanNameGenerator"/>
+            <bean class="com.ahao.core.spring.beans.PackageBeanNameGenerator"/>
         </property>
     </bean>
 ```
