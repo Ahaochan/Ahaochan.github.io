@@ -48,5 +48,36 @@ public class PackageBeanNameGenerator implements BeanNameGenerator {
 }
 ```
 
+# Mybatis使用BeanNameGenerator
+在`Spring`整合发现`Mybatis`的`BeanName`生成没有使用`BeanNameGenerator`。
+```xml
+<context:component-scan base-package="com.ahao" use-default-filters="false"
+                        name-generator="com.ahao.core.beans.PackageBeanNameGenerator">
+    <context:include-filter type="annotation" expression="org.springframework.stereotype.Repository"/>
+</context:component-scan>
+```
+```java
+@Repository
+public interface ModuleDAO {
+    List<String> getNames(); // 使用 ModuleMapper.xml
+}
+```
+在调试时，`Mybatis`的代理类没有使用`@Repository`注解，所以`include-filter`没有扫描到代理类。
+
+在`Stack Overflow`提问也没人回。
+后来自己找到了解决方法, 在配置`MapperScannerConfigurer`时注入`NameGenerator`即可。
+```xml
+    <!-- 配置扫描Dao接口包,动态实现DAO接口,注入到spring容器 -->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <!--注入SqlSessionFactory-->
+        <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"/>
+        <!-- 给出需要扫描的Dao接口-->
+        <property name="basePackage" value="com.ahao.**.dao"/>
+        <property name="nameGenerator">
+            <bean class="com.nine.rivers.galaxy.spring.beans.PackageBeanNameGenerator"/>
+        </property>
+    </bean>
+```
+
 # 参考资料
 - [automatically-assign-springs-bean-name-to-prevent-name-conflicts](https://stackoverflow.com/questions/5414215)
