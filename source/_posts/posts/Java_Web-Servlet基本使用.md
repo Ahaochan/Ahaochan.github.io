@@ -17,7 +17,7 @@ date: 2017-02-25 14:13:15
 # 使用
 - 实现`javax.servlet.Servlet`接口
 - 继承`javax.servlet.GenericServlet`抽象类（实现了`Servlet`接口）
-- 继承`javax.servlet.http.HttpServlet`类（继承自`toGenericServlet`类）（推荐）
+- 继承`javax.servlet.http.HttpServlet`类（继承自`GenericServlet`类）（推荐）
 
 先写一个类继承自`HttpServlet`
 ```java
