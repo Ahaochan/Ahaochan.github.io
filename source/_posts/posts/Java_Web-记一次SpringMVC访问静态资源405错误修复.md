@@ -65,7 +65,7 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 
 # 问题所在
 我在之前添加了个`PostMapping`, 加上了`TODO`后, 就忘记这件事了。
-之后就开始出现访问静态资源405错误。页面能正常打开，就是样式丢失。
+之后就开始出现访问静态资源`405`错误。页面能正常打开，就是样式丢失。
 ```java
 @Controller
 public class UserController{
@@ -78,7 +78,7 @@ public class UserController{
 }
 ```
 
-原因就在这, `name`的默认值是""，会拦截所有不经过其他`RequestMapping`的url。
+原因就在这, `name`的默认值是`""`，会拦截所有不经过其他`RequestMapping`的`url`。
 静态资源也因此被拦截, 需要通过`Post`方式获取。
 ```java
 @Target(ElementType.METHOD)
