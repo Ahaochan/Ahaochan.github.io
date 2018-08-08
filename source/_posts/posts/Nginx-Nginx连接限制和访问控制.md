@@ -26,7 +26,6 @@ date: 2018-08-08 16:45:00
 `zone`是存储连接状态的空间, 以键值对存储, 通常以客户端地址`$binary_remote_addr`作为`key`来标识每一个连接。
 当`zone`空间被耗尽，服务器将会对后续所有的请求返回`503(Service Temporarily Unavailable)` 错误。
 
-
 # 请求限制 limit_req_mudule
 `limit_req_mudule`: `HTTP`请求频率限制, 一次`TCP`连接可以建立多次`HTTP`请求。
  配置语法:
@@ -73,8 +72,8 @@ http {
 
 --------------
 
-# 访问控制
-1. `http_access_module`: 基于`IP`的访问控制, 通过代理可以绕过限制, 防君子不防小人。
+#  基于IP的访问控制
+`http_access_module`: 基于`IP`的访问控制, 通过代理可以绕过限制, 防君子不防小人。
 
 | `http_access_module`语法 | 范围 | 说明 |
 |:------:|:------:|:------:|
@@ -92,7 +91,8 @@ location / {
 }
 ```
 
-2. `http_auth_basic_module`: 基于文件匹配用户密码的登录
+#  基于用户密码的访问控制
+`http_auth_basic_module`: 基于文件匹配用户密码的登录
 
 | `http_auth_basic_module`语法 | 范围 | 说明 |
 |:------:|:------:|:------:|
