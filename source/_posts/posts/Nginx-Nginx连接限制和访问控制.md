@@ -12,11 +12,14 @@ date: 2018-08-08 16:45:00
 `Nginx`自带的模块支持对并发请求数进行限制, 还有对请求来源进行限制。可以用来防止`DDOS`攻击。
 阅读本文须知道`nginx`的配置文件结构和语法。
 
+<!-- more -->
+
 # 连接限制 limit_conn_module
 `limit_conn_module`: `TCP`连接频率限制, 一次`TCP`连接可以建立多次`HTTP`请求。
 配置语法: 
+
 | `limit_conn_module`语法 | 范围 | 说明 |
-|:------:|:------:|:------:|
+|:----------------------:|:----:|:---:|
 | `limit_conn_zone 标识 zone=空间名:空间大小;` | `http` | 用于声明一个存储空间 |
 | `limit_conn 空间名 并发限制数;` | `http`、`server`或`location` | 用于限制某个存储空间的并发数量 |
 | `limit_conn_log_level 日志等级;` | `http`、`server`或`location` | 当达到最大限制连接数后, 记录日志的等级 |
@@ -29,6 +32,7 @@ date: 2018-08-08 16:45:00
 # 请求限制 limit_req_mudule
 `limit_req_mudule`: `HTTP`请求频率限制, 一次`TCP`连接可以建立多次`HTTP`请求。
  配置语法:
+ 
 | `limit_req_mudule`语法 | 范围 | 说明 |
 |:------:|:------:|:------:|
 | `limit_req_zone key zone=空间名:空间大小 rate=每秒请求数;` | `http` |  用于声明一个存储空间 |
@@ -77,8 +81,8 @@ http {
 
 | `http_access_module`语法 | 范围 | 说明 |
 |:------:|:------:|:------:|
-| `allow IP地址 \| CIDR网段 \| unix: \| all;` | `http`、`server`、`location`和`limit_except` | 允许`IP地址`、`CIDR`格式的网段、`unix`套接字或所有来源访问 |
-| `deny IP地址 \| CIDR网段 \| unix: \| all;` | `http`、`server`、`location`和`limit_except` | 禁止`IP地址`、`CIDR`格式的网段、`unix`套接字或所有来源访问 |
+| `allow IP地址 &#124; CIDR网段 &#124; unix: &#124; all;` | `http`、`server`、`location`和`limit_except` | 允许`IP地址`、`CIDR`格式的网段、`unix`套接字或所有来源访问 |
+| `deny IP地址 &#124; CIDR网段 &#124; unix: &#124; all;` | `http`、`server`、`location`和`limit_except` | 禁止`IP地址`、`CIDR`格式的网段、`unix`套接字或所有来源访问 |
 
 `allow `和`deny`会按照顺序, 从上往下, 找到第一个匹配规则, 判断是否允许访问, 所以一般把`all`放最后。
 ```
@@ -96,7 +100,7 @@ location / {
 
 | `http_auth_basic_module`语法 | 范围 | 说明 |
 |:------:|:------:|:------:|
-| `auth_basic 请输入你的帐号密码 \| off;` | `http`、`server`、`location`和`limit_except` | 显示用户登录提示(有些浏览器不显示提示) |
+| `auth_basic 请输入你的帐号密码 &#124; off;` | `http`、`server`、`location`和`limit_except` | 显示用户登录提示(有些浏览器不显示提示) |
 | `auth_basic_user_file 存储帐号密码的文件路径;` | `http`、`server`、`location`和`limit_except` | 从文件中匹配帐号密码 |
 
 密码文件可以通过`htpasswd`生成, `htpasswd`需要安装`yum install -y httpd-tools`。
