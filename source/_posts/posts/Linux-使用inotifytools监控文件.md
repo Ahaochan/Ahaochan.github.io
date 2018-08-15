@@ -22,6 +22,7 @@ $ yum install -y inotify-tools
 
 # 默认内核参数
 参数以文件形式存储
+
 | 文件路径 | 默认值 | 说明 |
 |:------------:|:---------:|:------:|
 | `/proc/sys/fs/inotify/max_queued_evnets` | 16384 | 表示调用`inotify_init`时分配给`inotify instance`中可排队的`event`的数目的最大值，超出这个值的事件被丢弃，但会触发`IN_Q_OVERFLOW`事件。|
@@ -35,6 +36,7 @@ $ echo 104857600 > /proc/sys/fs/inotify/max_user_watches
 
 # inotifywait监控文件变化
 **部分常用参数说明**
+
 | 参数 | 说明 |
 |:------:|:------:|
 | `-m, --monitor` | 一直监听, 不指定则默认在第一个事件发生后结束 |
