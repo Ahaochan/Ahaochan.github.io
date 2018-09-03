@@ -79,5 +79,49 @@ public interface ModuleDAO {
     </bean>
 ```
 
+# Spring Boot 基于注解的配置
+`Spring Boot`分为两种启动方式
+- 通过`main`方法启动内嵌`Tomcat`
+- 打包`war`包启动外置`Tomcat`
+
+直接看代码
+```java
+// 1. main方法启动
+@SpringBootApplication
+public class GunsApplication {
+    public static void main(String[] args) {
+        SpringApplication app = new SpringApplication(GunsApplication.class);
+        app.setBeanNameGenerator(new PackageBeanNameGenerator());
+        app.run(args);
+        logger.info("Spring Boot 启动成功!");
+    }
+}
+
+// 2. 外置Tomcat启动
+public class GunsServletInitializer extends SpringBootServletInitializer {
+    @Override
+    protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
+        return builder.sources(GunsApplication.class)
+                .beanNameGenerator(new PackageBeanNameGenerator());
+    }
+}
+```
+同样的, `Mybatis`依然需要单独配置, 重点在`@MapperScan`注解
+```java
+@Configuration
+@ConditionalOnProperty(prefix = "guns.muti-datasource", name = "open", havingValue = "false", matchIfMissing = true)
+@EnableTransactionManagement
+@MapperScan(basePackages = {"com.ahao.**.dao"}, nameGenerator = PackageBeanNameGenerator.class)
+public class DataSourceConfig {
+    // 数据源连接池配置, DruidProperties是自定义的配置类
+    @Bean
+    public DruidDataSource dataSource(DruidProperties druidProperties) {
+        DruidDataSource dataSource = new DruidDataSource();
+        druidProperties.config(dataSource);
+        return dataSource;
+    }
+}
+```
+
 # 参考资料
 - [automatically-assign-springs-bean-name-to-prevent-name-conflicts](https://stackoverflow.com/questions/5414215)
