@@ -88,9 +88,9 @@ public interface ModuleDAO {
 ```java
 // 1. main方法启动
 @SpringBootApplication
-public class GunsApplication {
+public class Application {
     public static void main(String[] args) {
-        SpringApplication app = new SpringApplication(GunsApplication.class);
+        SpringApplication app = new SpringApplication(Application.class);
         app.setBeanNameGenerator(new PackageBeanNameGenerator());
         app.run(args);
         logger.info("Spring Boot 启动成功!");
@@ -98,10 +98,10 @@ public class GunsApplication {
 }
 
 // 2. 外置Tomcat启动
-public class GunsServletInitializer extends SpringBootServletInitializer {
+public class AppServletInitializer extends SpringBootServletInitializer {
     @Override
     protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
-        return builder.sources(GunsApplication.class)
+        return builder.sources(Application.class)
                 .beanNameGenerator(new PackageBeanNameGenerator());
     }
 }
@@ -109,7 +109,7 @@ public class GunsServletInitializer extends SpringBootServletInitializer {
 同样的, `Mybatis`依然需要单独配置, 重点在`@MapperScan`注解
 ```java
 @Configuration
-@ConditionalOnProperty(prefix = "guns.muti-datasource", name = "open", havingValue = "false", matchIfMissing = true)
+@ConditionalOnProperty(prefix = "ahao.datasource", name = "open", havingValue = "false", matchIfMissing = true)
 @EnableTransactionManagement
 @MapperScan(basePackages = {"com.ahao.**.dao"}, nameGenerator = PackageBeanNameGenerator.class)
 public class DataSourceConfig {
