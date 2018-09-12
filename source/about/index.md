@@ -25,8 +25,9 @@ type: "about"
 
 ## 九河科技 ( 2017年7月 ~ 至今 )
 主要负责深圳市坪山区、罗湖区电子政务网CMS和前台部分业务模块。
+涉及框架: SSM、Swagger、Shiro、SQL Server、Beetl
 完成拼音搜索、短信RESTful接口封装、Swagger生成Api文档、权限管理
-
+1. 基于 [Guns 4.2](https://gitee.com/naan1993/guns) 开发的罗湖区教育督导系统
 
 ## 环宇创意电脑工作室 ( 2016年9月 ~ 2017年6月 )
 
@@ -44,9 +45,8 @@ type: "about"
  - [2048Android版](https://github.com/Ahaochan/Game2048)
  - 校级大学生创新创业项目——"大学问"Android端的设计与实现
  - 国家级大学生创新创业项目——"基于Raspberry Pi的智能魔镜"Android端的设计与实现
- - [慕课网-下载视频](https://greasyfork.org/zh-CN/scripts/28327) : 基于Tampermonkey的js项目,下载量9000+
+ - 基于`Greasemonkey`的`Javascript`开源项目, 总下载量20k+, Github <a href="https://github.com/Ahaochan/Tampermonkey"><img src="https://img.shields.io/github/stars/Ahaochan/Tampermonkey.svg"></a>
  - 毕业设计：[企业增值税数据分析系统](https://github.com/Ahaochan/project)
- - [Pixiv 增强](https://greasyfork.org/zh-CN/scripts/34153) : 基于Tampermonkey的js项目,下载量5000+
 
 ## 比赛和证书
 - ~~2006年时代周刊人物评选~~
@@ -59,13 +59,12 @@ type: "about"
 
 以下是我使用过的技能
 
-
 - Web开发: Java
-- Web框架: Spring / Spring MVC
+- Web框架: Spring / Spring MVC / Spring Boot / Swagger
 - 权限验证: Spring Security / Shiro
-- 前端框架: Bootstrap / HTML5 / Jquery / Thymeleaf
-- 数据库相关: Mybatis / MySQL / Redius
-- 版本管理: Maven / Gradle / Git / SVN
+- 前端框架: Bootstrap / Jquery / Thymeleaf / Beetl
+- 数据库相关: Mybatis / MySQL / SQL Server / Redis
+- 版本管理: Maven / Git / SVN
 - 开发工具: IntelliJ IDEA
 - 单元测试: Junit
 
