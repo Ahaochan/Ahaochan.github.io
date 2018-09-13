@@ -36,14 +36,25 @@ date: 2018-05-11 21:29:00
 </beans>
 ```
 ```java
-public class PackageBeanNameGenerator implements BeanNameGenerator {
+public class PackageBeanNameGenerator extends AnnotationBeanNameGenerator {
     private static final Logger logger = LoggerFactory.getLogger(PackageBeanNameGenerator.class);
 
     @Override
     public String generateBeanName(BeanDefinition definition, BeanDefinitionRegistry registry) {
         String beanClassName = Introspector.decapitalize(definition.getBeanClassName());
-        logger.debug("装载Bean: " + beanClassName);
-        return beanClassName;
+        if(StringUtils.startsWith(beanClassName, getPackageNamePrefix())) {
+            logger.debug("初始化Bean: " + beanClassName);
+            return beanClassName;
+        }
+        return super.generateBeanName(definition, registry);
+    }
+
+    private String getPackageNamePrefix() {
+        String separator = ".";
+        String[] splits = StringUtils.split(this.getClass().getPackage().getName(), separator);
+        String prefix = Arrays.stream(splits).limit(3)
+                .collect(Collectors.joining(separator));
+        return prefix;
     }
 }
 ```
