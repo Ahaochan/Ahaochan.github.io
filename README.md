@@ -1,6 +1,6 @@
 # <div align="center"><a title="Go to homepage" href="https://theme-next.org"><img align="center" width="56" height="56" src="https://raw.githubusercontent.com/theme-next/hexo-theme-next/master/source/images/logo.svg?sanitize=true"></a> e x T</div>
 
-<p align="center">本博客基于[Hexo](https://hexo.io)的[NexT](https://github.com/theme-next/hexo-theme-next)主题开发.借助[Travis CI](https://travis-ci.org/)进行持续集成.</p>
+<p align="center">本博客基于<a href="https://hexo.io">Hexo</a>的<a href="https://github.com/theme-next/hexo-theme-next">NexT</a>主题开发.借助<a href="https://travis-ci.org">Travis CI</a>进行持续集成.</p>
 
 <p align="center">
   <a href="https://travis-ci.org/Ahaochan/Ahaochan.github.io"><img src="https://travis-ci.org/Ahaochan/Ahaochan.github.io.svg?branch=source"></a>
