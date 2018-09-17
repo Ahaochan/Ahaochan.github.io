@@ -20,10 +20,18 @@ Tomcat有一个扩展点, 可以配置环境变量
 # 配置setenv.bat
 在 ` Tomcat\bin ` 目录下新建 ` setenv.bat `文件。
 输入如下配置
+Windows
 ```shell
 set JAVA_HOME=D:\Java\jdk1.8.0_112(替换为jdk的路径)
 set JAVA_OPTS=-Xmx512m
 set TITLE=自定义的标题
+```
+
+Linux
+```
+JAVA_HOME=/opt/jdk/jdk1.8.0_181
+JAVA_OPTS=-Xmx512m
+CATALINA_PID=$CATALINA_HOME/bin/CATALINA_PID # shutdown.sh -force 必须参数
 ```
 
 # 配置ahao.xml
