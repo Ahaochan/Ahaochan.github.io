@@ -154,6 +154,6 @@ ${AnsiColor.BRIGHT_BLUE}:: Meow :: Running Spring Boot ${spring-boot.version} ::
 ```
 
 # 参考资料
-- [Banner 生成器](https://spring-boot-banner-gen.cfapps.io/)
+- [Banner 生成器](https://devops.datenkollektiv.de/banner.txt/index.html)
 - [jhipster](https://github.com/PierreBesson/generator-jhipster-banner/blob/master/generators/app/templates/_banner.txt)
 - [彩虹猫](https://github.com/snicoll-demos/spring-boot-4tw-uni/blob/master/spring-boot-4tw-web/src/main/resources/banner.txt)
