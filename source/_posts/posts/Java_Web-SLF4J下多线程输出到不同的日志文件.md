@@ -1,5 +1,5 @@
 ---
-title: Logback日志配置
+title: SLF4J下多线程输出到不同的日志文件
 url: Logback_xml_configuration
 tags:
   - SLF4J
@@ -7,7 +7,7 @@ tags:
   - Log4j
 categories:
   - Java Web
-date: 2017-09-05 22:54:30
+date: 2018-10-16 20:06:00
 ---
 
 # 前言
