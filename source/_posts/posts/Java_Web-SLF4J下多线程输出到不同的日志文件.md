@@ -1,6 +1,6 @@
 ---
-title: SLF4J下多线程输出到不同的日志文件
-url: Logback_xml_configuration
+title: 使用SLF4J在多线程下输出到不同的日志文件
+url: Use_SLF4J_to_output_to_different_log_files_under_multi_threading
 tags:
   - SLF4J
   - Logback
