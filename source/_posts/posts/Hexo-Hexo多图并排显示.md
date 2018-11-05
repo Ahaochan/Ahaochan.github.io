@@ -25,7 +25,7 @@ fancybox默认一张图占据一行。需要自己修改Css样式。
 # 插入Css样式
 在`<!-- more -->`之后插入样式, 避免将样式写入`description`。
 注意, 因为渲染问题, 请尽量使用回车隔离以下代码块。
-```css
+```html
 
 <style type="text/css">
     .fancybox {
@@ -33,10 +33,9 @@ fancybox默认一张图占据一行。需要自己修改Css样式。
     }
 </style>
 
-{% asset_img 最短路径_01.png %}
-{% asset_img 最短路径_02.png %}
-
+![](/images/最短路径_01.png)
+![](/images/最短路径_02.png)
 ```
 
-{% asset_img 最短路径_01.png %}
-{% asset_img 最短路径_02.png %}
+![](/images/最短路径_01.png)
+![](/images/最短路径_02.png)
