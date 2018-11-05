@@ -20,7 +20,7 @@ protected void onDraw(Canvas canvas) {
 }
 ```
 效果如下：
-{% asset_img Canvas中rotate,translate,save和restore_01.png %}
+![](Canvas中rotate,translate,save和restore_01.png)
 
 很明显，在坐标系旋转前，画出的蓝色矩形并没有跟着坐标系的旋转而旋转，
 而在坐标系旋转后，画出的黄色矩形和文字旋转了30度。
@@ -47,7 +47,7 @@ protected void onDraw(Canvas canvas) {
 }
 ```
 效果如下：
-{% asset_img Canvas中rotate,translate,save和restore_02.jpg %}
+![](Canvas中rotate,translate,save和restore_02.jpg)
 
  
 从上述例子可以看出，`canvas`绘图，实际上是以坐标系为基准进行绘图的。
