@@ -38,13 +38,13 @@ date: 2016-07-23 20:35:02
 ## VitualBox cannot start the virtual device
 **问题描述**
 打开genymotion，启动虚拟设备，出现如下报错
-![](Genymotion疑难解决_01.png)
+{% img /images/Genymotion疑难解决_01.png %}
 
 打开VirtualBox直接启动虚拟设备
-![](Genymotion疑难解决_02.png)
+{% img /images/Genymotion疑难解决_02.png %}
 
 发现是网络接口问题
-![](Genymotion疑难解决_03.png)
+{% img /images/Genymotion疑难解决_03.png %}
 
 **解决方案**
 打开网络中心，右键`VirtualBox Host-Only Network #2`，属性，开启`VirtualBox NDIS6 Bridged Networking Driver`。

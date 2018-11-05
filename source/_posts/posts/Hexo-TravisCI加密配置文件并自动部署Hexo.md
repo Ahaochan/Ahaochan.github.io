@@ -24,17 +24,17 @@ date: 2018-05-05 15:03:00
 ## 准备虚拟机
 1. 使用的是`CentOS7`虚拟机, 用户名`root`, 密码`root`
 2. 网络连接选择**桥接**模式, 关于桥接模式可以看我的另一篇文章。
-![](TravisCI加密配置文件并自动部署Hexo_01.png)
+{% img /images/TravisCI加密配置文件并自动部署Hexo_01.png %}
 
 3. `Windows`网络环境选择专用网络
-![](TravisCI加密配置文件并自动部署Hexo_02.png)
+{% img /images/TravisCI加密配置文件并自动部署Hexo_02.png %}
 4. `Windows10`需要在网络适配器属性界面, 添加`VMware Bridge Protocol`协议。
-![](TravisCI加密配置文件并自动部署Hexo_03.png)
+{% img /images/TravisCI加密配置文件并自动部署Hexo_03.png %}
 
 5. 使用[Xshell](https://www.netsarang.com/products/xsh_overview.html)(发送命令)和[FileZilla](https://filezilla-project.org/)(传输文件)在`Windows`上连接虚拟机. 两者都是通过`ssh`连接的, 在软件中配置好虚拟机的`IP`地址和账号密码`root`即可。
-![](TravisCI加密配置文件并自动部署Hexo_04.png)
-![](TravisCI加密配置文件并自动部署Hexo_05.png)
-![](TravisCI加密配置文件并自动部署Hexo_06.png)
+{% img /images/TravisCI加密配置文件并自动部署Hexo_04.png %}
+{% img /images/TravisCI加密配置文件并自动部署Hexo_05.png %}
+{% img /images/TravisCI加密配置文件并自动部署Hexo_06.png %}
 
 ## 准备Travis-CI帐号
 [Travis-CI](https://travis-ci.org/)支持`GitHub`帐号登录。
@@ -79,7 +79,7 @@ $ travis login
 **请确保服务器的项目分支已经切换到`source`**
 通过[FileZilla](https://filezilla-project.org/)将本地的`hexo`文件夹部署到服务器。
 为了节省`GitHub`空间, 我只将以下文件加入仓库中。
-![](TravisCI加密配置文件并自动部署Hexo_07.png)
+{% img /images/TravisCI加密配置文件并自动部署Hexo_07.png %}
 
 # 加密next.yml
 我将`hexo/_config.yml`和`theme/next/_config.yml`的内容统一复制到`source/_data/next.yml`中。

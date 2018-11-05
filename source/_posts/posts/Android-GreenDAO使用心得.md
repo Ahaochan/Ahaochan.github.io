@@ -19,7 +19,7 @@ date: 2016-09-10 17:17:13
 <!-- more -->
 
 下面一图说明`greenDAO`的好处
-![](GreenDAO使用心得_01.png)
+{% img /images/GreenDAO使用心得_01.png %}
 
 # 简单使用
 ## 导入
@@ -57,8 +57,8 @@ dependencies {
 ## 创建一个新的Module
 首先需要一个`Java Library`，通俗的讲，就是用来创建一系列的实体类（一个类对应一个表）和数据库工具类。
 并且导入`compile 'org.greenrobot:greendao-generator:3.1.0'`，上面有提到。
-![](GreenDAO使用心得_02.png)
-![](GreenDAO使用心得_03.png)
+{% img /images/GreenDAO使用心得_02.png %}
+{% img /images/GreenDAO使用心得_03.png %}
 
 
 注意，我们创建的是`Java Library`，是`Java Library`，是`Java Library`。
@@ -108,14 +108,14 @@ public class Main {
 
 ## 自动生成代码
 运行代码
-![](GreenDAO使用心得_04.png)
+{% img /images/GreenDAO使用心得_04.png %}
 
 如果出现以下信息就是创建成功
-![](GreenDAO使用心得_05.png)
+{% img /images/GreenDAO使用心得_05.png %}
 
  切换到`Project Files`视图，可以看到代码已经自动生成了 
-![](GreenDAO使用心得_06.png)
-![](GreenDAO使用心得_07.png)
+{% img /images/GreenDAO使用心得_06.png %}
+{% img /images/GreenDAO使用心得_07.png %}
 
 
 这里[引用](http://my.oschina.net/cheneywangc/blog/196354) 一下

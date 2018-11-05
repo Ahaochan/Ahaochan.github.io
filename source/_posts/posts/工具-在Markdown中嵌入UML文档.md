@@ -230,7 +230,7 @@ date: 2016-08-11 21:05:27
   Bob-->>Alice: Dotted Line, open arrow
 </pre></div>
 ```
-![](在Markdown中嵌入UML文档_01.png)
+{% img /images/在Markdown中嵌入UML文档_01.png %}
 
 ## 定义参与者的顺序
 通过`participant`可以定义`角色`在时序图中的显示顺序，而不是按照缺省的参与者被使用顺序来显示。并且可以定义参与者的别名。
@@ -245,7 +245,7 @@ date: 2016-08-11 21:05:27
   Bob->L: Log transaction
 </pre></div>
 ```
-![](在Markdown中嵌入UML文档_02.png)
+{% img /images/在Markdown中嵌入UML文档_02.png %}
 
 ## 自关联消息(Self-Message)
 参与者可以发送一个消息给自己。你可以用`\n`将文字切分成多行。
@@ -254,7 +254,7 @@ date: 2016-08-11 21:05:27
   Alice->Alice: This is a signal to self.\nIt also demonstrates \nmultiline \ntext.
 </pre></div>
 ```
-![](在Markdown中嵌入UML文档_03.png)
+{% img /images/在Markdown中嵌入UML文档_03.png %}
 
 ## 分组消息
 通过`alt/else`，`opt`和`loop`，将消息分组，组头显示分组定义的文本信息，`end`关键字用来结束一个分组。分组可以嵌套。
@@ -275,7 +275,7 @@ date: 2016-08-11 21:05:27
   end
 </pre></div>
 ```
-![](在Markdown中嵌入UML文档_04.png)
+{% img /images/在Markdown中嵌入UML文档_04.png %}
 
 ## 备注(Notes)
 使用`note left of`，`note right of`和`note over`分别定义左/右/中显示的备注，可以包含多行，`end note`用来结束该段`note`。
@@ -293,7 +293,7 @@ date: 2016-08-11 21:05:27
   note over Alice, Bob: This is displayed over Bob and Alice.
 </pre></div>
 ```
-![](在Markdown中嵌入UML文档_05.png)
+{% img /images/在Markdown中嵌入UML文档_05.png %}
 
 ## 生命线的激活和终止(Activation/Destruction)
 `+`来表示激活**被发送者**，`-`表示终止**发送者**。`destroy`关键字可以将销毁该参与者。
@@ -308,7 +308,7 @@ date: 2016-08-11 21:05:27
   A->User: Done
 </pre></div>
 ```
-![](在Markdown中嵌入UML文档_06.png)
+{% img /images/在Markdown中嵌入UML文档_06.png %}
 
 # 其他工具
 1. [JUMLY](http://jumly.herokuapp.com/) 
