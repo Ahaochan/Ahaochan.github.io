@@ -12,7 +12,7 @@ date: 2016-08-01 20:24:11
 有时候我们需要录制Android手机的屏幕，比如写了一个Demo应用，需要发布到博客和微博上。
 如下是我录制转GIF的效果图
 <!-- more -->
-![](adb制作gif_01.gif)
+{% img /images/adb制作gif_01.gif %}
  
 # 正常录制
 ```shell
