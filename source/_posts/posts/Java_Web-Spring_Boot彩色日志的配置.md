@@ -9,7 +9,7 @@ date: 2017-08-31 21:17:54
 ---
 
 # 前言
-{% qnimg SpringBoot彩色日志的配置_01.png %}
+{% asset_img SpringBoot彩色日志的配置_01.png %}
 
 <!-- more -->
 Spring Boot提供了彩色日志的功能, 可以达到上面的效果
