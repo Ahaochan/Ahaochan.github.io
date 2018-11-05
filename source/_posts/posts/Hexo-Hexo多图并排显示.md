@@ -11,7 +11,8 @@ categories:
 # 前言
 Hexo有时候需要进行多图并排显示对比。
 fancybox默认一张图占据一行。需要自己修改Css样式。
-本文默认使用[七牛云插件](https://github.com/gyk001/hexo-qiniu-sync)。
+~~本文默认使用[七牛云插件](https://github.com/gyk001/hexo-qiniu-sync)。~~
+测试域名被收回了, 再次感受到国内开发者巨大的政策风险。
 
 <!-- more -->
 
@@ -32,10 +33,10 @@ fancybox默认一张图占据一行。需要自己修改Css样式。
     }
 </style>
 
-{% qnimg 最短路径_01.png extend:?imageView2/2/w/200 %}
-{% qnimg 最短路径_02.png extend:?imageView2/2/w/200 %}
+{% asset_img 最短路径_01.png %}
+{% asset_img 最短路径_02.png %}
 
 ```
 
-{% qnimg 最短路径_01.png extend:?imageView2/2/w/200 %}
-{% qnimg 最短路径_02.png extend:?imageView2/2/w/200 %}
+{% asset_img 最短路径_01.png %}
+{% asset_img 最短路径_02.png %}
