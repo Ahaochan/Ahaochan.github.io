@@ -22,6 +22,7 @@ before_install:
 - export PATH=$HOME/.yarn/bin:$PATH
 # npm模块安装
 - npm install -g hexo-cli
+- npm install hexo-asset-image --save
 - npm install hexo-generator-searchdb --save
 - npm install hexo-generator-feed --save
 - npm install hexo-related-popular-posts --save
