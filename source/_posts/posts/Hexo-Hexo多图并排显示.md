@@ -33,9 +33,9 @@ fancybox默认一张图占据一行。需要自己修改Css样式。
     }
 </style>
 
-<img src="/images/最短路径_01.png" style="width: 200px"/>
-<img src="/images/最短路径_02.png" style="width: 200px"/>
+{% img /images/最短路径_01.png 200 %}
+{% img /images/最短路径_02.png 200 %}
 ```
 
-<img src="/images/最短路径_01.png" style="width: 200px"/>
-<img src="/images/最短路径_02.png" style="width: 200px"/>
+{% img /images/最短路径_01.png 200 %}
+{% img /images/最短路径_02.png 200 %}
