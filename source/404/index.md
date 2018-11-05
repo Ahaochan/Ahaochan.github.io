@@ -4,7 +4,7 @@ permalink: /404
 ---
 <style type="text/css">
 	.container {
-        background-image: url('http://op0kfrlb1.bkt.clouddn.com/static/images/404.jpg');
+        background-image: url('https://raw.githubusercontent.com/Ahaochan/Ahaochan.github.io/source/source/images/404.jpg');
         background-size:100% 100%;
         background-repeat:no-repeat;
   	}
