@@ -14,10 +14,10 @@ date: 2016-09-08 21:34:58
 
 # 效果图
 android 5.0 以上
-{% qnimg Android沉浸式状态栏_01.gif %}
+{% asset_img Android沉浸式状态栏_01.gif %}
 
 android 4.4 API 19
-{% qnimg Android沉浸式状态栏_02.gif %}
+{% asset_img Android沉浸式状态栏_02.gif %}
 
 以上都是原生安卓系统的效果，具体到国内的各种各样改过的系统可能会有细微差别，我测试小米和华为的机器效果基本一样。
 
@@ -61,7 +61,7 @@ android:fitsSystemWindows="true"
 ## 调整View高度
 上面两步都是统一的，这一步就比较有针对性了，对不同布局和API版本都会有所微调，主要是顶部View的高度。
 如果你像我一样基本使用原生控件，那么一般情况下是调整ToolBar(ActionBar)的高度。你需要给Toolbar加上系统状态栏的高度，因为如果你设置了前面两步，那么ToolBar会上移到状态栏下面,如图
-{% qnimg Android沉浸式状态栏_03.png %}
+{% asset_img Android沉浸式状态栏_03.png %}
 
 
 我比较喜欢的处理方式是在java代码中改变高度,注意需要判断安卓版本，样例如下：

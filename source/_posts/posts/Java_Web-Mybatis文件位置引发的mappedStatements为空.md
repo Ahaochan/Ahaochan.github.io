@@ -13,7 +13,7 @@ date: 2018-03-19 22:11:21
 <!-- more -->
 
 # 准备环境
-{% qnimg Mybatis文件位置引发的mappedStatements为空_01.png %}
+{% asset_img Mybatis文件位置引发的mappedStatements为空_01.png %}
 ```xml
 <!--pom.xml -->
 <dependencies>
@@ -160,8 +160,8 @@ org.apache.ibatis.binding.BindingException: Invalid bound statement (not found):
 ```
 
 通过`debug`看到`sqlSessionFactory`对象中的`Configuration`内有两个属性，`mapperRegistry`和`mappedStatements`看起来是存储`mapper`类和对应的`Statements`的两个属性。
-{% qnimg Mybatis文件位置引发的mappedStatements为空_02.png %}
-{% qnimg Mybatis文件位置引发的mappedStatements为空_03.png %}
+{% asset_img Mybatis文件位置引发的mappedStatements为空_02.png %}
+{% asset_img Mybatis文件位置引发的mappedStatements为空_03.png %}
 `mapperRegistry`注册成功了, 但是`mappedStatements`为空, 也就是`Class`加载成功了, `xml`加载失败。
 
 `xml`自动扫描配置是包扫描, 那么切换成别的可行吗?
@@ -182,7 +182,7 @@ org.apache.ibatis.binding.BindingException: Invalid bound statement (not found):
 # 解决方案
 然后检查`target`文件夹的时候, 发现`UserMapper.xml`和`UserMapper.class`没有在同一个文件夹内, 于是将`target`下的`UserMapper.xml`拖到`UserMapper.class`同级目录
 。调试发现`mappedStatements`有数据。成功了, 推测应该是通过包名转文件路径进行扫描的。
-{% qnimg Mybatis文件位置引发的mappedStatements为空_04.png %}
+{% asset_img Mybatis文件位置引发的mappedStatements为空_04.png %}
 
 经过测试, 有两种解决方案
 1. 手动移动`target`文件夹内的`mapper.xml`到对应的`mapper.class`**相同文件夹**`/WEB-INF/class/com/ahao/demo/mapper`下。

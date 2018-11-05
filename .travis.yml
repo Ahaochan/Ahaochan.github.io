@@ -24,7 +24,6 @@ before_install:
 - npm install -g hexo-cli
 - npm install hexo-generator-searchdb --save
 - npm install hexo-generator-feed --save
-- npm install hexo-qiniu-sync --save
 - npm install hexo-related-popular-posts --save
 - npm install hexo-symbols-count-time --save
 - npm install hexo-generator-sitemap --save

@@ -83,3 +83,6 @@ public class MyTest {
 - [Oracle](https://www.oracle.com/index.html)：`SELECT SEQ_ID.nextval from dual`
 - [Db2](https://www.ibm.com/analytics/us/en/db2/)： `VALUES IDENTITY_VAL_LOCAL()`
 - [HSQLDB](http://hsqldb.org/)：`CALL IDENTITY()`
+
+# 不使用实体类获取主键
+

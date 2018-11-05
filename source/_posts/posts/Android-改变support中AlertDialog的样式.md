@@ -13,7 +13,7 @@ date: 2016-08-24 21:56:06
 
 `android`最近的`support`库提供了`AlertDialog`，可以让我们在低于`5.0`的系统使用到跟`5.0`系统一样的`Material Design`风格的对话框。
 <!-- more -->
-{% qnimg 改变support中AlertDialog的样式_01.jpg %}
+{% asset_img 改变support中AlertDialog的样式_01.jpg %}
 
 
 # 步骤

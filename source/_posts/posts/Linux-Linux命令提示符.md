@@ -166,7 +166,7 @@ shutdown -h now    //-h关机，现在关机
 shutdown -r 05:30 &  //-r重启，&放入后台，凌晨5点30分重启
 ```
 `init`相关命令
-{% qnimg 命令提示符_01.png %}
+{% asset_img 命令提示符_01.png %}
 
 ## 退出登录命令：logout
 ```shell
@@ -182,7 +182,7 @@ mount -t [文件系统] -o [特殊选项] [设备文件名] [挂载点]    //进
 umount [设备文件名或挂载点]    //卸载命令
 ```
 `-o`特殊选项
-{% qnimg 命令提示符_02.png %}
+{% asset_img 命令提示符_02.png %}
 
 ### 挂载光盘
 ```shell

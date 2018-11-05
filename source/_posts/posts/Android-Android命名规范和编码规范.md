@@ -23,7 +23,7 @@ date: 2016-06-23 09:11:07
 细心的同学可能会发现代码风格跟 `Google` 推荐的不一致，但请记住，我们是一个团队。
 
 ## 项目结构
-{% qnimg Android命名规范和编码规范_01.jpg %}
+{% asset_img Android命名规范和编码规范_01.jpg %}
  
 ## 命名规范
 ### 控件 Id 命名方式
@@ -186,7 +186,7 @@ public class MyClass {
 
 ### Entity
 对于继承 `Entity` 的 `Model` 类型，按照下图进行编码：
-{% qnimg Android命名规范和编码规范_02.png %}
+{% asset_img Android命名规范和编码规范_02.png %}
 注意变量修饰符和大小写
 
 ### 类成员排序
