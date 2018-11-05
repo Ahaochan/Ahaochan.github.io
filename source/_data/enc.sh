@@ -1,4 +1,10 @@
 #!/bin/bash
+# 添加 travis 用户
+useradd travis
+echo travis | passwd --stdin travis
+gem install travis
+travis login
+
 # next.yml配置文件加密
 cd /opt/Ahaochan.github.io/source/_data/
 travis encrypt-file next.yml
