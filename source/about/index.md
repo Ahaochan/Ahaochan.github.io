@@ -4,6 +4,10 @@ date: 2017-04-26 15:33:08
 type: "about"
 ---
 
+<style>
+    img { display: inline;}
+</style>
+
 # 联系方式(搬砖中)
 - 手机: 
 - Email: 844394093@qq.com
