@@ -45,7 +45,7 @@ type: "about"
  - [2048Android版](https://github.com/Ahaochan/Game2048)
  - 校级大学生创新创业项目——"大学问"Android端的设计与实现
  - 国家级大学生创新创业项目——"基于Raspberry Pi的智能魔镜"Android端的设计与实现
- - 基于`Greasemonkey`的`Javascript`开源项目, 总下载量20k+, [Github](https://github.com/Ahaochan/Tampermonkey) <img src="https://img.shields.io/github/stars/Ahaochan/Tampermonkey.svg" alt="star" style="display: inline;margin-bottom: -1%;">
+ - 基于`Greasemonkey`的`Javascript`开源项目, 总下载量20k+, [![Star](https://img.shields.io/github/stars/Ahaochan/Tampermonkey.svg)](https://github.com/Ahaochan/Tampermonkey)
  - 毕业设计：[企业增值税数据分析系统](https://github.com/Ahaochan/project)
 
 ## 比赛和证书
