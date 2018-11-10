@@ -50,4 +50,4 @@ https://bandwagonhost.com/aff.php?aff=22459&pid=43
 默认等个两三天就可以提现成功, 如果没有成功, 可以发个[工单](https://bandwagonhost.com/supporttickets.php)。
 
 # 最后
-如果你是第一次购买, 可以使用下我的[推广链接](https://bandwagonhost.com/cart.php?a=add&pid=43)支持下我, 感激不
+如果你是第一次购买, 可以使用下我的[推广链接](https://bandwagonhost.com/cart.php?a=add&pid=43)支持下我, 感激不尽。
