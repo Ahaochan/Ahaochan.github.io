@@ -194,7 +194,7 @@ public class JspCompilationContext {
 
 第三步, 先删除上次生成的`class`文件, 后删除`java`文件。
 第四步, 调用之前获取到的编译器的`compile`方法生成`java`文件, 并编译为`class`文件.
-```
+```java
 // org.apache.jasper.compiler.Compiler
 public abstract class Compiler {
     public void compile() throws FileNotFoundException, JasperException, Exception {
