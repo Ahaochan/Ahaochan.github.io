@@ -25,6 +25,8 @@ public class TestController {
 }
 ```
 
+<!-- more -->
+
 # 问题所在
 `JSP`是本质一个`Java`文件, 所以命名也需要遵循`Java`命名规则, `+`加号对`Java`命名规则来说是一个非法字符。
 所以`IE10+.jsp`对应的`java`文件是不存在的, 自然也就`404`了。
