@@ -6,7 +6,7 @@ tags:
   - Tomcat
 categories:
   - Java Web
-date: 2017-02-25 14:13:15
+date: 2018-11-29 18:05:15
 ---
 # 情景还原
 用`Spring Boot`简单搭建环境, 建一个`Controller`以及两个`JSP`页面。
