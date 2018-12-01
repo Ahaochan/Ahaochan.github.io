@@ -62,13 +62,13 @@ date: 2018-03-19 21:57:01
 [root@localhost ~]# nl /tmp/passwd | sed '/root/d'
 ```
 
-
-# 替换(不影响原文件)
+# 替换
 `nc string`参数: 将第`n`行替换(`replace`)为`string`
 `s/regexp/replacement/`参数: 将每行第一个匹配`regexp`正则表达式的替换为`replacement`
 `s/regexp/replacement/g`参数: 将每行所有匹配`regexp`正则表达式的替换为`replacement`
 `s/regexp/str1 & str2/g`参数: `&`参数表示正则表达式匹配的值
 `s/regexp/\u&/g`参数: `\u`首字母大写, `\U`所有字母大写
+`sed -i "s/regexp/\u&/g"`: `\u`首字母大写, 回写到原文件
 `()`参数: 括号捕获多个值, 用`\1`、`\2`等表示捕获的第几个值
 ```sh
 # 1. 将第5行替换(replace)为指定字符串
