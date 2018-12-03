@@ -37,7 +37,7 @@ server {
 server_name  domain.com  www.domain.com;
 server_name  *.domain.com;
 server_name  domain.*;
- server_name  ~^(?.+)\.domain\.com$;
+server_name  ~^(?.+)\.domain\.com$;
 ```
 很明显, 上面提到的无限子域名的网站, 是通过`*.domain.com`的方式实现的.
 `Nginx`配好后, 记得`hosts`文件也要改, 手头没有域名, 就只能改`hosts`了.
