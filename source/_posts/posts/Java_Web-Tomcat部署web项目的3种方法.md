@@ -22,14 +22,13 @@ date: 2017-08-30 21:32:08
 打开 ` Tomcat 8.5\conf\server.xml `, 在 ` <Host> ` 标签插入 ` <Context> ` 标签。
 ```xml
 <Service name="Catalina">
-<Engine name="Catalina" defaultHost="localhost">
-    <Host name="localhost"  appBase="webapps"
-            unpackWARs="true" autoDeploy="true">
-        <!-- <Context path="url路径名"　docBase="实际项目在磁盘中地址" /> -->
-        <Context path="/hello" docBase="项目路径" reloadable="true" privileged="true">
-        </Context>
-    </Host>
-</Engine>
+    <Engine name="Catalina" defaultHost="localhost">
+        <Host name="localhost"  appBase="webapps"
+                unpackWARs="true" autoDeploy="true">
+            <!-- <Context path="url路径名"　docBase="实际项目在磁盘中地址" /> -->
+            <Context path="/hello" docBase="项目路径" reloadable="true" privileged="true"/>
+        </Host>
+    </Engine>
 </Service>
 ```
 
