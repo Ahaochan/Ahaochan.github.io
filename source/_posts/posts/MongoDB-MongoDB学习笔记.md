@@ -12,6 +12,7 @@ date: 2018-12-07 15:48:55
 `mongodb`的数据表又叫做数据集合, 关键字为`collection`.
 `mongodb`是不存在`join`这个概念的, 所以一切的关联查询都得通过外部程序来做.
 
+<!-- more -->
 
 # 安装配置(基于v3.4.18)
 安装教程: [Install MongoDB Community Edition on Red Hat Enterprise or CentOS Linux](https://docs.mongodb.com/manual/tutorial/install-mongodb-on-red-hat/)(国内可以用阿里云`yum`镜像).
