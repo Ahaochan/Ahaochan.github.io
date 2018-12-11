@@ -35,10 +35,13 @@ sudo mkdir /opt/config
 sudo vim /opt/config/manager.json
 {
   "port_password": {
-    "443": "12345",
-#    "端口": "密码"
+    "443": "12345"
   },
+  "fast_open":true,
+  "reuse_port":true,
+  "no_delay":true,
   "timeout": 300,
+  "mode":"tcp_and_udp",
   "method": "aes-256-gcm"
 }
 
@@ -70,10 +73,13 @@ sudo make install
 sudo vim /opt/config/manager.json
 {
   "port_password": {
-    "443": "12345"
-#    "端口": "密码"
+    "443" : "12345"
   },
+  "fast_open":true,
+  "reuse_port":true,
+  "no_delay":true,
   "timeout": 300,
+  "mode":"tcp_and_udp",
   "method": "aes-256-gcm",
   "plugin":"obfs-server",
   "plugin_opts":"obfs=http;failover=apps.bdimg.com"
