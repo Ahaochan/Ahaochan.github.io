@@ -48,6 +48,7 @@ sudo ss-manager -c /opt/config/manager.json
 客户端连接上, 然后开启全局模式, 执行如下操作
 1. 访问`www.baidu.com`, 访问成功
 2. 关闭服务端, 访问`www.baidu.com`, 访问失败
+
 则说明`shadowsocks-libev`已经成功配置。
 
 # 配置 simple-obfs 混淆插件
