@@ -7,7 +7,7 @@ travis login
 
 # next.yml配置文件加密
 cd /opt/Ahaochan.github.io/source/_data/
-travis encrypt-file next.yml
+echo yes | travis encrypt-file next.yml
 
 # next.yml配置文件解密
 # before_install:
