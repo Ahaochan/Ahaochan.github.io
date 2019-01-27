@@ -1,7 +1,7 @@
 # 使用语言
 language: node_js
 # node版本
-node_js: "7"
+node_js: lts/*
 # 设置只监听哪个分支
 branches:
   only:
