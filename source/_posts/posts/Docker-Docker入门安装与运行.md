@@ -4,7 +4,7 @@ url: Docker_simple_installation_and_operation
 tags:
   - Docker
 categories:
-  - Linux
+  - Docker
 date: 2018-07-19 22:20:00
 ---
 # 前言
