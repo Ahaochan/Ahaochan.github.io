@@ -51,3 +51,8 @@ ENV name Ahao
 ENTRYPOINT ["/bin/bash", "-c", "echo hello ${Ahao}"]
 # ENRTYPOINT [COMMAND] 等价于 ENTRYPOINT ["/bin/bash", "-c", "[COMMAND]"]
 ```
+
+# 总结
+1. 使用`RUN`安装软件依赖, 并记得删除缓存.
+1. 构建服务时使用`Exec`格式的`ENTRYPOINT`.
+1. 默认启动命令使用`CMD`.
