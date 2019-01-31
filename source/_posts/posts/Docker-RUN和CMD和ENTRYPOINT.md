@@ -36,7 +36,8 @@ RUN /bin/bash -c 'source $HOME/.bashrc; echo $HOME'
 ```dockerfile
 FROM centos
 ENTRYPOINT ["/usr/bin/curl"]
-CMD []
+# 默认查看curl版本号
+CMD ["--version"] 
 ```
 然后执行以下命令
 ```bash
