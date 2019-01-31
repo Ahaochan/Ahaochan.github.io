@@ -32,6 +32,19 @@ RUN /bin/bash -c 'source $HOME/.bashrc; echo $HOME'
 1. 多个CMD只会执行最后一个.
 1. 外部命令会覆盖内部的`CMD`.
 
+利用外部命令会覆盖内部`CMD`的特性, 我们可以从外部传入参数.
+```dockerfile
+FROM centos
+ENTRYPOINT ["/usr/bin/curl"]
+CMD []
+```
+然后执行以下命令
+```bash
+docker build -t centos-curl .
+docker run -it centos-curl --head www.baidu.com
+```
+等价于在`container`中执行`/usr/bin/curl --head www.baidu.com`.
+
 # ENTRYPOINT
 `ENTRYPOINT`让`container`以应用程序或者服务的形式运行.
 和`CMD`相比, `ENTRYPOINT`不会被忽略, 一定会执行.
