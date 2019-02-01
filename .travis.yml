@@ -21,7 +21,7 @@ before_install:
 - curl -o- -L https://yarnpkg.com/install.sh | bash
 - export PATH=$HOME/.yarn/bin:$PATH
 # npm模块安装
-- yarn add -g hexo-cli
+- yarn global add hexo-cli
 - yarn add hexo-asset-image --save
 - yarn add hexo-generator-searchdb --save
 - yarn add hexo-generator-feed --save
