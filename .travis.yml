@@ -21,17 +21,17 @@ before_install:
 - curl -o- -L https://yarnpkg.com/install.sh | bash
 - export PATH=$HOME/.yarn/bin:$PATH
 # npm模块安装
-- npm install -g hexo-cli
-- npm install hexo-asset-image --save
-- npm install hexo-generator-searchdb --save
-- npm install hexo-generator-feed --save
-- npm install hexo-related-popular-posts --save
-- npm install hexo-symbols-count-time --save
-- npm install hexo-generator-sitemap --save
-- npm install hexo-generator-baidu-sitemap --save
-- npm install hexo-deployer-git --save
-- npm install hexo-leancloud-counter-security --save
-- npm install hexo-helper-live2d --save
+- yarn add -g hexo-cli
+- yarn add hexo-asset-image --save
+- yarn add hexo-generator-searchdb --save
+- yarn add hexo-generator-feed --save
+- yarn add hexo-related-popular-posts --save
+- yarn add hexo-symbols-count-time --save
+- yarn add hexo-generator-sitemap --save
+- yarn add hexo-generator-baidu-sitemap --save
+- yarn add hexo-deployer-git --save
+- yarn add hexo-leancloud-counter-security --save
+- yarn add hexo-helper-live2d --save
 # next.yml配置文件解密
 - openssl aes-256-cbc -K $encrypted_3873d9e40d23_key -iv $encrypted_3873d9e40d23_iv -in source/_data/next.yml.enc -out source/_data/next.yml -d
 # 将 GitHub Token 替换到 next.yml 中
