@@ -28,15 +28,15 @@ docker network ls
 ```bash
 # 1. 创建一个 bridge1 容器, 并查看ip地址
 docker run -d --name bridge1 busybox /bin/sh -c "ping 192.168.0.1"
-docker exec -it bridge1的容器id ip a
+docker exec -it bridge1 ip a
 
 # 2. 创建一个 bridge2 容器, 并 ping bridge1 的 ip 地址
 docker run -d --name bridge2 --link bridge1 busybox /bin/sh -c "ping 192.168.0.1"
-docker exec -it bridge2的容器id /bin/ping bridge1的IP地址
-docker exec -it bridge2的容器id /bin/ping bridge1
+docker exec -it bridge2 /bin/ping bridge1的IP地址
+docker exec -it bridge2 /bin/ping bridge1
 
 # 3. 默认的 bridge 是单向的, bridge1 ping bridge2 失败
-docker exec -it bridge1的容器id /bin/ping bridge2
+docker exec -it bridge1 /bin/ping bridge2
 ```
 发现`bridge2`可以直接`ping bridge1`, 不用输入`IP`地址.
 因为`--link bridge1`相当于给`bridge2`添加了一条`DNS`解析.
@@ -52,8 +52,8 @@ docker network ls
 docker run -d --name bridge3 --link bridge1 --network my-bridge busybox /bin/sh -c "ping 192.168.0.1"
 
 # 3. ping bridge1 失败
-docker exec -it bridge3的容器id /bin/ping bridge1的IP地址
-docker exec -it bridge3的容器id /bin/ping bridge1
+docker exec -it bridge3 /bin/ping bridge1的IP地址
+docker exec -it bridge3 /bin/ping bridge1
 ```
 
 把 `bridge1` 连接到 `my-bridge`上, 注意, 此时 `bridge1` 仍然存在于默认的 `bridge` 上.
@@ -62,12 +62,12 @@ docker exec -it bridge3的容器id /bin/ping bridge1
 docker network connect my-bridge bridge1
 
 # 2. ping bridge1 成功
-docker exec -it bridge3的容器id /bin/ping bridge1的IP地址
-docker exec -it bridge3的容器id /bin/ping bridge1
+docker exec -it bridge3 /bin/ping bridge1的IP地址
+docker exec -it bridge3 /bin/ping bridge1
 
 # 3. ping bridge3 成功
-docker exec -it bridge1的容器id /bin/ping bridge3的IP地址
-docker exec -it bridge1的容器id /bin/ping bridge3
+docker exec -it bridge1 /bin/ping bridge3的IP地址
+docker exec -it bridge1 /bin/ping bridge3
 ```
 注意, 我们没有给`bridge1`添加`--link bridge3`, 只是连接到 `my-bridge`, 却可以`ping bridge3`.
 因为和默认的`bridge`不同, **自己创建的`bridge`默认是双向的**.
@@ -109,8 +109,7 @@ docker run -d --name web-host --network host nginx
 直接隔离网络, 断网.
 ```bash
 docker run -d --name net-none --network none busybox /bin/sh -c "while true; do sleep 3600;done"
-# ca2a5a1e468b2a3284cd4c4d1259da6a808c4c1f75c9bd00f3fe966ac17d00f3
-docekr exec -it ca2a5a ip a
+docekr exec -it net-none ip a
 # 1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue qlen 1
 #     link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
 #     inet 127.0.0.1/8 scope host lo
