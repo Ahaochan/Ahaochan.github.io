@@ -16,12 +16,15 @@ date: 2016-12-20 08:15:25
 # 用户权限
 ```sql
 # 创建用户, 用户通过指定ip地址登录 
-create user user_name@ip_address identified by 'password'; 
+create user 用户名@ip_address identified by 'password';
 # 创建用户, 用户通过任意ip地址登录 
-create user user_name@'%'        identified by 'password'; 
+create user 用户名@'%'        identified by 'password';
+insert into mysql.user(Host,User,Password) values ('127.0.0.1', '用户名', password('密码'))
 
 # 删除用户user1
-drop user user1@localhost; 
+drop user user1@127.0.0.1; 
+# 删除匿名用户
+delete from mysql.user where user=''; 
 
 # 分配mydb所有表的指定权限给user1
 grant create,alter,drop,insert,update,delete,select on mydb.* to user1@localhost; 
@@ -33,12 +36,15 @@ revoke create on mydb.* from user1@localhost;
 
 # 查看user1的权限 
 show grants for user1@localhost; 
+
+# 修改用户密码, 需要指定用户名和登录ip
+set password for root@127.0.0.1=password('新密码');
 ```
 
 # 数据库
 ```sql
 # 创建数据库
-create database [if not exists] db_name [charset=utf8];
+create database [if not exists] db_name [charset=utf8] [collate utf8_general_ci];
 
 # 删除数据库
 drop database [if exists] db_name;
