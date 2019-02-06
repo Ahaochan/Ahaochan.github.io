@@ -75,21 +75,27 @@ upstream tomcats {
 | `fail_timeout=10s` | 经过`max_fails`失败后, `server`暂停的时间, 默认`10s` |
 | `max_conns=10` | 限制最大的接收连接数 |
 
-# 轮询策略
-当然, 还有其他的轮询策略, 配置到`upstream`内即可。
+# 负载均衡策略
+除了默认的轮询策略, 还有其他的负载均衡策略, 配置到`upstream`内即可。
 
 | 轮询策略 | 说明 |
 |:------------:|:------:|
 | 轮询(默认) | 按请求顺序分配到不同的`server` |
-| 加权轮询 | `weight`值越大, 分配到的访问几率越高 |
+| 加权轮询 | `weight`值越大, 分配到的访问几率越高(最常用) |
 | `ip_hash` | 每个请求按访问`IP`的`hash`结果分配, 同一个`IP`固定访问一个`server` |
 | `url_hash` | 按照访问的`URL`的`hash`结果分配, 同一个`URL`固定访问一个`server` |
 | `least_conn` | 最少链接数, 哪个`server`连接数少就分配给谁 |
 | `hash关键数值` | `hash`自定义的`key`, `url_hash`是具体实现, 在`Nginx 1.7.2`后可用
+| `fair` | 响应时间短的服务器优先分配 |
+
+下面只简单介绍下应用场景
 
 ## ip_hash
-用于需要对`Session`或`Cookie`保持一致的情况。
-但是如果多台机器走同一个代理服务器, `Nginx`根据代理服务器的`IP`做`Hash`, 会导致多台服务器走的都是同一个`server`.
+保证同一个用户访问同一台服务器, 并且不用对项目做多大改动.
+用于需要对`Session`或`Cookie`保持一致的情况.
+
+但是不能保证平均负载.
+并且如果多台机器走同一个代理服务器, `Nginx`根据代理服务器的`IP`做`Hash`, 会导致多台服务器走的都是同一个`server`.
 ```
     upstream tomcats {
         ip_hash;
@@ -100,11 +106,14 @@ upstream tomcats {
 ```
 
 ## url_hash
+能保证同一个服务, 同一个`url`访问同一个服务器.
+这种负载均衡策略也不能保证平均负载, 请求频繁的`url`会请求到同一个服务器上.
+
 `url_hash`是将`$request_uri`作为自定义`hash`的`key`。
 注意, 自定义`hash key`只有在`Nginx 1.7.2`后可用。
 ```
     upstream tomcats {
-        hash $request_uri;;
+        hash $request_uri;
         server 192.168.0.100:8080;
         server 192.168.0.101:8080;
         server example.com:8080;
