@@ -33,15 +33,19 @@ redis-server
 ```shell
 # 允许后台启动
 daemonize yes
+# 设置服务启动端口为 6379
+port 6379
+# 设置密码为 foobared
+requirepass foobared
 ```
 常用命令
 ```shell
 # 通过配置信息启动Redis, 后台启动redis
-/usr/local/redis/bin/redis-server /usr/local/redis/redis.conf
+/usr/local/redis/bin/redis-server /usr/local/redis/redis.conf --port 6379
 # 进入redis控制台
-/usr/local/redis/bin/redis-cli
+/usr/local/redis/bin/redis-cli -p 6379 -h 127.0.0.1 -a 密码
 # 关闭redis
-/usr/local/redis/bin/redis-cli shutdown
+/usr/local/redis/bin/redis-cli -p 6379 -h 127.0.0.1 -a 密码 shutdown
 ```
 
 
