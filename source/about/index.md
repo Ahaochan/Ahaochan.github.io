@@ -30,7 +30,7 @@ type: "about"
 ## 九河科技 ( 2017年7月 ~ 至今 )
 2018年
   使用`Spring Boot`的`Profile`特性搭建三区的短信机`Restful`项目.
-  解耦后台项目和`Solr`搜索引擎, 使用定时任务自动索引文章信息.
+  解耦后台项目和`Solr`搜索引擎, 使用定时任务`Quartz`自动索引文章信息.
   基于 [Guns 4.2](https://gitee.com/naan1993/guns) 开发的罗湖区教育督导系统.
 2017年,
   重构坪山区、罗湖区、盐田区的区政府在线前台项目, 将核心模块和业务模块分离, 减少模块与模块间的依赖关系.
@@ -43,7 +43,7 @@ type: "about"
 环创[2016届移动端负责人](http://www.hclab.cn/hclab/index.php/Home/Member/former/mb_class/2014.html),官网: [hclab.cn](http://www.hclab.cn/)
 
 负责JavaWeb后台开发以及Android开发, 期间完成了两个大学生创新创业项目。
-1. 考核项目五子棋人机对战, 联网对战
+1. 考核项目五子棋人机`AI`对战, 局域网联网对战
 1. 校级大学生创新创业项目App"大学问"
 1. 国家级大学生创新创业项目"基于Raspberry Pi的智能魔镜"Android端的设计与实现。
 
@@ -68,8 +68,8 @@ type: "about"
 以下是我使用过的技能
 
 - 语言掌握: Java / JavaScript
-- Web框架: Spring / Spring MVC / Spring Boot / Swagger
-- 权限验证: Spring Security / Shiro
+- 运维相关: Nginx / Tomcat / Docker
+- Web框架: Spring / Spring MVC / Spring Boot / Swagger / Shiro
 - 搜索引擎: Solr
 - 前端框架: Bootstrap / Jquery / Thymeleaf / Beetl
 - 数据库相关: Mybatis / MySQL / SQL Server / Redis / Mongodb
