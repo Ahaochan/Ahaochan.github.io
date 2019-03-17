@@ -43,36 +43,36 @@ date: 2018-05-05 15:03:00
 ## 准备Git并clone
 ```sh
 # 1. 修改yum源 为 网易源
-$ yum install -y wget
-$ wget -O /etc/yum.repos.d/CentOS-Base.repo http://mirrors.163.com/.help/CentOS7-Base-163.repo
-$ yum clean all
-$ yum makecache
+yum install -y wget
+wget -O /etc/yum.repos.d/CentOS-Base.repo http://mirrors.163.com/.help/CentOS7-Base-163.repo
+yum clean all
+yum makecache
 # 2. 安装git
-$ yum install -y git
+yum install -y git
 # 3. 配置git
-$ git config --global user.name "Ahaochan"
-$ git config --global user.email "844394093@qq.com"
+git config --global user.name "Ahaochan"
+git config --global user.email "844394093@qq.com"
 # 3. clone项目到/opt文件夹下
-$ cd /opt
-$ git clone https://github.com/Ahaochan/Ahaochan.github.io.git
-$ cd Ahaochan.github.io/
+cd /opt
+git clone https://github.com/Ahaochan/Ahaochan.github.io.git
+cd Ahaochan.github.io/
 # 4. 新建并切换到source分支
-$ git branch source
-$ git checkout source
+git branch source
+git checkout source
 # 5. 删除所有文件, 为hexo源文件腾出位置
-$ rm -rf *
+rm -rf *
 ```
 
 ## 准备Travis-CI 客户端
 ```sh
 # 1. 安装gcc和ruby环境
-$ yum install -y gcc ruby ruby-devel
+yum install -y gcc ruby ruby-devel
 # 2. 改为国内gem源
-$ gem sources --add https://gems.ruby-china.org/ --remove https://rubygems.org/ 
+gem sources --add https://gems.ruby-china.org/ --remove https://rubygems.org/ 
 # 3. 安装Travis
-$ gem install travis
+gem install travis
 # 4. 登录Travis, 并输入账号密码
-$ travis login
+travis login
 ```
 
 ## 将本地的hexo移动到服务器
@@ -88,17 +88,17 @@ $ travis login
 
 ```sh
 # 1. 确保在source分支下操作
-$ git checkout source
+git checkout source
 # 2. 进入next.yml所在文件夹
-$ cd source/_data
+cd source/_data
 # 3. 进行加密(如果想要加密多个文件, 需要将多个文件打包, 再在Travis-CI解压)
-$ travis encrypt-file next.yml
+travis encrypt-file next.yml
 # 4. 在.travis.yml中加入配置, 注意要指定source/_data/next.yml路径. (这里不要复制我的key, 每个人都不一样)
-$ vim /opt/Ahaochan.github.io/.travis.yml
+vim /opt/Ahaochan.github.io/.travis.yml
 before_install:
 - openssl aes-256-cbc -K $encrypted_3873d9e40d23_key -iv $encrypted_3873d9e40d23_iv -in source/_data/next.yml.enc -out source/_data/next.yml -d
 # 5. 在.gitignore添加一行, 不提交next.yml
-$ vim /opt/Ahaochan.github.io/.gitignore
+vim /opt/Ahaochan.github.io/.gitignore
 source/_data/next.yml
 ```
 
