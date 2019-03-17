@@ -68,7 +68,7 @@ rm -rf *
 # 1. 安装gcc和ruby环境
 yum install -y gcc ruby ruby-devel
 # 2. 改为国内gem源
-gem sources --add https://gems.ruby-china.org/ --remove https://rubygems.org/ 
+gem sources --add https://gems.ruby-china.com/ --remove https://rubygems.org/ 
 # 3. 安装Travis
 gem install travis
 # 4. 登录Travis, 并输入账号密码
