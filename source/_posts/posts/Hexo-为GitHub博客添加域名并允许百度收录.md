@@ -122,7 +122,7 @@ before_install:
 ## 谷歌收录
 进入谷歌站长工具, 点击左边的**添加资源**.
 ```text
-https://search.google.com/search-console?resource_id=sc-domain%3Aahao.moe)
+https://search.google.com/search-console?resource_id=sc-domain%3Aahao.moe
 ```
 选择**添加网域**, 输入`ahao.moe`. 
 谷歌会提示你将`google-site-verification=123456789`这段代码在`DNS`配置为`TXT`记录.
