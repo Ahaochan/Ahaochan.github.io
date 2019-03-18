@@ -71,8 +71,10 @@ yum install -y gcc ruby ruby-devel
 gem sources --add https://gems.ruby-china.com/ --remove https://rubygems.org/ 
 # 3. 安装Travis
 gem install travis
-# 4. 登录Travis, 并输入账号密码
-travis login
+# 4. 登录Travis, 并输入账号密码, 注意使用的是 travis-ci.org 或 travis-ci.com
+#    org 现在已迁移到 com, 发送标题 Open Source Migration Beta Testing 邮件到 support@travis-ci.com 即可开通 Beta 迁移功能.
+#    https://docs.travis-ci.com/user/migrate/open-source-on-travis-ci-com/#existing-open-source-repositories-on-travis-ciorg
+travis login --com
 ```
 
 ## 将本地的hexo移动到服务器
@@ -120,7 +122,6 @@ before_install:
 # 注意要放在解密next.yml文件命令之后
 - sed -i "s/REPO_TOKEN/${REPO_TOKEN}/" source/_data/next.yml
 ```
-
 
 # 从GitHub下载最新模块和主题
 为了节省`Github`空间, 我在`.travis.yml`配置了很多的下载命令.
