@@ -11,4 +11,4 @@
 </p>
 
 # 博客地址:
-https://ahaochan.github.io/
+https://blog.ahao.moe
