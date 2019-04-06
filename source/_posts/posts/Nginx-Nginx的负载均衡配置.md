@@ -120,5 +120,10 @@ upstream tomcats {
     }
 ```
 
+## 最佳实践
+没有最佳实践, 具体场景具体分析.
+但是实际上解决`Session`同步问题, 一般都用`Redis`做分布式`Session`.
+这里就不展开讲了, 和`Nginx`无关.
+
 # 参考资料
 - [四层和七层负载均衡 - 详细总结](http://blog.51cto.com/dmwing/1896879)
