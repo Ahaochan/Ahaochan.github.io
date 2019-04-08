@@ -47,6 +47,7 @@ before_install:
 - git clone https://github.com/theme-next/theme-next-pace themes/next/source/lib/pace
 - git clone https://github.com/theme-next/theme-next-canvas-nest themes/next/source/lib/canvas-nest
 - git clone https://github.com/theme-next/theme-next-fancybox3 themes/next/source/lib/fancybox
+- git clone https://github.com/theme-next/theme-next-quicklink.git themes/next/source/lib/quicklink
 install:
 # 不用yarn的话这里改成 npm i 即可
 - yarn
