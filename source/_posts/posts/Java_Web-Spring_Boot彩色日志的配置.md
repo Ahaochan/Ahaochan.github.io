@@ -82,7 +82,7 @@ spring.output.ansi.enabled: detect
 直接运行 ` main ` 函数的话,日志可以彩色输出, 但是在IDEA部署到 ` Tomcat  ` 的时候, IDEA的控制台没有彩色日志, 如果强制打开彩色日志, 则会出现很多干扰信息。
 
 IDEA提供了个曲线救国的插件[Grep Console](https://plugins.jetbrains.com/plugin/7125-grep-console), 安装即可, 在IDEA的控制台渲染彩色日志, 在Tomcat不显示彩色日志。
-![QQ拼音截图未命名.png](http://upload-images.jianshu.io/upload_images/6879007-ee8783eca30e0a70.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+{% img /images/SpringBoot彩色日志的配置_02.png %}
 
 如果在Linux上使用, 还有另一种曲线救国的方法。这种就不详细讨论了。
 [Linux 日志高亮工具 CCZE](https://github.com/cornet/ccze)
