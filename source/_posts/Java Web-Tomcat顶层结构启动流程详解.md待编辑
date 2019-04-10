@@ -15,7 +15,7 @@ Tomcat是一个Web容器中间件。本文只描述Server、Service、Cornector�
 <!-- more -->
 
 # 结构
-<img src="http://yuml.me/diagram/nofunky/class/[Server]1-*[Service],[Service]1-*[Connector],[Service]1-1[Container]"/>
+<img src="https://yuml.me/diagram/nofunky/class/[Server]1-*[Service],[Service]1-*[Connector],[Service]1-1[Container]"/>
 Tomcat最顶层是一个Server，代表服务器。
 Server由多个Service服务组成，提供具体服务。
 Service由多个Connector(负责网络连接、request/response的创建)和Container(处理Servlet)。
@@ -125,7 +125,7 @@ public void start() {
 ## Server详解
 Server的默认实现是`org.apache.catalina.core.StandardServer`
 继承树
-<img src="http://yuml.me/diagram/nofunky/class/[<<Lifecycle>>;interface]^-[<<Server>>;interface], [<<Server>>;interface]^-[StandardServer], [LifecycleMBeanBase]^-[StandardServer], [LifecycleBase]^-[LifecycleMBeanBase], [<<Lifecycle>>;interface]^-[LifecycleBase], [<<JmxEnabled>>;interface]^-[LifecycleMBeanBase], [<<MBeanRegistration>>;interface]^-[<<JmxEnabled>>;interface]"/>
+<img src="https://yuml.me/diagram/nofunky/class/[<<Lifecycle>>;interface]^-[<<Server>>;interface], [<<Server>>;interface]^-[StandardServer], [LifecycleMBeanBase]^-[StandardServer], [LifecycleBase]^-[LifecycleMBeanBase], [<<Lifecycle>>;interface]^-[LifecycleBase], [<<JmxEnabled>>;interface]^-[LifecycleMBeanBase], [<<MBeanRegistration>>;interface]^-[<<JmxEnabled>>;interface]"/>
 在Catalina中调用了Server的`init`和`start`方法。
 
 `init`方法的实现在`StandardServer`的父类`LifecycleBase`中实现，调用了`initInternal()`方法。
@@ -183,7 +183,7 @@ public void await() {
 
 ## Service详解
 在Server详解中，提到了Server的`initInternal`和`startInternal`方法实际上调用了Service的`init`和`start`方法。
-<img src="http://yuml.me/diagram/nofunky/class/[LifecycleMBeanBase]^-[StandardService], [<<Service>>;interface]^-[StandardService], [<<Lifecycle>>;interface]^-[<<Service>>;interface],[LifecycleBase]^-[LifecycleMBeanBase],[<<Lifecycle>>;interface]^-[LifecycleBase], [<<JmxEnabled>>;interface]^-[LifecycleMBeanBase],[<<MBeanRegistration>>;interface]^-[<<JmxEnabled>>;interface]"/>
+<img src="https://yuml.me/diagram/nofunky/class/[LifecycleMBeanBase]^-[StandardService], [<<Service>>;interface]^-[StandardService], [<<Lifecycle>>;interface]^-[<<Service>>;interface],[LifecycleBase]^-[LifecycleMBeanBase],[<<Lifecycle>>;interface]^-[LifecycleBase], [<<JmxEnabled>>;interface]^-[LifecycleMBeanBase],[<<MBeanRegistration>>;interface]^-[<<JmxEnabled>>;interface]"/>
 和Server类似，Service的`start`和`init`方法，都交给其父类`LifecycleBase`实现，并调用了默认子类`StandardService`的`initInternal`和`startInternal`方法。
 
 ```java

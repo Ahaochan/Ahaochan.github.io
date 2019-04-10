@@ -40,7 +40,7 @@ public class TestController {
 4. 调用生成的`Servlet`的`service`方法处理请求.
 
 # 基于Tomcat 8.5.35的源码分析
-![继承树](http://yuml.me/diagram/nofunky/class/[<<PeriodicEventListener>>;interface]^-[JspServlet], [HttpServlet]^-[JspServlet])
+![继承树](https://yuml.me/diagram/nofunky/class/[<<PeriodicEventListener>>;interface]^-[JspServlet], [HttpServlet]^-[JspServlet])
 `JspServlet`继承了`HttpServlet`, 并实现了`PeriodicEventListener`接口, 这个接口暂时不管它, `HttpServlet`在我[另一篇文章](https://ahaochan.github.io/posts/HttpServlet_source_code.html)中有做源码解析。
 
 ## 重写了继承树上GenericServlet的方法

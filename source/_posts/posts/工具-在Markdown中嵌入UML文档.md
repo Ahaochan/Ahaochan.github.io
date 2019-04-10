@@ -27,44 +27,44 @@ date: 2016-08-11 21:05:27
 ## 角色(Actor)
 使用`[角色名]`表示角色。
 ```xml
-<img src="http://yuml.me/diagram/scruffy/usecase/[Customer]"/>
+<img src="https://yuml.me/diagram/scruffy/usecase/[Customer]"/>
 ```
-<img src="http://yuml.me/diagram/scruffy/usecase/[Customer]" />
+<img src="https://yuml.me/diagram/scruffy/usecase/[Customer]" />
 
 ## 用例(Use Case)
 使用`(用例名)`表示用例，`-`表示角色和用例之间的关联。
 ```xml
-<img src="http://yuml.me/diagram/scruffy/usecase/[Customer]-(Login),[Customer]-(Logout)" />
+<img src="https://yuml.me/diagram/scruffy/usecase/[Customer]-(Login),[Customer]-(Logout)" />
 ```
-<img src="http://yuml.me/diagram/scruffy/usecase/[Customer]-(Login),[Customer]-(Logout)" />
+<img src="https://yuml.me/diagram/scruffy/usecase/[Customer]-(Login),[Customer]-(Logout)" />
 
 ## 备注(Notes)
 如果用例名以`note:`开头，表明那是一个备注，可以用`{bg:颜色名}`定义备注的背景色。
 ```xml
-<img src="http://yuml.me/diagram/scruffy/usecase/[Customer]-(Login), [Customer]-(note: Cust can be registered or not{bg:beige})" />
+<img src="https://yuml.me/diagram/scruffy/usecase/[Customer]-(Login), [Customer]-(note: Cust can be registered or not{bg:beige})" />
 ```
-<img src="http://yuml.me/diagram/scruffy/usecase/[Customer]-(Login), [Customer]-(note: Cust can be registered or not{bg:beige})" />
+<img src="https://yuml.me/diagram/scruffy/usecase/[Customer]-(Login), [Customer]-(note: Cust can be registered or not{bg:beige})" />
 
 
 ## 角色继承(Actor Inheritance)
 使用符号`^`表示角色之间的继承关系。
 ```xml
-<img src="http://yuml.me/diagram/scruffy/usecase/[Cms Admin]^[User], [Customer]^[User], [Agent]^[User]" />
+<img src="https://yuml.me/diagram/scruffy/usecase/[Cms Admin]^[User], [Customer]^[User], [Agent]^[User]" />
 ```
-<img src="http://yuml.me/diagram/scruffy/usecase/[Cms Admin]^[User], [Customer]^[User], [Agent]^[User]" />
+<img src="https://yuml.me/diagram/scruffy/usecase/[Cms Admin]^[User], [Customer]^[User], [Agent]^[User]" />
 
 ## 扩展和包含(Extends and Includes)
 使用`>`表示用例之间的包含关系，`<`表示用例的扩展。
 ```xml
- <img src="http://yuml.me/diagram/scruffy/usecase/(Login)<(Register),(Login)<(Request Password Reminder),(Register)>(Confirm Registration)" />
+ <img src="https://yuml.me/diagram/scruffy/usecase/(Login)<(Register),(Login)<(Request Password Reminder),(Register)>(Confirm Registration)" />
  ```
-<img src="http://yuml.me/diagram/scruffy/usecase/(Login)<(Register),(Login)<(Request Password Reminder),(Register)>(Confirm Registration)" />
+<img src="https://yuml.me/diagram/scruffy/usecase/(Login)<(Register),(Login)<(Request Password Reminder),(Register)>(Confirm Registration)" />
   
 ## 完整示例
 ```xml
-<img src="http://yuml.me/diagram/nofunky/usecase/(note: figure 1.2{bg:beige}), [User]-(Login),[Site Maintainer]-(Add User),(Add User)<(Add Company),[Site Maintainer]-(Upload Docs),(Upload Docs)<(Manage Folders),[User]-(Upload Docs), [User]-(Full Text Search Docs), (Full Text Search Docs)>(Preview Doc),(Full Text Search Docs)>(Download Docs), [User]-(Browse Docs), (Browse Docs)>(Preview Doc), (Download Docs), [Site Maintainer]-(Post New Event To The Web Site), [User]-(View Events)" />
+<img src="https://yuml.me/diagram/nofunky/usecase/(note: figure 1.2{bg:beige}), [User]-(Login),[Site Maintainer]-(Add User),(Add User)<(Add Company),[Site Maintainer]-(Upload Docs),(Upload Docs)<(Manage Folders),[User]-(Upload Docs), [User]-(Full Text Search Docs), (Full Text Search Docs)>(Preview Doc),(Full Text Search Docs)>(Download Docs), [User]-(Browse Docs), (Browse Docs)>(Preview Doc), (Download Docs), [Site Maintainer]-(Post New Event To The Web Site), [User]-(View Events)" />
 ```
-<img src="http://yuml.me/diagram/nofunky/usecase/(note: figure 1.2{bg:beige}), [User]-(Login),[Site Maintainer]-(Add User),(Add User)<(Add Company),[Site Maintainer]-(Upload Docs),(Upload Docs)<(Manage Folders),[User]-(Upload Docs), [User]-(Full Text Search Docs), (Full Text Search Docs)>(Preview Doc),(Full Text Search Docs)>(Download Docs), [User]-(Browse Docs), (Browse Docs)>(Preview Doc), (Download Docs), [Site Maintainer]-(Post New Event To The Web Site), [User]-(View Events)" />
+<img src="https://yuml.me/diagram/nofunky/usecase/(note: figure 1.2{bg:beige}), [User]-(Login),[Site Maintainer]-(Add User),(Add User)<(Add Company),[Site Maintainer]-(Upload Docs),(Upload Docs)<(Manage Folders),[User]-(Upload Docs), [User]-(Full Text Search Docs), (Full Text Search Docs)>(Preview Doc),(Full Text Search Docs)>(Download Docs), [User]-(Browse Docs), (Browse Docs)>(Preview Doc), (Download Docs), [Site Maintainer]-(Post New Event To The Web Site), [User]-(View Events)" />
 
 ## YUML支持3种图示风格
 分别是：
@@ -74,143 +74,143 @@ date: 2016-08-11 21:05:27
 
 你可以对比下列图示的不同风格：
 ```xml
-<img src="http://yuml.me/diagram/plain/usecase/[Customer]-(Login),[Customer]-(Logout),(login)%3C(Register)"/>
-<img src="http://yuml.me/diagram/scruffy/usecase/[Customer]-(Login),[Customer]-(Logout),(login)%3C(Register)"/>
-<img src="http://yuml.me/diagram/boring/usecase/[Customer]-(Login),[Customer]-(Logout),(login)%3C(Register)"/>
+<img src="https://yuml.me/diagram/plain/usecase/[Customer]-(Login),[Customer]-(Logout),(login)%3C(Register)"/>
+<img src="https://yuml.me/diagram/scruffy/usecase/[Customer]-(Login),[Customer]-(Logout),(login)%3C(Register)"/>
+<img src="https://yuml.me/diagram/boring/usecase/[Customer]-(Login),[Customer]-(Logout),(login)%3C(Register)"/>
 ```
-<img src="http://yuml.me/diagram/plain/usecase/[Customer]-(Login),[Customer]-(Logout),(login)%3C(Register)"/>
-<img src="http://yuml.me/diagram/scruffy/usecase/[Customer]-(Login),[Customer]-(Logout),(login)%3C(Register)"/>
-<img src="http://yuml.me/diagram/boring/usecase/[Customer]-(Login),[Customer]-(Logout),(login)%3C(Register)"/>
+<img src="https://yuml.me/diagram/plain/usecase/[Customer]-(Login),[Customer]-(Logout),(login)%3C(Register)"/>
+<img src="https://yuml.me/diagram/scruffy/usecase/[Customer]-(Login),[Customer]-(Logout),(login)%3C(Register)"/>
+<img src="https://yuml.me/diagram/boring/usecase/[Customer]-(Login),[Customer]-(Logout),(login)%3C(Register)"/>
 
 # 活动图
 ## 动作(Action)
 用`(状态名)`表示一个状态，其中`(start)`和`(end)`分别表示开始状态和结束状态，箭头`->`表示状态的转换。
 ```xml
-<img src="http://yuml.me/diagram/nofunky/activity/(start)->(Boil Kettle)->(end)" />
+<img src="https://yuml.me/diagram/nofunky/activity/(start)->(Boil Kettle)->(end)" />
 ```
-<img src="http://yuml.me/diagram/nofunky/activity/(start)->(Boil Kettle)->(end)" />
+<img src="https://yuml.me/diagram/nofunky/activity/(start)->(Boil Kettle)->(end)" />
 
 ## 判断和限制(Decisions and Constraints)
 使用`<判断名>`表示一个条件判断，其后跟`[条件]->`表示满足条件后状态的转换；用不同的`判断名`来标识不同的判定位置。
 ```xml
-<img src="http://yuml.me/diagram/nofunky/activity/(start)-><a>[kettle empty]->(Fill Kettle)->(Boil Kettle),<a>[kettle full]->(Boil Kettle)->(end)" />
+<img src="https://yuml.me/diagram/nofunky/activity/(start)-><a>[kettle empty]->(Fill Kettle)->(Boil Kettle),<a>[kettle full]->(Boil Kettle)->(end)" />
 ```
-<img src="http://yuml.me/diagram/nofunky/activity/(start)-><a>[kettle empty]->(Fill Kettle)->(Boil Kettle),<a>[kettle full]->(Boil Kettle)->(end)" />
+<img src="https://yuml.me/diagram/nofunky/activity/(start)-><a>[kettle empty]->(Fill Kettle)->(Boil Kettle),<a>[kettle full]->(Boil Kettle)->(end)" />
 
 ## 分支合并(Fork/Join)
 使用`||`表示分支或者合并点。
 ```xml
-<img src="http://yuml.me/diagram/nofunky/activity/(start)-><a>[kettle empty]->(Fill Kettle)->|b|,<a>[kettle full]->|b|->(Boil Kettle)->|c|,|b|->(Add Tea Bag)->(Add Milk)->|c|->(Pour Water)->(end),(Pour Water)->(end)" />
+<img src="https://yuml.me/diagram/nofunky/activity/(start)-><a>[kettle empty]->(Fill Kettle)->|b|,<a>[kettle full]->|b|->(Boil Kettle)->|c|,|b|->(Add Tea Bag)->(Add Milk)->|c|->(Pour Water)->(end),(Pour Water)->(end)" />
 ```
-<img src="http://yuml.me/diagram/nofunky/activity/(start)-><a>[kettle empty]->(Fill Kettle)->|b|,<a>[kettle full]->|b|->(Boil Kettle)->|c|,|b|->(Add Tea Bag)->(Add Milk)->|c|->(Pour Water)->(end),(Pour Water)->(end)" />
+<img src="https://yuml.me/diagram/nofunky/activity/(start)-><a>[kettle empty]->(Fill Kettle)->|b|,<a>[kettle full]->|b|->(Boil Kettle)->|c|,|b|->(Add Tea Bag)->(Add Milk)->|c|->(Pour Water)->(end),(Pour Water)->(end)" />
 
 ## 对象(Objects)
 符号`[]`表示一个对象。
 ```xml
-<img src="http://yuml.me/diagram/nofunky/activity/(start)->[Water]->(Fill Kettle)->(end)" />
+<img src="https://yuml.me/diagram/nofunky/activity/(start)->[Water]->(Fill Kettle)->(end)" />
 ```
-<img src="http://yuml.me/diagram/nofunky/activity/(start)->[Water]->(Fill Kettle)->(end)" />
+<img src="https://yuml.me/diagram/nofunky/activity/(start)->[Water]->(Fill Kettle)->(end)" />
 
 ## 连接器名称(Connector Name)
 在`->`中加入名称，`-名称>`表示命名连接器。
 ```xml
-<img src="http://yuml.me/diagram/nofunky/activity/(start)-fill>(Fill Kettle)->(end)" />
+<img src="https://yuml.me/diagram/nofunky/activity/(start)-fill>(Fill Kettle)->(end)" />
 ```
-<img src="http://yuml.me/diagram/nofunky/activity/(start)-fill>(Fill Kettle)->(end)" />
+<img src="https://yuml.me/diagram/nofunky/activity/(start)-fill>(Fill Kettle)->(end)" />
   
 # 类图
 ## 关联(Association)
 类名用`[]`表示，`->`表示定向关联，`-`表明关联。
 ```xml
-<img src="http://yuml.me/diagram/nofunky/class/[Customer]->[Billing Address]" />
+<img src="https://yuml.me/diagram/nofunky/class/[Customer]->[Billing Address]" />
 ```
-<img src="http://yuml.me/diagram/nofunky/class/[Customer]->[Billing Address]" />
+<img src="https://yuml.me/diagram/nofunky/class/[Customer]->[Billing Address]" />
 
 ## 基数(Cardinality)
 `基数-基数>`表明关联的基数，其中基数可以为`0`，`1`，`0..*`，`*`等任意定义的值。
 ```xml
-<img src="http://yuml.me/diagram/nofunky/class/[Customer]1-0..*[Address]"/>
+<img src="https://yuml.me/diagram/nofunky/class/[Customer]1-0..*[Address]"/>
 ```
-<img src="http://yuml.me/diagram/nofunky/class/[Customer]1-0..*[Address]"/>
+<img src="https://yuml.me/diagram/nofunky/class/[Customer]1-0..*[Address]"/>
 
 ## 定向关联(Directional Association)
 定向关联`->`可以定义名称：`-名称>`。
 ```xml
-<img src="http://yuml.me/diagram/nofunky/class/[Order]-billing/>[Address], [Order]-shipping/>[Address]"/>
+<img src="https://yuml.me/diagram/nofunky/class/[Order]-billing/>[Address], [Order]-shipping/>[Address]"/>
 ```
-<img src="http://yuml.me/diagram/nofunky/class/[Order]-billing/>[Address], [Order]-shipping/>[Address]"/>
+<img src="https://yuml.me/diagram/nofunky/class/[Order]-billing/>[Address], [Order]-shipping/>[Address]"/>
 
 
 ## 颜色和UTF8字符(Splash of Colour And UTF-8)
 类图可以用`{bg:颜色名}`定义显示的背景颜色。
 ```xml
-<img src="http://yuml.me/diagram/nofunky/class/[❝Customer❞{bg:orange}]❶- ☂>[Order{bg:green}]"/>
+<img src="https://yuml.me/diagram/nofunky/class/[❝Customer❞{bg:orange}]❶- ☂>[Order{bg:green}]"/>
 ```
-<img src="http://yuml.me/diagram/nofunky/class/[❝Customer❞{bg:orange}]❶- ☂>[Order{bg:green}]"/>
+<img src="https://yuml.me/diagram/nofunky/class/[❝Customer❞{bg:orange}]❶- ☂>[Order{bg:green}]"/>
 
 
 ## 聚合(Aggregation)
 聚合表示比关联更强的关联关系，使用`<>->`或者`+->`来表示。
 ```xml
-<img src="http://yuml.me/diagram/nofunky/class/[Company]<>-1>[Location], [Location]+->[Point]"/>
+<img src="https://yuml.me/diagram/nofunky/class/[Company]<>-1>[Location], [Location]+->[Point]"/>
 ```
-<img src="http://yuml.me/diagram/nofunky/class/[Company]<>-1>[Location], [Location]+->[Point]"/>
+<img src="https://yuml.me/diagram/nofunky/class/[Company]<>-1>[Location], [Location]+->[Point]"/>
 
 ## 组成(Composition)
 组成表示比聚合更强的关联关系，使用`++->`来表示。
 ```xml
-<img src="http://yuml.me/diagram/nofunky/class/[Company]++-1>[Location]"/>
+<img src="https://yuml.me/diagram/nofunky/class/[Company]++-1>[Location]"/>
 ```
-<img src="http://yuml.me/diagram/nofunky/class/[Company]++-1>[Location]"/>
+<img src="https://yuml.me/diagram/nofunky/class/[Company]++-1>[Location]"/>
 
 ## 备注(Notes)
 使用`[note:注解内容]`表示备注，同样备注可以自定义颜色`{bg:颜色名}`。
 ```xml
-<img src="http://yuml.me/diagram/nofunky/class/[Customer]<>1->*[Order], [Customer]-[note: Aggregate Root{bg:cornsilk}]"/>
+<img src="https://yuml.me/diagram/nofunky/class/[Customer]<>1->*[Order], [Customer]-[note: Aggregate Root{bg:cornsilk}]"/>
 ```
-<img src="http://yuml.me/diagram/nofunky/class/[Customer]<>1->*[Order], [Customer]-[note: Aggregate Root{bg:cornsilk}]"/>
+<img src="https://yuml.me/diagram/nofunky/class/[Customer]<>1->*[Order], [Customer]-[note: Aggregate Root{bg:cornsilk}]"/>
 
 ## 继承(Inheritance)
 使用`^-`表示类的继承，右边的类是子类。
 ```xml
-<img src="http://yuml.me/diagram/nofunky/class/[Wages]^-[Salaried], [Wages]^-[Contractor]"/>
+<img src="https://yuml.me/diagram/nofunky/class/[Wages]^-[Salaried], [Wages]^-[Contractor]"/>
 ```
-<img src="http://yuml.me/diagram/nofunky/class/[Wages]^-[Salaried], [Wages]^-[Contractor]"/>
+<img src="https://yuml.me/diagram/nofunky/class/[Wages]^-[Salaried], [Wages]^-[Contractor]"/>
 
 ## 接口继承(Interface Inheritance)
 接口继承用`^-.-`来表示。
 ```xml
-<img src="http://yuml.me/diagram/nofunky/class/[<<ITask>>]^-.-[NightlyBillingTask]"/>
+<img src="https://yuml.me/diagram/nofunky/class/[<<ITask>>]^-.-[NightlyBillingTask]"/>
 ```
-<img src="http://yuml.me/diagram/nofunky/class/[<<ITask>>]^-.-[NightlyBillingTask]"/>
+<img src="https://yuml.me/diagram/nofunky/class/[<<ITask>>]^-.-[NightlyBillingTask]"/>
 
 ## 依赖(Dependencies)
 类的依赖用`-.->`来表示，依赖是最弱的关联关系，一般用来表示类方法的参数或者实现用到了依赖类。
 ```xml
-<img src="http://yuml.me/diagram/nofunky/class/[HttpContext]uses -.->[Response]"/>
+<img src="https://yuml.me/diagram/nofunky/class/[HttpContext]uses -.->[Response]"/>
 ```
-<img src="http://yuml.me/diagram/nofunky/class/[HttpContext]uses -.->[Response]"/>
+<img src="https://yuml.me/diagram/nofunky/class/[HttpContext]uses -.->[Response]"/>
 
 ## 接口(Interface)
 和类名相比，接口的名称一般包含在`<<>>`中。
 ```xml
-<img src="http://yuml.me/diagram/nofunky/class/[<<IDisposable>>;Session]"/>
+<img src="https://yuml.me/diagram/nofunky/class/[<<IDisposable>>;Session]"/>
 ```
-<img src="http://yuml.me/diagram/nofunky/class/[<<IDisposable>>;Session]"/>
+<img src="https://yuml.me/diagram/nofunky/class/[<<IDisposable>>;Session]"/>
 
 
 ## 类定义(Class with Details)
 可以在类符号`[]`中定义类的所有成员。使用`|`表示类名与类成员变量和成员函数的分割符，不同的成员之间用`;`隔开，使用`+`，`-`分别表示公开和私有成员。
 ```xml
-<img src="http://yuml.me/diagram/nofunky/class/[User|+Forename+;Surname;+HashedPassword;-Salt|+Login();+Logout()]"/>
+<img src="https://yuml.me/diagram/nofunky/class/[User|+Forename+;Surname;+HashedPassword;-Salt|+Login();+Logout()]"/>
 ```
-<img src="http://yuml.me/diagram/nofunky/class/[User|+Forename+;Surname;+HashedPassword;-Salt|+Login();+Logout()]"/>
+<img src="https://yuml.me/diagram/nofunky/class/[User|+Forename+;Surname;+HashedPassword;-Salt|+Login();+Logout()]"/>
 
 ## 完整的示例
 ```xml
-<img src="http://yuml.me/diagram/nofunky/class/[note: You can stick notes on diagrams too!{bg:cornsilk}],[Customer]<>1-orders 0..*>[Order], [Order]++*-*>[LineItem], [Order]-1>[DeliveryMethod], [Order]*-*>[Product], [Category]<->[Product], [DeliveryMethod]^[National], [DeliveryMethod]^[International]"/>
+<img src="https://yuml.me/diagram/nofunky/class/[note: You can stick notes on diagrams too!{bg:cornsilk}],[Customer]<>1-orders 0..*>[Order], [Order]++*-*>[LineItem], [Order]-1>[DeliveryMethod], [Order]*-*>[Product], [Category]<->[Product], [DeliveryMethod]^[National], [DeliveryMethod]^[International]"/>
 ```
-<img src="http://yuml.me/diagram/nofunky/class/[note: You can stick notes on diagrams too!{bg:cornsilk}],[Customer]<>1-orders 0..*>[Order], [Order]++*-*>[LineItem], [Order]-1>[DeliveryMethod], [Order]*-*>[Product], [Category]<->[Product], [DeliveryMethod]^[National], [DeliveryMethod]^[International]"/>
+<img src="https://yuml.me/diagram/nofunky/class/[note: You can stick notes on diagrams too!{bg:cornsilk}],[Customer]<>1-orders 0..*>[Order], [Order]++*-*>[LineItem], [Order]-1>[DeliveryMethod], [Order]*-*>[Product], [Category]<->[Product], [DeliveryMethod]^[National], [DeliveryMethod]^[International]"/>
 
 
 # 时序图

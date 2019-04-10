@@ -14,7 +14,7 @@ Servlet是一个接口，是javaweb开发的一套规范。
 <!-- more -->
 
 # 继承树
-<img src="http://yuml.me/diagram/nofunky/class/[<<ServletConfig>>;interface]^-[GenericServlet], [<<Servlet>>;interface]^-[GenericServlet], [GenericServlet]^-[HttpServlet]"/>
+<img src="https://yuml.me/diagram/nofunky/class/[<<ServletConfig>>;interface]^-[GenericServlet], [<<Servlet>>;interface]^-[GenericServlet], [GenericServlet]^-[HttpServlet]"/>
 
 # GenericServlet详解
 GenericServlet是与具体协议无关的。

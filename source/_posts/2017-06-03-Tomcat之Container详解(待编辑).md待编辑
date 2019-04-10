@@ -14,8 +14,8 @@ date: 2017-06-03 15:22:04
 <!-- more -->
 
 # 结构
-<img src="http://yuml.me/diagram/nofunky/class/[Server]1-*[Service],[Service]1-*[Connector],[Service]1-1[Container]"/>
-<img src="http://yuml.me/diagram/nofunky/class/[Engine]1-*[Host],[Host]1-*[Context],[Context]1-*[Wrapper]"/>
+<img src="https://yuml.me/diagram/nofunky/class/[Server]1-*[Service],[Service]1-*[Connector],[Service]1-1[Container]"/>
+<img src="https://yuml.me/diagram/nofunky/class/[Engine]1-*[Host],[Host]1-*[Context],[Context]1-*[Wrapper]"/>
 前文提到一个`Service`只能有一个`Container`，同样的，一个`Container`只能有一个`Engine`。
 - Engine: 管理多个站点。
 - Host: 站点，也叫虚拟主机。`www.abc.com`和`abc.com`就是两个站点。
@@ -57,7 +57,7 @@ date: 2017-06-03 15:22:04
 `Wrapper`封装一个`Servlet`，在`web.xml`中配置。
 
 # 继承树
-<img src="http://yuml.me/diagram/nofunky/class/[<<Lifecycle>>;interface]^-[<<Container>>;interface],
+<img src="https://yuml.me/diagram/nofunky/class/[<<Lifecycle>>;interface]^-[<<Container>>;interface],
  [<<Lifecycle>>;interface]^-[LifecycleBase], [LifecycleBase]^-[LifecycleMBeanBase],
  [<<Container>>;interface]^-[<<Context>>;interface], [<<Container>>;interface]^-[<<Engine>>;interface],
  [<<Container>>;interface]^-[<<Wrapper>>;interface], [<<Container>>;interface]^-[<<Host>>;interface],
