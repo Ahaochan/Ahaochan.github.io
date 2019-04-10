@@ -10,4 +10,4 @@ date: 2016-07-02 13:40:32
 
 - [教程](http://blog.csdn.net/lanxuezaipiao/article/details/44341645)
 
-- 在线生成图片的网站: [latex.codecogs.com](http://latex.codecogs.com/eqneditor/editor.php?lang=zh-cn)
+- 在线生成图片的网站: [latex.codecogs.com](https://latex.codecogs.com/eqneditor/editor.php?lang=zh-cn)

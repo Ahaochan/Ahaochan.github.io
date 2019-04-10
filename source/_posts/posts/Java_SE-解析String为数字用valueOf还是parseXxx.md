@@ -67,9 +67,9 @@ public final class Long extends Number implements Comparable<Long> {
 
 再看 ` parseLong ` 方法。
 在此之前, 先复习下进制转换的算法。
-![abc_16=10*16^2+11*16^1+12*16^0=2748](http://latex.codecogs.com/svg.latex?abc_{16}=10*16^2+11*16^1+12*16^0=2748)
+![abc_16=10*16^2+11*16^1+12*16^0=2748](https://latex.codecogs.com/svg.latex?abc_{16}=10*16^2+11*16^1+12*16^0=2748)
 下面的算法公式为
-![abc_16=-(((-10*16)-11)*16-12)=2748](http://latex.codecogs.com/svg.latex?abc_{16}=-%28%28%28-10*16%29-11%29*16-12%29=2748)
+![abc_16=-(((-10*16)-11)*16-12)=2748](https://latex.codecogs.com/svg.latex?abc_{16}=-%28%28%28-10*16%29-11%29*16-12%29=2748)
 这项算法是[秦九韶公式](https://zh.wikipedia.org/zh-hans/%E7%A7%A6%E4%B9%9D%E9%9F%B6%E7%AE%97%E6%B3%95)
 简单的说, 就是降低了多项式的计算复杂度(叹服古人的智慧, 居然应用到计算机领域)
 
