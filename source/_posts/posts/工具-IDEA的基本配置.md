@@ -58,6 +58,9 @@ date: 2017-09-05 22:59:29
 - [Grep Console](https://plugins.jetbrains.com/plugin/7125-grep-console): 输出彩色日志
 - [ECTranslation](https://github.com/Skykai521/ECTranslation): 翻译插件
 - [BashSupport](https://github.com/jansorg/BashSupport): 执行shell
+- [GitToolBox](https://github.com/zielu/GitToolBox): `Git`功能扩展
+- [Maven Helper](https://plugins.jetbrains.com/plugin/7179-maven-helper): `Maven`功能扩展
+
 
 - [MyBatis插件](https://plugins.jetbrains.com/plugin/7293-mybatis-plugin): 照着说明复制粘贴即可破解, [github地址](https://github.com/myoss/profile)(失效)
 
