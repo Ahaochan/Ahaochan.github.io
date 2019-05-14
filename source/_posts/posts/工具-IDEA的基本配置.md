@@ -60,6 +60,8 @@ date: 2017-09-05 22:59:29
 - [BashSupport](https://github.com/jansorg/BashSupport): 执行shell
 - [GitToolBox](https://github.com/zielu/GitToolBox): `Git`功能扩展
 - [Maven Helper](https://plugins.jetbrains.com/plugin/7179-maven-helper): `Maven`功能扩展
+- [Key promoter](https://plugins.jetbrains.com/plugin/4455-key-promoter): 帮助记住`IDEA`快捷键
+- [RestfulToolkit](https://plugins.jetbrains.com/plugin/10292-restfultoolkit): 根据`URL`快速找到`Controller`所在位置
 
 
 - [MyBatis插件](https://plugins.jetbrains.com/plugin/7293-mybatis-plugin): 照着说明复制粘贴即可破解, [github地址](https://github.com/myoss/profile)(失效)
