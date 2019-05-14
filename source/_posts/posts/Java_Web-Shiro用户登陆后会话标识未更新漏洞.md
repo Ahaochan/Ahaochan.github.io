@@ -24,7 +24,7 @@ date: 2019-03-28 22:32:53
 1. 进行登录`subject.login(token)`
 1. 将之前保存的属性`Map`, 重新注入新的`session`
 
-具体代码可以查看我的个人代码库[LoginController.java#L64-L87](https://github.com/Ahaochan/project/blob/master/ahao-web/src/main/java/com/ahao/rbac/shiro/LoginController.java#L64-L87)
+具体代码可以查看我的个人代码库[LoginController.java#L91-L113](https://github.com/Ahaochan/project/blob/master/ahao-web/src/main/java/com/ahao/rbac/shiro/LoginController.java#L91-L113)
 
 # 参考资料
 - [Force New Session ID on Authentication](https://issues.apache.org/jira/browse/SHIRO-170)
