@@ -3,6 +3,7 @@ title: Shiro用户登陆后会话标识未更新漏洞
 url: Shiro_not_update_session_id_after_login
 tags:
   - Shiro
+  - 业务设计
 categories:
   - Java Web
 date: 2019-03-28 22:32:53

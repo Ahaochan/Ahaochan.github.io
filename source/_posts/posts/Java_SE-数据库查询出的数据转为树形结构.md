@@ -3,6 +3,7 @@ title: 数据库查询出的数据转为树形结构
 url: The_database_records_converted_to_tree_structure.
 tags:
   - 最佳实践
+  - 业务设计
 categories:
   - Java SE
 date: 2018-11-01 09:57:00
