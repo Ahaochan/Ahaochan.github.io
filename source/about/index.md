@@ -15,10 +15,9 @@ type: "about"
 ---
 # 个人信息
  - 18届本科 / 计算机科学与技术专业
- - 工作年限: 1年半
- - 3年技术博客(已部署CI): [ahaochan.github.io](https://ahaochan.github.io)
- - Github(130+star): [github.com/Ahaochan](https://github.com/Ahaochan)
- 
+ - 工作年限: 2年
+ - 4年技术博客(已部署CI): [blog.ahao.moe](https://blog.ahao.moe)
+ - Github(175+star): [github.com/Ahaochan](https://github.com/Ahaochan)
  
  - 期望职位：Java Web程序员
  - 期望城市：深圳
@@ -27,25 +26,37 @@ type: "about"
 
 # 工作经历
 
-## 九河科技 ( 2017年7月 ~ 至今 )
+## 深圳碳原子科技有限公司 (电商) ( 2017年3月 ~ 至今 )
+2019年
+1. 根据海关跨境申报开发文档, 走通跨境申报流程, 为公司开启海外订单业务线.
+1. 完成微信公众号开发, 修改公众号菜单、关注自动推送小程序等功能.
+
+技术栈: 微信、Spring Boot、Redis、RabbitMQ
+
+## 广东九河科技有限公司 (电子政务) ( 2017年7月 ~ 2019年3月 )
 2018年
-  使用`Spring Boot`的`Profile`特性搭建三区的短信机`Restful`项目.
-  解耦后台项目和`Solr`搜索引擎, 使用定时任务`Quartz`自动索引文章信息.
-  基于 [Guns 4.2](https://gitee.com/naan1993/guns) 开发的罗湖区教育督导系统.
-2017年,
-  重构坪山区、罗湖区、盐田区的区政府在线前台项目, 将核心模块和业务模块分离, 减少模块与模块间的依赖关系.
-  负责业务模块[罗湖区基层政务公开](http://apps.szlh.gov.cn/apps/jczwgk)前端Js及后端编写, 实现拼音搜索功能.
+1. 使用`Spring Boot`构建通用短信发送`Rest`项目, 并接入区政府在线前台项目中.
+1. 解决`Shiro`历史遗留`Bug`, 即登录前的 `Session` 和登录后的 `Session` 一样.
+1. 重构`Solr`相关业务, 剥离出一个单独的`Solr`项目, 使用`Quartz`定时调用`Solr API`更新、插入、删除文章索引.
+1. 搭建`Maven`私服, 引入 [Guns 4.2](https://gitee.com/naan1993/guns), 大量使用`Bean`后处理, 构建罗湖区教育督导系统基本框架.
+  
+2017年
+1. 接手坪山区、罗湖区、盐田区的区政府在线前台项目的重构工作, 基于`SSM`搭建的单体应用架构.
+1. 编写`Shell`脚本启动项目及自动打印日志.
+1. 负责业务模块[罗湖区基层政务公开](http://apps.szlh.gov.cn/apps/jczwgk)前端Js及后端编写, 实现拼音搜索功能.
 
-涉及框架: SSM、Spring Boot、Swagger、Shiro、SQL Server、Beetl、Solr
+技术栈: SSM、Spring Boot、Swagger、Shiro、SQL Server、Beetl、Solr、线程池、Nginx
 
-## 环宇创意电脑工作室 ( 2016年9月 ~ 2017年6月 )
+## 环宇创意电脑工作室 (学校社团) ( 2016年9月 ~ 2017年6月 )
 
-环创[2016届移动端负责人](http://www.hclab.cn/hclab/index.php/Home/Member/former/mb_class/2014.html),官网: [hclab.cn](http://www.hclab.cn/)
+环创[2016届移动端负责人](http://www.hclab.cn/hclab/index.php/Home/Member/former/mb_class/2014.html), 官网: [hclab.cn](http://www.hclab.cn/)
 
-负责JavaWeb后台开发以及Android开发, 期间完成了两个大学生创新创业项目。
-1. 考核项目五子棋人机`AI`对战, 局域网联网对战
+负责`JavaWeb`后台开发以及`Android`开发, 期间完成了两个大学生创新创业项目。
+1. 五子棋人机`AI`对战, 局域网联网对战
+   通过`UDP`协议, 在局域网通过多播匹配对手, 单播进行对战.
+   使用估分算法和极大极小值算法, 能达到普通的`AI`水准. 
 1. 校级大学生创新创业项目App"大学问"
-1. 国家级大学生创新创业项目"基于Raspberry Pi的智能魔镜"Android端的设计与实现。
+   使用`Spring MVC`作为后端框架, `Android`作为客户端, 实现`MD`设计, 制作类知乎的一个问答`APP`.
 
 ---
 
@@ -53,8 +64,10 @@ type: "about"
 
 ## 开源项目
  - [2048Android版](https://github.com/Ahaochan/Game2048)
- - 基于`Greasemonkey`的`Javascript`开源项目, 总下载量3w+, [Github](https://github.com/Ahaochan/Tampermonkey) <img src="https://img.shields.io/github/stars/Ahaochan/Tampermonkey.svg" alt="star" style="display: inline;margin-bottom: -1%;">
+ - 基于`Greasemonkey`的`Javascript`开源项目, 总下载量38k, [Github](https://github.com/Ahaochan/Tampermonkey) <img src="https://img.shields.io/github/stars/Ahaochan/Tampermonkey.svg" alt="star" style="display: inline;margin-bottom: -1%;">
  - 毕业设计：[企业增值税数据分析系统](https://github.com/Ahaochan/project)
+ - [ahao-common-utils](https://github.com/Ahaochan/ahao-common-utils): 一个通用工具类库
+ - [project](https://github.com/Ahaochan/project): 各种框架的整合`Demo`
 
 ## 比赛和证书
 - ~~2006年美国《时代周刊》年度风云人物评选~~
