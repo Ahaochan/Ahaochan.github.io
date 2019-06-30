@@ -61,7 +61,7 @@ create table [模式名.]表名
     /* 可以有多个列定义 */
     /* 列名 数据类型 [列级约束] */
     columnName1 datatype [default expr]
-)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='备注';
 
 # 子查询建表
 create table [模式名.]表名
@@ -149,7 +149,7 @@ select * from stu where sname like '张\%'; # 查找姓名为张%的学生信息
 select * from stu where sname like '张\%' escape '\';   #'# 标准SQL使用escape声明转义字符
 
 # limit限制查询数量
-select * froom stu limit 0, 5; # 查询stu表中从第0行开始的5条记录 
+select * from stu limit 0, 5; # 查询stu表中从第0行开始的5条记录 
 
 # 外连接查询
 select s.*,t.* from stu s left  outer join teacher t on s.tid=t.tid; # 左外连接，左表为基础，右表数据可为null 
