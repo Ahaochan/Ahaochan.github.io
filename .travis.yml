@@ -40,7 +40,6 @@ before_install:
 # next主题下载
 - git clone https://github.com/theme-next/hexo-theme-next themes/next
 # next主题依赖下载
-- git clone https://github.com/theme-next/theme-next-pangu.git themes/next/source/lib/pangu
 - git clone https://github.com/theme-next/theme-next-reading-progress themes/next/source/lib/reading_progress
 - git clone https://github.com/theme-next/theme-next-fastclick themes/next/source/lib/fastclick
 - git clone https://github.com/theme-next/theme-next-jquery-lazyload themes/next/source/lib/jquery_lazyload
