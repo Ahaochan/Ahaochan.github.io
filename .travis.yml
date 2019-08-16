@@ -40,7 +40,7 @@ before_install:
 - sed -i "s/CODING_TOKEN/${CODING_TOKEN}/" source/_data/next.yml
 # next主题下载
 - git clone https://github.com/theme-next/hexo-theme-next themes/next
-- cd themes/next && git checkout v7.3.0 && cd -
+- cd themes/next && git checkout v7.2.0 && cd -
 # next主题依赖下载
 - git clone https://github.com/theme-next/theme-next-reading-progress themes/next/source/lib/reading_progress
 - git clone https://github.com/theme-next/theme-next-fastclick themes/next/source/lib/fastclick
