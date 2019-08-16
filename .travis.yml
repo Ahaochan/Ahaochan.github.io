@@ -39,11 +39,11 @@ before_install:
 - sed -i "s/CODING_TOKEN/${CODING_TOKEN}/" source/_data/next.yml
 # next主题下载
 - git clone https://github.com/theme-next/hexo-theme-next themes/next
-- cd themes/next && git checkout v7.3.0 && cd -
+- cd themes/next && git checkout v7.2.0 && cd -
 # next主题依赖下载
 - git clone https://github.com/theme-next/theme-next-reading-progress themes/next/source/lib/reading_progress
 - git clone https://github.com/theme-next/theme-next-fastclick themes/next/source/lib/fastclick
-- git clone https://github.com/theme-next/theme-next-jquery-lazyload themes/next/source/lib/jquery_lazyload
+- git clone https://github.com/theme-next/theme-next-jquery-lazyload themes/next/source/lib/jquery_lazyload # https://github.com/theme-next/theme-next-lazyload
 - git clone https://github.com/theme-next/theme-next-pace themes/next/source/lib/pace
 - git clone https://github.com/theme-next/theme-next-canvas-nest themes/next/source/lib/canvas-nest
 - git clone https://github.com/theme-next/theme-next-fancybox3 themes/next/source/lib/fancybox
