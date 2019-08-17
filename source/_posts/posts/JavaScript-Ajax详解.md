@@ -62,8 +62,8 @@ $(document).ready(function(){
             type: 'POST',
             contentType : 'application/json',
             async: true,
-            timeout : 100000,
-url: _______url:_'http://localhost:8080/test',
+            timeout : 100000, 
+            url: 'http://localhost:8080/test',
             dataType: 'json',
             data:{
                 name:'张三',
