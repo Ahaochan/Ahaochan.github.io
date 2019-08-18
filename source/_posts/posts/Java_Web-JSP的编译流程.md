@@ -71,6 +71,7 @@ public class JspServlet extends HttpServlet implements PeriodicEventListener {
     public void destroy() {
         rctxt.destroy();
     }
+}
 ```
 
 ## 重写了HttpServlet的service方法
