@@ -252,7 +252,7 @@ public abstract class AuthenticatingRealm extends CachingRealm implements Initia
 ```
 `doGetAuthenticationInfo()`就是我们自定义`Realm`要实现的方法.
 至此, 整个身份验证流程就走通了.
-![Subject.Login()调用链](https://yuml.me/diagram/nofunky;dir:LR/class/[DelegatingSubject.login()]->[DefaultSecurityManager.login()],[DefaultSecurityManager.login()]->[ModularRealmAuthenticator.authenticate()],[ModularRealmAuthenticator.doAuthenticate()]->[AuthenticatingRealm.doGetAuthenticationInfo()])
+![Subject.Login()调用链](https://yuml.me/diagram/nofunky;dir:LR/class/[DelegatingSubject.login]->[DefaultSecurityManager.login],[DefaultSecurityManager.login]->[ModularRealmAuthenticator.authenticate],[ModularRealmAuthenticator.doAuthenticate]->[AuthenticatingRealm.doGetAuthenticationInfo])
 
 # 权限认证
 我们重写`Realm`除了`doGetAuthenticationInfo()`还要重写`doGetAuthorizationInfo()`.
