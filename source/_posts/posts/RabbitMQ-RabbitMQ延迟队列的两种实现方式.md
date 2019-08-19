@@ -281,5 +281,6 @@ public class DirectProducerTest {
 然后我写了个工具类[`RabbitMQHelper`](https://github.com/Ahaochan/ahao-common-utils/blob/master/src/main/java/com/ahao/util/spring/mq/RabbitMQHelper.java)可以拿来用下.
 
 # 参考资料
+- [RabbitMQ 延迟队列插件 x-delay Bug](http://blog.lbanyan.com/rabbitmq_delay/)
 - [springboot rabbitmq 之死信队列（延迟消费消息）](https://my.oschina.net/10000000000/blog/1626278)
 - [通过RabbitMQ 死信队列实现延迟MQ消息，消息延迟，MQ延迟队列](https://blog.csdn.net/qq_15071263/article/details/89636161)
