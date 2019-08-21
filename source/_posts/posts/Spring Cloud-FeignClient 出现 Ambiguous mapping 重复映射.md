@@ -77,6 +77,7 @@ public class TimeController {
 # 问题所在
 我们看下`RequestMappingHandlerMapping`映射注册器
 ```java
+// org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping
 public class RequestMappingHandlerMapping extends RequestMappingInfoHandlerMapping implements MatchableHandlerMapping, EmbeddedValueResolverAware {
     @Override
     protected boolean isHandler(Class<?> beanType) {
