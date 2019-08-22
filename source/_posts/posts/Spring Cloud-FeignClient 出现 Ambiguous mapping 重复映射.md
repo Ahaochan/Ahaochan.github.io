@@ -111,7 +111,7 @@ public interface TimeApi {
 # 解决方案
 这是`Spring MVC`的锅, `Feign`是不可能改的了, 而且`Spring MVC`也不可能改, 因为要兼容以前版本的使用者.
 
-# 最简单的方法
+## 最简单的方法
 不要把`@RequestMapping`和`@FeignClient`一起用, 直接把链接拼接到方法级的`@RequestMapping`上
 ```java
 @FeignClient(value = "AHAO-SERVER")
@@ -130,7 +130,7 @@ public interface TimeApi {
 }
 ```
 
-# 装逼用方法
+## 装逼用方法
 来源: https://github.com/spring-cloud/spring-cloud-netflix/issues/466#issuecomment-257043631
 但是失去了自动装配的一些特性, 不推荐使用
 ```java
