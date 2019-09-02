@@ -14,6 +14,8 @@ date: 2019-09-02 22:28:00
 结果`Solr`的文章还没出来, 反而先出了`ElasticSearch`的.
 于是现在就开始学习如何精通`ElasticSearch`, 工欲善其事必先利其器, 先来精通一下如何安装.
 
+<!-- more -->
+
 # 选择 ES 版本
 [https://www.elastic.co/cn/support/matrix](https://www.elastic.co/cn/support/matrix)
 
@@ -44,12 +46,13 @@ cd elasticsearch/
 一般这样就可以启动了, 但是我在虚拟机里面启动的, 所以出现了各种各样的问题.
 
 ## 修改 jvm 内存
+
 > OpenJDK 64-Bit Server VM warning: INFO: os::commit_memory(0x0000000085330000, 2060255232, 0) failed; error='Cannot allocate memory' (errno=12)
-> #
-> # There is insufficient memory for the Java Runtime Environment to continue.
-> # Native memory allocation (mmap) failed to map 2060255232 bytes for committing reserved memory.
-> # An error report file with more information is saved as:
-> # /opt/elasticsearch/hs_err_pid3215.log
+> 
+> There is insufficient memory for the Java Runtime Environment to continue.
+> Native memory allocation (mmap) failed to map 2060255232 bytes for committing reserved memory.
+> An error report file with more information is saved as:
+> /opt/elasticsearch/hs_err_pid3215.log
 
 可以看到, `JVM`内存不足了, 有两个建议
 1. 给虚拟机加内存.
