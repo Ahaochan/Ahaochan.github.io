@@ -20,8 +20,8 @@ date: 2017-05-30 17:21:18
 反例： macroPolo /  UserDo /  XMLService /  TCPUDPDeal /  TAPromotion
 
 1. 【强制】常量命名全部大写，单词间用下划线隔开，力求语义表达完整清楚，不要嫌名字长。
-正例：  `MAX _ STOCK _ COUNT`
-反例：  `MAX _ COUNT`
+正例：  `MAX_STOCK_COUNT`
+反例：  `MAX_COUNT`
 
 1. 【强制】抽象类命名使用 `Abstract` 或 `Base` 开头 ； 异常类命名使用 `Exception` 结尾 ； 测试类命名以它要测试的类的名称开始，以 `Test` 结尾。
 
@@ -50,7 +50,7 @@ RPC框架在反向解析的时候，“以为”对应的属性名称是 deleted
 1. 【强制】不允许任何魔法值 （ 即未经定义的常量 ） 直接出现在代码中。
 反例：
 ```java
-String key  = " Id # taobao _" +  tradeId;
+String key  = " Id # taobao_" +  tradeId;
 cache.put(key ,  value);
 ```
 
@@ -70,7 +70,7 @@ cache.put(key ,  value);
     -  在多个参数超长，在`逗号`后换行。
     -  在括号前不要换行。
     
-1. 【强制】 IDE 的 `text file encoding` 设置为 `UTF -8`; IDE 中文件的`换行符`使用 `Unix `格式，不要使用 windows 格式。
+1. 【强制】 IDE 的 `text file encoding` 设置为 `UTF-8`; IDE 中文件的`换行符`使用 `Unix `格式，不要使用 windows 格式。
 
 1. 【推荐】没有必要增加若干空格来使某一行的字符与上一行对应位置的字符对齐。
 
@@ -124,7 +124,7 @@ private static final ThreadLocal<DateFormat> df = new ThreadLocal<DateFormat>() 
 };
 ```
 说明：如果是 JDK 8 的应用，可以使用 `Instant` 代替 `Date` ， `LocalDateTime` 代替 `Calendar` ，
-`DateTimeFormatter` 代替 `Simpledateformatter` ，官方给出的解释： simple beautiful strong immutable thread - safe 。
+`DateTimeFormatter` 代替 `Simpledateformatter` ，官方给出的解释： simple beautiful strong immutable thread-safe 。
 
 1. 【强制】多线程并行处理定时任务时， `Timer` 运行多个 `TimeTask` 时，
 只要其中之一没有捕获抛出的异常，其它任务便会自动终止运行，
@@ -143,16 +143,16 @@ private static final ThreadLocal<DateFormat> df = new ThreadLocal<DateFormat>() 
 
 # MySQL数据库
 ## 建表规约
-1. 【强制】表达是与否概念的字段，必须使用 `is _ xxx` 的方式命名，数据类型是 `unsigned tinyint`（ 1 表示是，0 表示否 ） 。
+1. 【强制】表达是与否概念的字段，必须使用 `is_xxx` 的方式命名，数据类型是 `unsigned tinyint`（ 1 表示是，0 表示否 ） 。
 
-1. 【强制】主键索引名为 `pk_ 字段名`；唯一索引名为 `uk _字段名` ； 普通索引名则为 `idx _字段名`。
+1. 【强制】主键索引名为 `pk_字段名`；唯一索引名为 `uk_字段名` ； 普通索引名则为 `idx_字段名`。
 
 1. 【强制】小数类型为 `decimal` ，禁止使用 `float` 和 `double` 。
 说明： `float` 和 `double` 在存储的时候，存在精度损失的问题，很可能在值的比较时，得到不正确的结果。
 如果存储的数据范围超过 `decimal` 的范围，建议将数据拆成整数和小数分开存储。
 
-1. 【强制】表必备三字段： `id` ,  `gmt _ create` ,  `gmt _ modified`。
-说明：其中 `id` 必为主键，类型为 `unsigned bigint` 、单表时自增、步长为 `1`。 `gmt _ create` ,`gmt _ modified` 的类型均为 `date _ time` 类型。
+1. 【强制】表必备三字段： `id` ,  `gmt_create` ,  `gmt_modified`。
+说明：其中 `id` 必为主键，类型为 `unsigned bigint` 、单表时自增、步长为 `1`。 `gmt_create` ,`gmt_modified` 的类型均为 `date_time` 类型。
 
 ## 索引规约
 1. 【强制】 超过三个表禁止 `join` 。需要 `join` 的字段，数据类型必须绝对一致 ； 
@@ -164,7 +164,7 @@ private static final ThreadLocal<DateFormat> df = new ThreadLocal<DateFormat>() 
 区分度会高达 90%以上，可以使用 `count(distinct left( 列名, 索引长度 )) / count( * )` 的区分度来确定。
 
 1. 【强制】页面搜索严禁左模糊或者全模糊，如果需要请走搜索引擎来解决。
-说明：索引文件具有 B - Tree 的最左前缀匹配特性，如果左边的值未确定，那么无法使用此索引。
+说明：索引文件具有 B-Tree 的最左前缀匹配特性，如果左边的值未确定，那么无法使用此索引。
 
 1. 【推荐】利用延迟关联或者子查询优化超多分页场景。
 说明： MySQL 并不是跳过 offset 行，而是取 offset + N 行，然后返回放弃前 offset 行，返回N 行，
@@ -173,7 +173,7 @@ private static final ThreadLocal<DateFormat> df = new ThreadLocal<DateFormat>() 
 `SELECT a.* FROM 表 1 a, (select id from 表 1 where 条件 LIMIT 100000,20 ) b where a.id=b.id`
 
 1. 【推荐】建组合索引的时候，区分度最高的在最左边。
-正例：如果 `where a =?  and b =?` ， a 列的几乎接近于唯一值，那么只需要单建 `idx _ a` 索引即可。
+正例：如果 `where a =?  and b =?` ， a 列的几乎接近于唯一值，那么只需要单建 `idx_a` 索引即可。
 说明：存在非等号和等号混合判断条件时，在建索引时，请把等号条件的列前置。如： `where a >? and b =?`
 那么即使 a 的区分度更高，也必须把 b 放在索引的最前列。
  
@@ -185,8 +185,8 @@ private static final ThreadLocal<DateFormat> df = new ThreadLocal<DateFormat>() 
 正例：可以使用如下方式来避免 sum 的 NPE 问题： `SELECT IF(ISNULL(SUM(g)) ,0, SUM(g)) FROM table;`
 
 1. 【强制】不得使用外键与级联，一切外键概念必须在应用层解决。
-说明： （ 概念解释 ） 学生表中的 student _ id 是主键，那么成绩表中的 student _ id 则为外键。
-如果更新学生表中的 student _ id ，同时触发成绩表中的 student _ id 更新，则为级联更新。
+说明： （ 概念解释 ） 学生表中的 student_id 是主键，那么成绩表中的 student_id 则为外键。
+如果更新学生表中的 student_id ，同时触发成绩表中的 student_id 更新，则为级联更新。
 外键与级联更新适用于单机低并发，不适合分布式、高并发集群 ； 级联更新是强阻塞，存在数据库更新风暴的风险；
 外键影响数据库的插入速度。
 
