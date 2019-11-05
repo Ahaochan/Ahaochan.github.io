@@ -1,0 +1,2127 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2">
+
+
+
+
+
+  <meta name="google-site-verification" content="ZmER9fymckNfZ_Zxw6p3fpvqhvR6LitG9pR-cNVflx0">
+
+
+
+  <meta name="msvalidate.01" content="5351f65e5e79bb62584189a5e6906b8b">
+
+
+
+
+
+  <meta name="baidu-site-verification" content="jgtczlqzuk">
+
+
+
+  
+  
+  <link rel="stylesheet" href="/lib/fancybox/source/jquery.fancybox.css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+    
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic|Consolas:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext">
+  
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+<link rel="stylesheet" href="/css/main.css?v=7.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/config/favicon-32x32-next.jpg?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/config/favicon-16x16-next.jpg?v=7.2.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.2.0" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '7.2.0',
+    sidebar: {"position":"right","display":"always","offset":12,"onmobile":true,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: true,
+    fastclick: false,
+    lazyload: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+  (adsbygoogle = window.adsbygoogle || []).push({
+    google_ad_client: "ca-pub-5208025300813046",
+    enable_page_level_ads: true
+  });
+</script>
+
+  <meta name="description" content="前言本文适用范围：已参加项目开发的人 写这篇文章的目的是为方便地对代码进行管理，让整个团队的代码规范化。这里的部分规定可能和你在其他地方看到的不一样，但还是请遵守这些规则。  编码规范是泯灭程序猿个性的一项制度，但对于整个团队而言，却是一件利器-《App 研发录》">
+<meta name="keywords" content="编码规范">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android命名规范和编码规范">
+<meta property="og:url" content="https://blog.ahao.moe//posts/Android_naming_conventions_and_coding_specifications.html">
+<meta property="og:site_name" content="Japari Park">
+<meta property="og:description" content="前言本文适用范围：已参加项目开发的人 写这篇文章的目的是为方便地对代码进行管理，让整个团队的代码规范化。这里的部分规定可能和你在其他地方看到的不一样，但还是请遵守这些规则。  编码规范是泯灭程序猿个性的一项制度，但对于整个团队而言，却是一件利器-《App 研发录》">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://blog.ahao.moe/images/Android命名规范和编码规范_01.jpg">
+<meta property="og:image" content="https://blog.ahao.moe/images/Android命名规范和编码规范_02.png">
+<meta property="og:updated_time" content="2019-11-05T06:11:14.921Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android命名规范和编码规范">
+<meta name="twitter:description" content="前言本文适用范围：已参加项目开发的人 写这篇文章的目的是为方便地对代码进行管理，让整个团队的代码规范化。这里的部分规定可能和你在其他地方看到的不一样，但还是请遵守这些规则。  编码规范是泯灭程序猿个性的一项制度，但对于整个团队而言，却是一件利器-《App 研发录》">
+<meta name="twitter:image" content="https://blog.ahao.moe/images/Android命名规范和编码规范_01.jpg">
+
+
+
+  <link rel="alternate" href="/rss.xml" title="Japari Park" type="application/atom+xml">
+
+
+
+  
+  
+  <link rel="canonical" href="https://blog.ahao.moe//posts/Android_naming_conventions_and_coding_specifications">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Android命名规范和编码规范 | Japari Park</title>
+  
+
+
+
+
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-108454440-1"></script>
+  <script>
+    var host = window.location.hostname;
+    if (host !== "localhost" || !true) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'UA-108454440-1');
+    }
+  </script>
+
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?510ee07cab749efcbee89f6ef8d35776";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Japari Park</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <h1 class="site-subtitle" itemprop="description">你也是程序猿friends呢~</h1>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">195</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签<span class="badge">85</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类<span class="badge">26</span></a>
+
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+  
+  
+
+  
+
+  <a href="https://github.com/Ahaochan" class="github-corner" title="我的Github" aria-label="我的Github" rel="noopener" target="_blank"><svg width="80" height="80" viewbox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg></a>
+
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+    <div class="reading-progress-bar"></div>
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://blog.ahao.moe//posts/Android_naming_conventions_and_coding_specifications.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Ahaochan">
+      <meta itemprop="description" content="你也是程序猿friends呢~">
+      <meta itemprop="image" content="/images/config/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Japari Park">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">Android命名规范和编码规范<a href="https://github.com/Ahaochan/Ahaochan.github.io/blob/source/source/_posts/posts/Android-Android命名规范和编码规范.md" class="post-edit-link" title="编辑" rel="noopener" target="_blank"><i class="fa fa-pencil"></i></a>
+
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+
+          
+          
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2016-06-23 09:11:07" itemprop="dateCreated datePublished" datetime="2016-06-23T09:11:07+08:00">2016-06-23</time>
+            </span>
+          
+
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Android/" itemprop="url" rel="index"><span itemprop="name">Android</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+              
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+            
+                <span class="post-meta-item-text">评论数：</span>
+                <a href="/posts/Android_naming_conventions_and_coding_specifications.html#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/posts/Android_naming_conventions_and_coding_specifications.html" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+            <span id="/posts/Android_naming_conventions_and_coding_specifications.html" class="post-meta-item leancloud_visitors" data-flag-title="Android命名规范和编码规范">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              
+                <span class="post-meta-item-text">阅读次数：</span>
+              
+                <span class="leancloud-visitors-count"></span>
+            </span>
+          
+
+          
+
+          <br>
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">本文字数：</span>
+              
+              <span title="本文字数">6.3k</span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>本文适用范围：已参加项目开发的人</p>
+<p>写这篇文章的目的是为方便地对代码进行管理，让整个团队的代码规范化。这里的部分规定可能和你在其他地方看到的不一样，但还是请遵守这些规则。</p>
+<blockquote>
+<p>编码规范是泯灭程序猿个性的一项制度，但对于整个团队而言，却是一件利器<br>-《App 研发录》</p>
+</blockquote>
+<a id="more"></a>
+<h1 id="统一代码格式"><a href="#统一代码格式" class="headerlink" title="统一代码格式"></a>统一代码格式</h1><p>首先请参照这篇文章设置 <code>Android Studio</code> 的 <code>Code Style</code>：<br><a href="http://blog.qiji.tech/archives/5153" target="_blank" rel="noopener">设置 Code Style</a><br>细心的同学可能会发现代码风格跟 <code>Google</code> 推荐的不一致，但请记住，我们是一个团队。</p>
+<h2 id="项目结构"><a href="#项目结构" class="headerlink" title="项目结构"></a>项目结构</h2><img src="/images/Android命名规范和编码规范_01.jpg">
+<h2 id="命名规范"><a href="#命名规范" class="headerlink" title="命名规范"></a>命名规范</h2><h3 id="控件-Id-命名方式"><a href="#控件-Id-命名方式" class="headerlink" title="控件 Id 命名方式"></a>控件 Id 命名方式</h3><p>命名模式：<code>View</code> 缩写_逻辑名称<br>例如一个登陆按钮 <code>Button</code>：<code>id</code> 为 <code>btn_login</code>，私有成员变量 <code>mBtnLogin</code></p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">View</th>
+<th style="text-align:left">@Id</th>
+<th style="text-align:left">ava variable（private）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">Button</td>
+<td style="text-align:left">btn_</td>
+<td style="text-align:left">mBtnLogin</td>
+</tr>
+<tr>
+<td style="text-align:left">TextView</td>
+<td style="text-align:left">txt_</td>
+<td style="text-align:left">mTxtLogin</td>
+</tr>
+<tr>
+<td style="text-align:left">ImageView</td>
+<td style="text-align:left">img_</td>
+<td style="text-align:left">mImageLogin</td>
+</tr>
+<tr>
+<td style="text-align:left">EditText</td>
+<td style="text-align:left">edt_</td>
+<td style="text-align:left">mEdtContent</td>
+</tr>
+<tr>
+<td style="text-align:left">Spinner</td>
+<td style="text-align:left">spinner_</td>
+<td style="text-align:left">mSpinnerNation</td>
+</tr>
+<tr>
+<td style="text-align:left">TabLayout</td>
+<td style="text-align:left">tab_</td>
+<td style="text-align:left">mTabLayout</td>
+</tr>
+<tr>
+<td style="text-align:left">LinearLayout</td>
+<td style="text-align:left">linear_</td>
+<td style="text-align:left">mLinearLayout</td>
+</tr>
+</tbody>
+</table>
+<h3 id="Layout-相关"><a href="#Layout-相关" class="headerlink" title="Layout 相关"></a>Layout 相关</h3><table>
+<thead>
+<tr>
+<th style="text-align:left">Component</th>
+<th style="text-align:left">Class Name</th>
+<th style="text-align:left">Layout Name</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">Activity</td>
+<td style="text-align:left">UserProfileActivity</td>
+<td style="text-align:left">activity_user_profile.xml</td>
+</tr>
+<tr>
+<td style="text-align:left">Fragment</td>
+<td style="text-align:left">SignUpFragment</td>
+<td style="text-align:left">fragment_sign_up.xml</td>
+</tr>
+<tr>
+<td style="text-align:left">Dialog</td>
+<td style="text-align:left">ChangePasswordDialog</td>
+<td style="text-align:left">dialog_change_password.xml</td>
+</tr>
+<tr>
+<td style="text-align:left">AdapterView item</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">list_item_archive.xml</td>
+</tr>
+</tbody>
+</table>
+<h3 id="Color-相关"><a href="#Color-相关" class="headerlink" title="Color 相关"></a>Color 相关</h3><p>通常我们不直接使用数字来定义一些属性值，而是先将它定义在所对应的文件里，然后去引用它。</p>
+<ul>
+<li>推荐从 <code>Material Design</code> 中 <code>Color</code> 中选取颜色(后详)</li>
+<li>尽量以 “颜色名称_程度” 来命名</li>
+<li>必要时也可用颜色功能来命名</li>
+</ul>
+<p>在<a href="https://material.google.com/style/color.html#color-color-palette" target="_blank" rel="noopener">Material color palette</a> 的网页中，可以看到官方设计文档的调色板，尽量从文档中选取颜色，来命名和使用。<br>命名采用全小写，下划线分割的形式。<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- color --&gt;</span></span><br><span class="line"> <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">"grey_xlight"</span>&gt;</span># F5F5F5<span class="tag">&lt;/<span class="name">color</span>&gt;</span></span><br><span class="line"> <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">"grey_light"</span>&gt;</span># E0E0E0<span class="tag">&lt;/<span class="name">color</span>&gt;</span></span><br><span class="line"> <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">"grey"</span>&gt;</span># 9E9E9E<span class="tag">&lt;/<span class="name">color</span>&gt;</span></span><br><span class="line"> <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">"grey_dark"</span>&gt;</span># 616161<span class="tag">&lt;/<span class="name">color</span>&gt;</span></span><br><span class="line"> <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">"grey_xdark"</span>&gt;</span># 424242<span class="tag">&lt;/<span class="name">color</span>&gt;</span></span><br><span class="line"> </span><br><span class="line"> <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">"title_normal"</span>&gt;</span># FBE9E7<span class="tag">&lt;/<span class="name">color</span>&gt;</span></span><br><span class="line"> <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">"bg_pop&gt;# FF6D00&lt;/color&gt;</span></span></span><br><span class="line"><span class="tag"><span class="string"> </span></span></span><br><span class="line"><span class="tag"><span class="string">&lt;!-- material color --&gt;</span></span></span><br><span class="line"><span class="tag"><span class="string"> &lt;color name="</span><span class="attr">material_red_500</span>"&gt;</span># F44336<span class="tag">&lt;/<span class="name">color</span>&gt;</span></span><br><span class="line"> <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">"material_purple_100"</span>&gt;</span># E1BEE7<span class="tag">&lt;/<span class="name">color</span>&gt;</span></span><br><span class="line"> <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">"material_green_800"</span>&gt;</span># 2E7D32<span class="tag">&lt;/<span class="name">color</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>注意 <code>Material color</code> 的命名方式</p>
+<h3 id="Dimen-相关"><a href="#Dimen-相关" class="headerlink" title="Dimen 相关"></a>Dimen 相关</h3><ul>
+<li>尽量以 “逻辑名称_程度” 来命名</li>
+<li>必要时也可用 “逻辑名称_功能” 来命名<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- text size --&gt;</span></span><br><span class="line"> <span class="tag">&lt;<span class="name">dimen</span> <span class="attr">name</span>=<span class="string">"text_size_xxsmall"</span>&gt;</span>12sp<span class="tag">&lt;/<span class="name">dimen</span>&gt;</span></span><br><span class="line"> <span class="tag">&lt;<span class="name">dimen</span> <span class="attr">name</span>=<span class="string">"text_size_xsmall"</span>&gt;</span>14sp<span class="tag">&lt;/<span class="name">dimen</span>&gt;</span></span><br><span class="line"> <span class="tag">&lt;<span class="name">dimen</span> <span class="attr">name</span>=<span class="string">"text_size_small"</span>&gt;</span>16sp<span class="tag">&lt;/<span class="name">dimen</span>&gt;</span></span><br><span class="line"> <span class="tag">&lt;<span class="name">dimen</span> <span class="attr">name</span>=<span class="string">"text_size_medium"</span>&gt;</span>18sp<span class="tag">&lt;/<span class="name">dimen</span>&gt;</span></span><br><span class="line"> <span class="tag">&lt;<span class="name">dimen</span> <span class="attr">name</span>=<span class="string">"text_size_large"</span>&gt;</span>20sp<span class="tag">&lt;/<span class="name">dimen</span>&gt;</span></span><br><span class="line"> <span class="tag">&lt;<span class="name">dimen</span> <span class="attr">name</span>=<span class="string">"text_size_xlarge"</span>&gt;</span>22sp<span class="tag">&lt;/<span class="name">dimen</span>&gt;</span></span><br><span class="line"> </span><br><span class="line"> <span class="tag">&lt;<span class="name">dimen</span> <span class="attr">name</span>=<span class="string">"text_size_title"</span>&gt;</span>18sp<span class="tag">&lt;/<span class="name">dimen</span>&gt;</span></span><br><span class="line"> </span><br><span class="line"><span class="comment">&lt;!-- typical spacing between two views, margin or padding --&gt;</span></span><br><span class="line"> <span class="tag">&lt;<span class="name">dimen</span> <span class="attr">name</span>=<span class="string">"spacing_tiny"</span>&gt;</span>4dp<span class="tag">&lt;/<span class="name">dimen</span>&gt;</span></span><br><span class="line"> <span class="tag">&lt;<span class="name">dimen</span> <span class="attr">name</span>=<span class="string">"spacing_small"</span>&gt;</span>10dp<span class="tag">&lt;/<span class="name">dimen</span>&gt;</span></span><br><span class="line"> <span class="tag">&lt;<span class="name">dimen</span> <span class="attr">name</span>=<span class="string">"spacing_medium"</span>&gt;</span>14dp<span class="tag">&lt;/<span class="name">dimen</span>&gt;</span></span><br><span class="line"> <span class="tag">&lt;<span class="name">dimen</span> <span class="attr">name</span>=<span class="string">"spacing_large"</span>&gt;</span>24dp<span class="tag">&lt;/<span class="name">dimen</span>&gt;</span></span><br><span class="line"> <span class="tag">&lt;<span class="name">dimen</span> <span class="attr">name</span>=<span class="string">"spacing_huge"</span>&gt;</span>40dp<span class="tag">&lt;/<span class="name">dimen</span>&gt;</span> </span><br><span class="line"><span class="comment">&lt;!-- typical sizes of views --&gt;</span></span><br><span class="line"> <span class="tag">&lt;<span class="name">dimen</span> <span class="attr">name</span>=<span class="string">"button_height_small"</span>&gt;</span>32dp<span class="tag">&lt;/<span class="name">dimen</span>&gt;</span></span><br><span class="line"> <span class="tag">&lt;<span class="name">dimen</span> <span class="attr">name</span>=<span class="string">"button_height_medium"</span>&gt;</span>40dp<span class="tag">&lt;/<span class="name">dimen</span>&gt;</span></span><br><span class="line"> <span class="tag">&lt;<span class="name">dimen</span> <span class="attr">name</span>=<span class="string">"button_height_large"</span>&gt;</span>60dp<span class="tag">&lt;/<span class="name">dimen</span>&gt;</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="String-相关"><a href="#String-相关" class="headerlink" title="String 相关"></a>String 相关</h3><p>String 命名的前缀应该能够清楚地表达它的功能职责，若是某个模块的字符串，可以以这个模块的名字为前缀然后再加上它的含义，如，<code>registratione_mail_hint</code>，<code>registration_name_hint</code>。<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">string</span> <span class="attr">name</span>=<span class="string">"app_name"</span>&gt;</span>app名<span class="tag">&lt;/<span class="name">string</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">string</span> <span class="attr">name</span>=<span class="string">"registration_email_hint"</span>&gt;</span>请输入邮箱地址<span class="tag">&lt;/<span class="name">string</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">string</span> <span class="attr">name</span>=<span class="string">"registration_name_hint"</span>&gt;</span>请输入用户名<span class="tag">&lt;/<span class="name">string</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>如果一个Sting不属于任何模块，这也就意味着它是通用的，应该遵循以下规范：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">type</th>
+<th style="text-align:left">detail</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">error_</td>
+<td style="text-align:left">错误提示</td>
+</tr>
+<tr>
+<td style="text-align:left">success_</td>
+<td style="text-align:left">正确提示</td>
+</tr>
+<tr>
+<td style="text-align:left">msg_</td>
+<td style="text-align:left">一般信息提示</td>
+</tr>
+<tr>
+<td style="text-align:left">title_</td>
+<td style="text-align:left">标题提示，如，Dialog 标题</td>
+</tr>
+<tr>
+<td style="text-align:left">action_</td>
+<td style="text-align:left">动作提示，如，“保存”，“取消”，“创建”</td>
+</tr>
+<tr>
+<td style="text-align:left">direct_</td>
+<td style="text-align:left">页面跳转提示</td>
+</tr>
+</tbody>
+</table>
+<p>其他通用字符串尽量以：类别_功能 或 含义 来命名</p>
+<h3 id="Drawable-相关"><a href="#Drawable-相关" class="headerlink" title="Drawable 相关"></a>Drawable 相关</h3><p>当没有多种类型的图片时，图片统一放在 drawable-xxhdpi 的文件夹下</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Asset Type</th>
+<th style="text-align:left">Prefix</th>
+<th style="text-align:left">Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">Action bar</td>
+<td style="text-align:left">ab_</td>
+<td style="text-align:left">ab_stacked.9.png</td>
+</tr>
+<tr>
+<td style="text-align:left">Button</td>
+<td style="text-align:left">btn_</td>
+<td style="text-align:left">btn_send_pressed.9.png</td>
+</tr>
+<tr>
+<td style="text-align:left">Dialog</td>
+<td style="text-align:left">dialog_</td>
+<td style="text-align:left">dialog_top.9.png</td>
+</tr>
+<tr>
+<td style="text-align:left">Divider</td>
+<td style="text-align:left">divider_</td>
+<td style="text-align:left">divider_horizontal.9.png</td>
+</tr>
+<tr>
+<td style="text-align:left">Icon</td>
+<td style="text-align:left">ic_</td>
+<td style="text-align:left">ic_star.png</td>
+</tr>
+<tr>
+<td style="text-align:left">Menu</td>
+<td style="text-align:left">menu_</td>
+<td style="text-align:left">menu_submenu_bg.9.png</td>
+</tr>
+<tr>
+<td style="text-align:left">Notification</td>
+<td style="text-align:left">notification_</td>
+<td style="text-align:left">notification_bg.9.png</td>
+</tr>
+<tr>
+<td style="text-align:left">Tabs</td>
+<td style="text-align:left">tab_</td>
+<td style="text-align:left">tab_pressed.9.png</td>
+</tr>
+</tbody>
+</table>
+<h2 id="Android-编码规范"><a href="#Android-编码规范" class="headerlink" title="Android 编码规范"></a>Android 编码规范</h2><h3 id="XML-文件规范"><a href="#XML-文件规范" class="headerlink" title="XML 文件规范"></a>XML 文件规范</h3><p><strong>属性</strong><br>当你写好 layout 文件后，按 <code>Ctrl + alt + L</code> 格式化后，手动排版为下面这样的格式：</p>
+<ul>
+<li>每行两个属性</li>
+<li><code>android:id</code> 作为第一个属性</li>
+<li>如果存在 <code>style</code> 属性，则紧随作为第二行首个属性</li>
+<li>如果不存在 <code>style</code> 属性，则 <code>android:layout_xxx</code> 紧随作为第二行首个属性</li>
+<li><p>当布局中的一个元素不再包含子元素时，在最后一个属性右边使用自闭合标签<code>/&gt;</code></p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">LinearLayout</span></span></span><br><span class="line"><span class="tag"> <span class="attr">xmlns:android</span>=<span class="string">"http://schemas.android.com/apk/res/android"</span></span></span><br><span class="line"><span class="tag"> <span class="attr">android:layout_width</span>=<span class="string">"match_parent"</span> <span class="attr">android:layout_height</span>=<span class="string">"match_parent"</span></span></span><br><span class="line"><span class="tag"> <span class="attr">android:orientation</span>=<span class="string">"vertical"</span>&gt;</span></span><br><span class="line"> </span><br><span class="line"> <span class="tag">&lt;<span class="name">TextView</span> <span class="attr">android:id</span>=<span class="string">"@+id/txt_name"</span></span></span><br><span class="line"><span class="tag"> <span class="attr">style</span>=<span class="string">"@style/FancyText"</span> <span class="attr">android:layout_width</span>=<span class="string">"match_parent"</span></span></span><br><span class="line"><span class="tag"> <span class="attr">android:layout_height</span>=<span class="string">"wrap_content"</span> <span class="attr">android:layout_alignParentRight</span>=<span class="string">"true"</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">LinearLayout</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p><strong>使用 Tools</strong><br>布局预览应使用 <code>tools:</code>相关属性，避免 <code>android:text</code> 等硬编码的出现</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">TextView</span></span></span><br><span class="line"><span class="tag"> <span class="attr">android:layout_width</span>=<span class="string">"wrap_content"</span> <span class="attr">android:layout_height</span>=<span class="string">"wrap_content"</span></span></span><br><span class="line"><span class="tag"> <span class="attr">tools:text</span>=<span class="string">"Home Link"</span>/&gt;</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="Java-代码规范"><a href="#Java-代码规范" class="headerlink" title="Java 代码规范"></a>Java 代码规范</h2><h3 id="Field"><a href="#Field" class="headerlink" title="Field"></a>Field</h3><p>对Field的定义应该放在文件的首位，并且遵守以下规范：</p>
+<ul>
+<li>被 <code>private</code> 修饰的非静态变量，以 <code>m</code> 作为前缀</li>
+<li>被 <code>private</code> 修饰的静态变量，以 <code>s</code> 作为前缀</li>
+<li>被 <code>public</code> 修饰的非静态变量，以小写首字母做前缀</li>
+<li>其他变量，以 <code>m</code> 作为前缀，采用驼峰命名</li>
+<li>静态常量命名字母全部大写，单词之间用下划线分隔<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyClass</span> </span>&#123;</span><br><span class="line"> <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> SOME_CONSTANT = <span class="number">42</span>;</span><br><span class="line"> </span><br><span class="line"> <span class="meta">@Bind</span>(R.id.edit_collection_name) EditText mEdtName;</span><br><span class="line"> </span><br><span class="line"> <span class="keyword">public</span> <span class="keyword">int</span> publicField;</span><br><span class="line"> <span class="keyword">private</span> <span class="keyword">static</span> MyClass sSingleton;</span><br><span class="line"> <span class="keyword">int</span> mPackagePrivate;</span><br><span class="line"> <span class="keyword">private</span> <span class="keyword">int</span> mPrivate;</span><br><span class="line"> <span class="keyword">protected</span> <span class="keyword">int</span> mProtected;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="Entity"><a href="#Entity" class="headerlink" title="Entity"></a>Entity</h3><p>对于继承 <code>Entity</code> 的 <code>Model</code> 类型，按照下图进行编码：<br><img src="/images/Android命名规范和编码规范_02.png"><br>注意变量修饰符和大小写</p>
+<h3 id="类成员排序"><a href="#类成员排序" class="headerlink" title="类成员排序"></a>类成员排序</h3><p>关于这个并没有硬性要求，不过好的排序方式，能够提高可读性和易学性。这里给出一些排序建议：</p>
+<ol>
+<li>常量</li>
+<li>字段</li>
+<li>构造函数</li>
+<li>被重写的函数（不区分修饰符类型）</li>
+<li>被private修饰的函数</li>
+<li>被public修饰的函数</li>
+<li>被定义的内部类或者接口<br><strong>如果继承了<code>Android</code>组件，比如<code>Activity</code>或者<code>Fragment</code>，重写生命周期函数时，应该按照组件的生命周期进行排序</strong><br>示例如下：<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainActivity</span> <span class="keyword">extends</span> <span class="title">Activity</span> </span>&#123;</span><br><span class="line"> <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String TAG = MainActivity<span class="class">.<span class="keyword">class</span>.<span class="title">getSimpleName</span>()</span>;</span><br><span class="line"> <span class="keyword">private</span> String mTitle;</span><br><span class="line"> <span class="keyword">private</span> TextView mTextViewTitle;</span><br><span class="line"> <span class="meta">@Override</span></span><br><span class="line"> <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">()</span> </span>&#123; &#125;</span><br><span class="line"> </span><br><span class="line"> <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">setUpView</span><span class="params">()</span> </span>&#123; &#125;</span><br><span class="line"> </span><br><span class="line"> <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setTitle</span><span class="params">(String title)</span> </span>&#123;</span><br><span class="line"> mTitle = title;</span><br><span class="line"> &#125;</span><br><span class="line"> </span><br><span class="line"> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">AnInnerClass</span> </span>&#123; &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h3 id="字符串常量的命名"><a href="#字符串常量的命名" class="headerlink" title="字符串常量的命名"></a>字符串常量的命名</h3><p><code>Android SDK</code> 中诸如 <code>SharedPreferences</code>，<code>Bundle</code> 和 <code>Intent</code> 等，都采用 <code>key-value</code> 的方式进行赋值，当使用这些组件的时候，key 必须被 <code>static final</code> 所修饰，并且命名应该符合以下规范：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">ElementField</th>
+<th style="text-align:left">Name Prefix</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">SharedPreferences</td>
+<td style="text-align:left">PREF_</td>
+</tr>
+<tr>
+<td style="text-align:left">Bundle</td>
+<td style="text-align:left">BUNDLE_</td>
+</tr>
+<tr>
+<td style="text-align:left">Fragment Arguments</td>
+<td style="text-align:left">ARGUMENT_</td>
+</tr>
+<tr>
+<td style="text-align:left">Intent Extra</td>
+<td style="text-align:left">EXTRA_</td>
+</tr>
+<tr>
+<td style="text-align:left">Intent Action</td>
+<td style="text-align:left">ACTION_</td>
+</tr>
+</tbody>
+</table>
+<p>示例如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> <span class="keyword">final</span> String PREF_EMAIL = <span class="string">"PREF_EMAIL"</span>;</span><br><span class="line"><span class="keyword">static</span> <span class="keyword">final</span> String BUNDLE_AGE = <span class="string">"BUNDLE_AGE"</span>;</span><br><span class="line"><span class="keyword">static</span> <span class="keyword">final</span> String ARGUMENT_USER_ID = <span class="string">"ARGUMENT_USER_ID"</span>;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">static</span> <span class="keyword">final</span> String EXTRA_SURNAME = <span class="string">"com.myapp.extras.EXTRA_SURNAME"</span>;</span><br><span class="line"><span class="keyword">static</span> <span class="keyword">final</span> String ACTION_OPEN_USER = <span class="string">"com.myapp.action.ACTION_OPEN_USER"</span>;</span><br></pre></td></tr></table></figure></p>
+<h3 id="Activity-与-Fragment-打开方式"><a href="#Activity-与-Fragment-打开方式" class="headerlink" title="Activity 与 Fragment 打开方式"></a>Activity 与 Fragment 打开方式</h3><p>当通过 <code>Intent</code> 或者<code>Bundle</code>向<code>Activity</code>与<code>Fragment</code>传值时，应该遵循上面提到的<code>key-value</code>规范，公开一个被 <code>public static</code> 修饰的方法，方法的参数应该包含所有打开这个 <code>Activity</code> 或者 <code>Fragment</code> 的信息，示例如下：</p>
+<ul>
+<li><p>通过 <code>.startActivity()</code> 函数，开启指定 <code>Activity</code>：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">startActivity</span><span class="params">(AppCompatActivity startingActivity, User user)</span> </span>&#123;</span><br><span class="line"> Intent intent = <span class="keyword">new</span> Intent(startingActivity, ThisActivity<span class="class">.<span class="keyword">class</span>)</span>;</span><br><span class="line"> intent.putParcelableExtra(EXTRA_USER, user);</span><br><span class="line"> startingActivity.startActivity(intent);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>通过 <code>.newInstance()</code> 函数，加载指定 <code>Fragment</code>：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> UserFragment <span class="title">newInstance</span><span class="params">(User user)</span> </span>&#123;</span><br><span class="line"> UserFragment fragment = <span class="keyword">new</span> UserFragment;</span><br><span class="line"> Bundle args = <span class="keyword">new</span> Bundle();</span><br><span class="line"> args.putParcelable(ARGUMENT_USER, user);</span><br><span class="line"> fragment.setArguments(args)</span><br><span class="line"> <span class="keyword">return</span> fragment;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h1 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h1><p>如果您所寻找的命名不在上述规范中，可以暂时使用自己的方式来命名，但也要有一定格式并在自己的程序中统一。<br>通常我们会把更大的类别放在前，更细致的放在后。<br>欢迎大家提出问题，互相探讨，共同维护出一份更好的更清晰的开发规范。</p>
+<h1 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h1><ul>
+<li><a href="http://blog.qiji.tech/archives/10395" target="_blank" rel="noopener">[Android]命名规范和编码规范</a></li>
+<li><a href="https://github.com/RxSmart/Link-Android-Guideline/blob/master/Android-Guideline.md" target="_blank" rel="noopener">Android编码规范</a></li>
+<li><a href="https://github.com/nekocode/nekoblog/blob/master/AndroidDevGuideline.md#property-%E5%AE%9A%E4%B9%89%E4%B8%8E%E5%91%BD%E5%90%8D%E8%A7%84%E8%8C%83" target="_blank" rel="noopener">Android Development Guideline</a></li>
+<li><a href="http://blog.csdn.net/vipzjyno1/article/details/23542617" target="_blank" rel="noopener">Android 命名规范 （提高代码可以读性）</a></li>
+</ul>
+
+      
+    </div>
+
+    
+      
+
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+      <div>
+        <div id="reward-container">
+  <div>点击进入云乞讨模式!</div>
+  <button id="reward-button" disable="enable" onclick="var qr = document.getElementById(&quot;qr&quot;); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+
+    
+      
+      
+        
+      
+      <div style="display: inline-block">
+        <img src="/images/config/wechatpay.jpg" alt="Ahaochan 微信支付">
+        <p>微信支付</p>
+      </div>
+    
+      
+      
+        
+      
+      <div style="display: inline-block">
+        <img src="/images/config/alipay.jpg" alt="Ahaochan 支付宝">
+        <p>支付宝</p>
+      </div>
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+      <div>
+        
+
+
+
+
+  
+
+
+
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Ahaochan</li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    
+    <a href="/Android_naming_conventions_and_coding_specifications" title="Android命名规范和编码规范">Android_naming_conventions_and_coding_specifications</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！</li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+        
+          
+        
+        <div class="post-tags">
+          
+            <a href="/tags/编码规范/" rel="tag"># 编码规范</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/posts/Android_common_xml.html" rel="next" title="常用配置文件">
+                <i class="fa fa-chevron-left"></i> 常用配置文件
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/posts/onMeasure_method_of_View.html" rel="prev" title="View的onMeasure()">
+                View的onMeasure() <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/config/avatar.jpg" alt="Ahaochan">
+            
+              <p class="site-author-name" itemprop="name">Ahaochan</p>
+              <div class="site-description motion-element" itemprop="description">你也是程序猿friends呢~</div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">195</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">26</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">85</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+            <div class="feed-link motion-element">
+              <a href="/rss.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://github.com/Ahaochan" title="GitHub &rarr; https://github.com/Ahaochan" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://greasyfork.org/zh-CN/users/30831" title="Greasyfork &rarr; https://greasyfork.org/zh-CN/users/30831" rel="noopener" target="_blank"><i class="fa fa-fw fa-chrome"></i>Greasyfork</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="mailto:844394093@qq.com" title="E-Mail &rarr; mailto:844394093@qq.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                </span>
+              
+            </div>
+          
+
+          
+             <div class="cc-license motion-element" itemprop="license">
+              
+              
+                
+              
+              
+              
+              <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+             </div>
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                那些年抱过的大腿
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://hclab.cn/" title="http://hclab.cn/" rel="noopener" target="_blank">环创</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://www.nine-rivers.com/index.html" title="http://www.nine-rivers.com/index.html" rel="noopener" target="_blank">九河科技</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://m.xiaodianpu.com/xiaodianpu-about.html" title="https://m.xiaodianpu.com/xiaodianpu-about.html" rel="noopener" target="_blank">碳原子科技</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#统一代码格式"><span class="nav-number">2.</span> <span class="nav-text">统一代码格式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#项目结构"><span class="nav-number">2.1.</span> <span class="nav-text">项目结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#命名规范"><span class="nav-number">2.2.</span> <span class="nav-text">命名规范</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#控件-Id-命名方式"><span class="nav-number">2.2.1.</span> <span class="nav-text">控件 Id 命名方式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Layout-相关"><span class="nav-number">2.2.2.</span> <span class="nav-text">Layout 相关</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Color-相关"><span class="nav-number">2.2.3.</span> <span class="nav-text">Color 相关</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Dimen-相关"><span class="nav-number">2.2.4.</span> <span class="nav-text">Dimen 相关</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#String-相关"><span class="nav-number">2.2.5.</span> <span class="nav-text">String 相关</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Drawable-相关"><span class="nav-number">2.2.6.</span> <span class="nav-text">Drawable 相关</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Android-编码规范"><span class="nav-number">2.3.</span> <span class="nav-text">Android 编码规范</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#XML-文件规范"><span class="nav-number">2.3.1.</span> <span class="nav-text">XML 文件规范</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Java-代码规范"><span class="nav-number">2.4.</span> <span class="nav-text">Java 代码规范</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Field"><span class="nav-number">2.4.1.</span> <span class="nav-text">Field</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Entity"><span class="nav-number">2.4.2.</span> <span class="nav-text">Entity</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#类成员排序"><span class="nav-number">2.4.3.</span> <span class="nav-text">类成员排序</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#字符串常量的命名"><span class="nav-number">2.4.4.</span> <span class="nav-text">字符串常量的命名</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Activity-与-Fragment-打开方式"><span class="nav-number">2.4.5.</span> <span class="nav-text">Activity 与 Fragment 打开方式</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#结语"><span class="nav-number">3.</span> <span class="nav-text">结语</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考资料"><span class="nav-number">4.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2016 – <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ahaochan</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+      <span class="post-meta-item-text">站点总字数：</span>
+    
+    <span title="站点总字数">540k</span>
+  
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> v7.2.0</div>
+
+
+
+  <div class="footer-custom">Hosted by <a href="https://blog.ahao.moe" class="theme-link" rel="noopener" target="_blank">Japari Park</a></div>
+
+
+        
+
+
+
+
+  <script>
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//tajs.qq.com/stats?sId=61878287";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+          <span id="scrollpercent"><span>0</span>%</span>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+      <div>
+        <div class="addthis_inline_share_toolbox">
+  <script src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-59047aaab9bddb67" async="async"></script>
+</div>
+
+      </div>
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+  
+    
+    
+  
+  <script color="0,0,255" opacity="0.5" zindex="-1" count="99" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+
+  
+  <script src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/fancybox/source/jquery.fancybox.pack.js"></script>
+
+  
+  <script src="/lib/reading_progress/reading_progress.js"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.2.0"></script>
+
+  <script src="/js/motion.js?v=7.2.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/schemes/muse.js?v=7.2.0"></script>
+
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.2.0"></script>
+<script src="/js/post-details.js?v=7.2.0"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.2.0"></script>
+
+
+  
+  <script src="/js/js.cookie.js?v=7.2.0"></script>
+  <script src="/js/scroll-cookie.js?v=7.2.0"></script>
+
+
+  
+
+  
+  
+  
+
+  
+
+  
+  
+  
+
+
+  
+  
+
+<script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+
+<script>
+  var GUEST = ['nick', 'mail', 'link'];
+  var guest = 'nick,mail';
+  guest = guest.split(',').filter(function(item) {
+    return GUEST.indexOf(item) > -1;
+  });
+  new Valine({
+    el: '#comments',
+    verify: false,
+    notify: false,
+    appId: 'WvnkNxdtuEpRfzdLx4tf5AFp-MdYXbMMI',
+    appKey: '6iwTwIm7qFGF9bNDqOA464Gd',
+    placeholder: '酷爱来写下你的评论吧👿',
+    avatar: 'retro',
+    meta: guest,
+    pageSize: '10' || 10,
+    visitor: true,
+    lang: '' || 'zh-cn'
+  });
+</script>
+
+
+
+
+  
+
+
+  
+  <script>
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url).replace(/\/{2,}/g, '/');
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x"></i></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x"></i></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+  
+
+  
+  
+
+  
+
+
+  
+<script>
+if ($('body').find('div.pdf').length) {
+  $.ajax({
+    type: 'GET',
+    url: '//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js',
+    dataType: 'script',
+    cache: true,
+    success: function() {
+      $('body').find('div.pdf').each(function(i, o) {
+        PDFObject.embed($(o).attr('target'), $(o), {
+          pdfOpenParams: {
+            navpanes: 0,
+            toolbar: 0,
+            statusbar: 0,
+            pagemode: 'thumbs',
+            view: 'FitH'
+          },
+          PDFJS_URL: '/lib/pdf/web/viewer.html',
+          height: $(o).attr('height') || '500px'
+        });
+      });
+    },
+  });
+}
+</script>
+
+
+  
+<script>
+if ($('body').find('pre.mermaid').length) {
+  $.ajax({
+    type: 'GET',
+    url: '//cdn.jsdelivr.net/npm/mermaid@8/dist/mermaid.min.js',
+    dataType: 'script',
+    cache: true,
+    success: function() {
+      mermaid.initialize({
+        theme: 'forest',
+        logLevel: 3,
+        flowchart: { curve: 'linear' },
+        gantt: { axisFormat: '%m/%d/%Y' },
+        sequence: { actorMargin: 50 }
+      });
+    }
+  });
+}
+</script>
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+<script>
+  $('.highlight').not('.gist .highlight').each(function(i, e) {
+    var $wrap = $('<div>').addClass('highlight-wrap');
+    $(e).after($wrap);
+    $wrap.append($('<button>').addClass('copy-btn').append('复制').on('click', function(e) {
+      var code = $(this).parent().find('.code').find('.line').map(function(i, e) {
+        return $(e).text();
+      }).toArray().join('\n');
+      var ta = document.createElement('textarea');
+      var yPosition = window.pageYOffset || document.documentElement.scrollTop;
+      ta.style.top = yPosition + 'px'; // Prevent page scroll
+      ta.style.position = 'absolute';
+      ta.style.opacity = '0';
+      ta.readOnly = true;
+      ta.value = code;
+      document.body.appendChild(ta);
+      const selection = document.getSelection();
+      const selected = selection.rangeCount > 0 ? selection.getRangeAt(0) : false;
+      ta.select();
+      ta.setSelectionRange(0, code.length);
+      ta.readOnly = false;
+      var result = document.execCommand('copy');
+      
+        if (result) $(this).text('复制成功');
+        else $(this).text('复制失败');
+      
+      ta.blur(); // For iOS
+      $(this).blur();
+      if (selected) {
+        selection.removeAllRanges();
+        selection.addRange(selected);
+      }
+    })).on('mouseleave', function(e) {
+      var $b = $(this).find('.copy-btn');
+      setTimeout(function() {
+        $b.text('复制');
+      }, 300);
+    }).append(e);
+  })
+</script>
+
+
+  
+
+  
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"scale":1.2,"jsonPath":"https://cdn.jsdelivr.net/npm/live2d-widget-model-shizuku@1.0.5/assets/shizuku.model.json"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":false},"react":{"opacity":0.7},"log":false});</script></body>
+</html>

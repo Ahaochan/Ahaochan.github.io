@@ -1,0 +1,43 @@
+<h1 id="Hexo-NexT-Share"><a href="#Hexo-NexT-Share" class="headerlink" title="Hexo NexT Share"></a>Hexo NexT Share</h1><p>Content Sharing Services for NexT.</p>
+<p><img src="https://img.shields.io/badge/NexT-v7.3.0+-blue.svg?style=flat-square" alt="Theme Version"><br><img src="https://img.shields.io/github/package-json/v/theme-next/hexo-next-share?style=flat-square" alt="Package Version"></p>
+<h2 id="Install"><a href="#Install" class="headerlink" title="Install"></a>Install</h2><pre><code class="bash">npm install theme-next/hexo-next-share
+</code></pre>
+<h2 id="Configure"><a href="#Configure" class="headerlink" title="Configure"></a>Configure</h2><p>You can config those in both <strong>hexo</strong> or <strong>theme</strong> <code>_config.yml</code>.</p>
+<h4 id="Likely"><a href="#Likely" class="headerlink" title="Likely"></a>Likely</h4><p>Edit the configurations in <code>likely</code> section in the theme config file as following:</p>
+<p><code>`</code>yml next/_config.yml</p>
+<h1 id="Likely-Share"><a href="#Likely-Share" class="headerlink" title="Likely Share"></a>Likely Share</h1><h1 id="See-https-ilyabirman-net-projects-likely-https-github-com-ilyabirman-Likely"><a href="#See-https-ilyabirman-net-projects-likely-https-github-com-ilyabirman-Likely" class="headerlink" title="See: https://ilyabirman.net/projects/likely/, https://github.com/ilyabirman/Likely"></a>See: <a href="https://ilyabirman.net/projects/likely/">https://ilyabirman.net/projects/likely/</a>, <a href="https://github.com/ilyabirman/Likely">https://github.com/ilyabirman/Likely</a></h1><h1 id="Likely-supports-four-looks-nine-social-networks-any-button-text"><a href="#Likely-supports-four-looks-nine-social-networks-any-button-text" class="headerlink" title="Likely supports four looks, nine social networks, any button text."></a>Likely supports four looks, nine social networks, any button text.</h1><h1 id="You-are-free-to-modify-the-text-value-and-order-of-any-network"><a href="#You-are-free-to-modify-the-text-value-and-order-of-any-network" class="headerlink" title="You are free to modify the text value and order of any network."></a>You are free to modify the text value and order of any network.</h1><p>likely:<br>  enable: true<br>  cdn:<br>    js: //cdn.jsdelivr.net/npm/ilyabirman-likely@2/release/likely.min.js<br>    css: //cdn.jsdelivr.net/npm/ilyabirman-likely@2/release/likely.min.css<br>  look: normal # available values: normal, light, small, big<br>  networks:<br>    twitter: Tweet<br>    facebook: Share<br>    linkedin: Link<br>    gplus: Plus<br>    vkontakte: Share<br>    odnoklassniki: Class<br>    telegram: Send<br>    whatsapp: Send<br>    pinterest: Pin</p>
+<pre><code>
+#### Need More Share
+
+Set the value `enable` to `true`, and edit other configurations in `needmoreshare` section in the theme config file as following:
+```yml next/_config.yml
+# NeedMoreShare2
+# Dependencies: https://github.com/theme-next/theme-next-needmoreshare2
+# For more information: https://github.com/revir/need-more-share2
+# iconStyle: default | box
+# boxForm: horizontal | vertical
+# position: top / middle / bottom + Left / Center / Right
+# networks:
+# Weibo | Wechat | Douban | QQZone | Twitter | Facebook | Linkedin | Mailto | Reddit | Delicious | StumbleUpon | Pinterest
+# GooglePlus | Tumblr | GoogleBookmarks | Newsvine | Evernote | Friendfeed | Vkontakte | Odnoklassniki | Mailru
+needmoreshare:
+  enable: true
+  cdn:
+    js: //cdn.jsdelivr.net/gh/theme-next/theme-next-needmoreshare2@1/needsharebutton.min.js
+    css: //cdn.jsdelivr.net/gh/theme-next/theme-next-needmoreshare2@1/needsharebutton.min.css
+  postbottom:
+    enable: true
+    options:
+      iconStyle: box
+      boxForm: horizontal
+      position: bottomCenter
+      networks: Weibo,Wechat,Douban,QQZone,Twitter,Facebook
+  float:
+    enable: false
+    options:
+      iconStyle: box
+      boxForm: horizontal
+      position: middleRight
+      networks: Weibo,Wechat,Douban,QQZone,Twitter,Facebook
+</code></pre><h4 id="Share-js"><a href="#Share-js" class="headerlink" title="Share.js"></a>Share.js</h4><p><code>`</code>yml next/_config.yml</p>
+<h1 id="share-js"><a href="#share-js" class="headerlink" title="share.js"></a>share.js</h1><h1 id="See-https-github-com-overtrue-share-js"><a href="#See-https-github-com-overtrue-share-js" class="headerlink" title="See: https://github.com/overtrue/share.js"></a>See: <a href="https://github.com/overtrue/share.js">https://github.com/overtrue/share.js</a></h1><h1 id="networks-weibo-qq-wechat-tencent-douban-qzone-linkedin-diandian-facebook-twitter-google"><a href="#networks-weibo-qq-wechat-tencent-douban-qzone-linkedin-diandian-facebook-twitter-google" class="headerlink" title="networks: weibo,qq,wechat,tencent,douban,qzone,linkedin,diandian,facebook,twitter,google"></a>networks: weibo,qq,wechat,tencent,douban,qzone,linkedin,diandian,facebook,twitter,google</h1><p>sharejs:<br>  enable: true<br>  cdn:<br>    js: //cdn.jsdelivr.net/npm/social-share.js@1/dist/js/social-share.min.js<br>    css: //cdn.jsdelivr.net/npm/social-share.js@1/dist/js/social-share.min.css<br>  networks: weibo,qq,wechat,tencent,douban,qzone,linkedin,diandian,facebook,twitter,google<br>  wechat_qrcode:<br>    title: share.title<br>    prompt: share.prompt<br><code>`</code></p>
