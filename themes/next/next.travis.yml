@@ -1,0 +1,49 @@
+language: node_js
+node_js: lts/*
+branches:
+  only:
+  - source
+cache:
+  apt: true
+  yarn: true
+  directories:
+    - node_modules
+    - theme
+before_install:
+- git config --global user.name "用户名"
+- git config --global user.email "邮箱"
+# 由于使用了yarn，所以需要下载，如不用yarn这两行可以删除
+- curl -o- -L https://yarnpkg.com/install.sh | bash
+- export PATH=$HOME/.yarn/bin:$PATH
+# npm模块安装
+- yarn global add hexo-cli
+- yarn add hexo-asset-image --save
+- yarn add hexo-generator-searchdb --save
+- yarn add hexo-generator-feed --save
+- yarn add hexo-related-popular-posts --save
+- yarn add hexo-symbols-count-time --save
+- yarn add hexo-generator-sitemap --save
+- yarn add hexo-generator-baidu-sitemap --save
+- yarn add hexo-deployer-git --save
+- yarn add hexo-helper-live2d --save
+- yarn add theme-next/next-util --save
+# 将 GitHub Token 替换到 next.yml 中
+- sed -i "s/REPO_TOKEN/${REPO_TOKEN}/" source/_data/next.yml
+# next主题下载
+- git clone https://github.com/theme-next/hexo-theme-next themes/next
+- cd themes/next && git checkout v7.2.0 && cd -
+# next主题依赖下载
+- git clone https://github.com/theme-next/theme-next-reading-progress themes/next/source/lib/reading_progress
+- git clone https://github.com/theme-next/theme-next-fastclick themes/next/source/lib/fastclick
+- git clone https://github.com/theme-next/theme-next-jquery-lazyload themes/next/source/lib/jquery_lazyload # https://github.com/theme-next/theme-next-lazyload
+- git clone https://github.com/theme-next/theme-next-pace themes/next/source/lib/pace
+- git clone https://github.com/theme-next/theme-next-canvas-nest themes/next/source/lib/canvas-nest
+- git clone https://github.com/theme-next/theme-next-fancybox3 themes/next/source/lib/fancybox
+# - git clone https://github.com/theme-next/theme-next-quicklink.git themes/next/source/lib/quicklink
+install:
+# 不用yarn的话这里改成 npm i 即可
+- yarn
+script:
+- hexo clean --config source/_data/next.yml
+- hexo g --config source/_data/next.yml
+- hexo d --config source/_data/next.yml
