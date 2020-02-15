@@ -7,10 +7,11 @@ date: 2020-02-15 23:12:00
 ---
 
 # 解决方案
-打开`cmd`命令行, 输入以下命令解决.
+打开`cmd`命令行, 输入以下命令. 然后任务管理器结束`Radeon Software Host Application`这个进程, 重启程序即可.
 ```bash
 mkdir "%USERPROFILE%\videos\Radeon ReLive"
 ```
+
 缺少了这个`Radeon ReLive`文件夹, 导致程序一直在占用`CPU`高达`30%`.
 `AMD`居然连这种`bug`都写的出来, 也是厉害.
 
