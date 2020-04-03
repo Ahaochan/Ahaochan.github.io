@@ -122,7 +122,7 @@ class LocalApplicationHealthCheckHandler implements HealthCheckHandler {
 
 ## 第一步, 注册到注册中心
 这里以`Nacos`为例.
-继续看入口[`SidecarNacosAutoConfiguration`](https://github.com/alibaba/spring-cloud-alibaba/blob/greenwich/spring-cloud-alibaba-sidecar/src/main/java/com/alibaba/cloud/sidecar/nacos/SidecarNacosAutoConfiguration.java)
+继续看入口[`SidecarNacosAutoConfiguration`](https://github.com/alibaba/spring-cloud-alibaba/tree/v2.2.0.RELEASE/spring-cloud-alibaba-sidecar/src/main/java/com/alibaba/cloud/sidecar/nacos/SidecarNacosAutoConfiguration.java)
 这里比[`Netflix Sidecar`](https://github.com/spring-cloud/spring-cloud-netflix/blob/2.2.x/spring-cloud-netflix-sidecar/src/main/java/org/springframework/cloud/netflix/sidecar/SidecarAutoConfiguration.java)的简单多了.
 ```java
 // com.alibaba.cloud.sidecar.nacos.SidecarNacosAutoConfiguration
@@ -152,7 +152,7 @@ public class SidecarNacosDiscoveryClient implements SidecarDiscoveryClient {
 一目了然, 注册和注销的方法, 调用的都是`Nacos`提供的`API`.
 
 ## 第二步, 定时任务检查健康状态
-我们看[`SidecarAutoConfiguration`](https://github.com/alibaba/spring-cloud-alibaba/blob/greenwich/spring-cloud-alibaba-sidecar/src/main/java/com/alibaba/cloud/sidecar/SidecarAutoConfiguration.java)
+我们看[`SidecarAutoConfiguration`](https://github.com/alibaba/spring-cloud-alibaba/tree/v2.2.0.RELEASE/spring-cloud-alibaba-sidecar/src/main/java/com/alibaba/cloud/sidecar/SidecarAutoConfiguration.java)
 ```java
 // com.alibaba.cloud.sidecar.SidecarAutoConfiguration
 @Configuration(proxyBeanMethods = false)
@@ -190,7 +190,7 @@ public class SidecarHealthChecker {
 如果健康则继续续期, 否则从注册中心注销.
 
 ## 第三步, Sidecar会将来自PHP的请求路由到其他微服务
-我们看[`pom.xml`](https://github.com/alibaba/spring-cloud-alibaba/blob/greenwich/spring-cloud-alibaba-sidecar/pom.xml)
+我们看[`pom.xml`](https://github.com/alibaba/spring-cloud-alibaba/tree/v2.2.0.RELEASE/spring-cloud-alibaba-sidecar/pom.xml)
 可以看到依赖了`Spring Cloud Gateway`.
 和`Zuul`一样. 只要访问`http://127.0.0.1:${Sidecar端口}/${微服务名称}/hello`即可调用其他微服务.
 
