@@ -32,7 +32,7 @@ date: 2020-04-07 17:42:00
 [`Robert Greiner`](https://robertgreiner.com/cap-theorem-revisited/)强调了这个分布式系统是`interconnected`互联和`share data`共享数据的.
 
 举一个反例, 比如`Memcache`集群.
-![Memcache集群](https://yuml.me/diagram/nofunky/class/[客户端]-1到100>[Memcache Server 1],[客户端]-101到200>[Memcache Server 2])
+![Memcache集群](https://yuml.me/diagram/nofunky/class/[客户端]-1到100>[Memcache_Server_1],[客户端]-101到200>[Memcache_Server_2])
 `Memcache`的各个节点之间是不互联和共享数据的, 客户端根据路由规则, 自行决定存储数据到哪个节点上.
 这确实是一个分布式系统, 但是却不适用于`CAP`理论.
 
