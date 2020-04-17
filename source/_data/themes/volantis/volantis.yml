@@ -1,0 +1,662 @@
+################################
+######## 站点配置文件  #########
+################################
+
+# Hexo Configuration
+## Docs: https://hexo.io/docs/configuration.html
+## Source: https://github.com/hexojs/hexo/
+
+# Site
+title: 用户名
+subtitle: 用户名
+description: 用户名
+keywords:
+author: "用户名"
+language: zh-CN
+timezone: Asia/Shanghai
+
+# URL
+## If your site is put in a subdirectory, set url as 'http://yoursite.com/child' and root as '/child/'
+url: http://用户名.github.io
+root: /
+permalink: posts/:url.html
+permalink_defaults:
+
+# Directory
+source_dir: source
+public_dir: public
+tag_dir: tags
+archive_dir: archives
+category_dir: categories
+code_dir: downloads/code
+i18n_dir: :lang
+skip_render:
+
+# Writing
+new_post_name: :title.md # File name of new posts
+default_layout: post
+titlecase: false # Transform title into titlecase
+external_link: true # Open external links in new tab
+filename_case: 0
+render_drafts: false
+post_asset_folder: false
+relative_link: false
+future: true
+highlight:
+  enable: true
+  line_number: true
+  auto_detect: false
+  tab_replace:
+
+# Home page setting
+# path: Root path for your blogs index page. (default = '')
+# per_page: Posts displayed per page. (0 = disable pagination)
+# order_by: Posts order. (Order by date descending by default)
+index_generator:
+  path: ''
+  per_page: 10
+  order_by: -date
+
+# Category & Tag
+default_category: uncategorized
+category_map:
+tag_map:
+
+# Date / Time format
+## Hexo uses Moment.js to parse and display date
+## You can customize the date format as defined in
+## http://momentjs.com/docs/#/displaying/format/
+date_format: YYYY-MM-DD
+time_format: HH:mm:ss
+
+# Pagination
+## Set per_page to 0 to disable pagination
+per_page: 10
+pagination_dir: page
+
+# Extensions
+## Plugins: https://hexo.io/plugins/
+## Themes: https://hexo.io/themes/
+theme: volantis
+
+# Deployment
+## Docs: https://hexo.io/docs/deployment.html
+deploy:
+  - type: git
+    repo: https://REPO_TOKEN@github.com/用户名/用户名.github.io.git
+    branch: master
+
+feed:
+  type: rss2
+  path: rss.xml
+  limit: 20
+
+sitemap:
+  path: sitemap.xml
+
+include:
+  - _redirects
+
+################################
+######## 主题配置文件  #########
+################################
+##############################################################################
+############################### Theme Information ###############################
+info:
+  name: Volantis # This is theme's name, not your blog's name.
+  version: '2.6.1' # This is theme's version.
+  docs: https://volantis.js.org/ # This is theme's URL.
+  cdn:
+    css:
+    js:
+
+
+############################### Style ###############################
+style:
+  max_width: 1080px # Sum of body width and sidebar width (This limit will be exceeded when the device width is greater than 2000px, reaching 75% of the total width)
+  scrollbar:
+    size: 4px
+    border: 2px
+    color: '#2196f3'
+    hover: '#ff5722'
+  navbar:
+    height: 64px
+    width: auto # auto, max
+    effect: [shadow, blur] # [shadow, floatable, blur]
+  sidebar:
+    effect: [shadow] # [shadow, floatable, blur]
+  body:
+    effect: [shadow] # [shadow, floatable, blur]
+    highlight:
+      language: true # show language of codeblock
+      copy_btn: true
+    text_align: # left, right, justify, center
+      h1: left
+      h2: left
+      h3: left
+      h4: left
+      p: justify
+    note: # style for default note: {% note text %}
+      icon: '\f054'
+      color: ''
+    checkbox:
+      enable: true # enable for user
+      color: '' # color for default checkbox
+  gap:
+    h2: 48px # Spacing above H2 (only px unit)
+    h3: 24px # Spacing above H3 (only px unit)
+    h4: 16px # Spacing above H4 (only px unit)
+    paragraph: 1rem # Paragraph spacing between paragraphs
+    row: .5rem # Paragraph spacing between other elements
+    line_height: 1.75
+  border_radius:
+    card: 8px
+    codeblock: 4px
+    searchbar: 8px
+    button: 4px
+  fontsize:
+    root: 16px
+    h1: 1.625rem
+    h2: 1.375rem
+    h3: 1.25rem
+    h4: 1.125rem
+    h5: 1rem
+    h6: 1rem
+    body: 1rem
+    list: .9375rem
+    meta: .875rem
+    code: .8125rem
+    footnote: .75rem
+  fontfamily:
+    logofont:
+      fontfamily: '"Varela Round", "PingFang SC", "Microsoft YaHei", Helvetica, Arial'
+      name: 'Varela Round'
+      url: https://cdn.jsdelivr.net/gh/xaoxuu/cdn-fonts/VarelaRound/VarelaRound-Regular.ttf
+      weight: normal
+      style: normal
+    bodyfont:
+      fontfamily: 'UbuntuMono, "PingFang SC", "Microsoft YaHei", Helvetica, Arial'
+      name: 'UbuntuMono'
+      url: https://cdn.jsdelivr.net/gh/xaoxuu/cdn-fonts/UbuntuMono/UbuntuMono-Regular.ttf
+      weight: normal
+      style: normal
+    codefont:
+      fontfamily: 'Menlo, UbuntuMono, Monaco'
+      # name: 'Monaco'
+      # url: https://cdn.jsdelivr.net/gh/xaoxuu/cdn-fonts/Monaco/Monaco.ttf
+      # weight: normal
+      # style: normal
+  # color:
+  #   site: '#21232F' # Website background color
+  #   site_inner: '#fff' # Text color inside the website background
+  #   site_footer: '#666' # Footer text color inside the website background
+  #   card: '#444' # Card background color
+  #   text: '#fff' # The color of the text on the card.
+  #   theme: '#ff9800' # Main color
+  #   link: '#1BCDFC' # Link color
+  #   hover: '#ff5722' # Link highlight color
+  #   inner: '#333' # Text color inside the button
+  #   block: '#555' # Block color
+  #   inlinecode: '#555' # Inline code color
+  #   codeblock: '#555' # Codeblock color
+  #   p: '#ccc' # Paragraph color
+
+
+
+
+############################### Layout ###############################
+cover:
+  scheme: docs # docs, blog
+  display:
+    home: true
+    archive: true
+    others: false # can be written in front-matter 'cover: true'
+  logo: # https://cdn.jsdelivr.net/gh/xaoxuu/cdn-assets/logo/256/google_logo.png
+  title: Volantis
+  subtitle: 'A Wonderful Theme for Hexo'
+  search: # search bar placeholder
+  features:
+    - name: 文档
+      icon: fas fa-book
+      url: https://volantis.js.org/getting-started/
+    - name: 博文
+      icon: fas fa-rss
+      url: https://volantis.js.org/archives/
+    - name: 示例
+      icon: fas fa-play-circle
+      url: https://volantis.js.org/examples/
+    - name: 源码
+      icon: fas fa-file-code
+      url: https://github.com/xaoxuu/hexo-theme-volantis/
+      rel: external nofollow noopener noreferrer
+      target: _blank
+    - name: 鸣谢
+      icon: fas fa-handshake
+      url: https://volantis.js.org/contributors/
+
+
+# Navigation Bar
+navbar:
+  logo: # choose [img] or [icon + title]
+    img:
+    icon:
+    title:
+  menu:
+    # The following can be written in `blog/source/_data/menu.yml`
+    - name: 博客
+      icon: fas fa-rss
+      url: /
+    - name: 分类
+      icon: fas fa-folder-open
+      url: categories/
+    - name: 标签
+      icon: fas fa-tags
+      url: tags/
+    - name: 归档
+      icon: fas fa-archive
+      url: archives/
+    - name: 友链
+      icon: fas fa-link
+      url: friends/
+    - name: 关于
+      icon: fas fa-info-circle
+      url: about/
+  search: Search...   # Search bar placeholder
+
+
+
+layout:
+  # The following can be written in `blog/source/_data/layout.yml`
+  # 文章列表（主页、自定义的列表）布局
+  on_list:
+    # 列表中每一篇文章的meta信息
+    meta: [title, author, category, date, wordcount, top]
+    # 列表类页面的侧边栏
+    sidebar: [blogger, category, tagcloud, qrcode]
+    # read more button
+    readmore: Read More <i class="fas fa-chevron-right"></i>
+  # 页面布局
+  on_page:
+    # 文章页面主体元素，你也可以在页面的Front-matter中设置
+    body: [article, comments]
+    # 默认的meta信息，文章中没有配置则按照这里的配置来显示，设置为false则不显示
+    # 其中，title只在header中有效，music和thumbnail无需在这里设置，文章中有则显示
+    # 如果tags放置在meta.header中，那么在post列表中不显示（因为卡片下方已经有了）
+    meta:
+      header: [title, author, category, date, top]
+      footer: [updated, tags, btns, share]
+    # 文章页面的侧边栏
+    sidebar: [qrcode, toc]
+  # 文章布局，参数继承自 on_page
+  on_post:
+    # 文章页脚，自动在每一篇文章末尾添加
+    article_footer: [references, related_repos, copyright, donate]
+  # 其他的页面布局暂时等于 on_list
+
+
+# meta library
+meta:
+  # 文章标题
+  title: # 暂无配置
+  # 默认文章作者（可在front-matter中覆盖）
+  author:
+    avatar: https://cdn.jsdelivr.net/gh/xaoxuu/cdn-assets/avatar/avatar.png
+    name: Mr. X
+    url: https://xaoxuu.com
+  # 文章创建日期
+  date:
+    icon: fas fa-calendar-alt
+    title: '发布于：'
+    format: 'll' # 日期格式 http://momentjs.com/docs/
+  # 文章更新日期
+  updated:
+    icon: fas fa-edit
+    title: '更新于：'
+    format: 'll' # 日期格式 http://momentjs.com/docs/
+  # 文章分类
+  category:
+    icon: fas fa-folder-open
+  # 文章置顶
+  top:
+    icon: fas fa-angle-double-up
+  # 文章浏览计数
+  counter:
+    icon: fas fa-eye
+  # 文章字数和阅读时长
+  wordcount:
+    icon_wordcount: fas fa-keyboard
+    icon_duration: fas fa-hourglass-half
+  # 文章标签
+  tags:
+    icon: fas fa-hashtag
+  # 分享
+  share:
+    - id: qq
+      img: https://cdn.jsdelivr.net/gh/xaoxuu/cdn-assets/logo/128/qq.png
+    - id: qzone
+      img: https://cdn.jsdelivr.net/gh/xaoxuu/cdn-assets/logo/128/qzone.png
+    - id: weibo
+      img: https://cdn.jsdelivr.net/gh/xaoxuu/cdn-assets/logo/128/weibo.png
+    # - id: qrcode # 当id为qrcode时需要安装插件  npm i -S hexo-helper-qrcode
+    #   img: https://cdn.jsdelivr.net/gh/xaoxuu/cdn-assets/logo/128/wechat.png
+    # - id: telegram
+    #   img: https://cdn.jsdelivr.net/gh/xaoxuu/cdn-assets/logo/128/telegram.png
+  # 链接
+  btns:
+    edit:
+      icon: fas fa-edit
+      title: 在GitHub上编辑此页
+      color: '#888'
+    repo: # 源码链接
+      icon: fas fa-file-code
+      title: 源码
+      color: '#508EF2'
+    bug: # BUG反馈链接
+      icon: fas fa-bug
+      title: BUG
+      color: '#FE5F58'
+    doubt: # 疑问链接
+      icon: fas fa-question-circle
+      title: 疑问
+      color: '#FFBD2B'
+    idea: # 建议链接
+      icon: fas fa-lightbulb
+      title: 建议
+      color: '#3DC550'
+    faq: # FAQ链接
+      icon: fas fa-comments
+      title: FAQ
+      color: '#29B1C9'
+    feedback: # 反馈链接
+      icon: fas fa-comment-dots
+      title: 反馈
+      color: '#1BCDFC'
+
+# widget library
+widget:
+  # The following can be written in `blog/source/_data/widget.yml`
+  # ---------------------------------------
+  # blogger info widget
+  blogger:
+    class: blogger
+    display: [desktop, mobile] # [desktop, mobile]
+    avatar: https://cdn.jsdelivr.net/gh/xaoxuu/cdn-assets/avatar/avatar.png
+    shape: rectangle # circle, rectangle
+    url: /about/
+    title:
+    subtitle:
+    jinrishici: true # Poetry Today. You can set a string, and it will be displayed when loading fails.
+    social: true
+  # ---------------------------------------
+  # toc widget (valid only in articles)
+  toc:
+    class: toc
+    display: [desktop, mobile] # [desktop, mobile]
+    header:
+      icon: fas fa-list
+      title: 本文目录
+    list_number: false
+    min_depth: 2
+    max_depth: 5
+  # ---------------------------------------
+  # category widget
+  category:
+    class: category
+    display: [desktop] # [desktop, mobile]
+    header:
+      icon: fas fa-folder-open
+      title: 文章分类
+      url: /blog/categories/
+  # ---------------------------------------
+  # tagcloud widget
+  tagcloud:
+    class: tagcloud
+    display: [desktop, mobile] # [desktop, mobile]
+    header:
+      icon: fas fa-tags
+      title: 热门标签
+      url: /blog/tags/
+    min_font: 14
+    max_font: 24
+    color: true
+    start_color: '#999'
+    end_color: '#555'
+  # ---------------------------------------
+  # related posts widget
+  related_posts:
+    class: related_posts # npm i -S hexo-related-popular-posts
+    display: [desktop, mobile] # [desktop, mobile]
+    header:
+      icon: fas fa-bookmark
+      title: 相关文章
+    max_count: 5
+  # ---------------------------------------
+  # copyright widget (valid only in articles)
+  copyright:
+    class: copyright
+    display: [desktop, mobile] # [desktop, mobile]
+    blockquote: true
+    permalink: '本文永久链接是：'
+    content:
+      - '博客内容遵循 署名-非商业性使用-相同方式共享 4.0 国际 (CC BY-NC-SA 4.0) 协议'
+      - permalink
+  # ---------------------------------------
+  # qrcode widget
+  donate:
+    class: qrcode
+    display: [desktop, mobile] # [desktop, mobile]
+    height: 64px  # Automatic height if not set
+    fancybox: true
+    images:
+      - https://cdn.jsdelivr.net/gh/xaoxuu/cdn-assets/qrcode/wiki_volantis.png
+      - https://cdn.jsdelivr.net/gh/xaoxuu/cdn-assets/qrcode/wiki_volantis.png
+  # ---------------------------------------
+  # references widget
+  references:
+    class: references # is subclass of list
+    display: [desktop, mobile] # [desktop, mobile]
+    header:
+      icon: fas fa-quote-left
+      title: 参考资料
+  related_repos:
+    class: references # is subclass of list
+    display: [desktop, mobile] # [desktop, mobile]
+    header:
+      icon: fab fa-github
+      title: 源码链接
+
+  # You can add your own widget here or 'blog/source/_data/widget.yml'
+  # class: text, list, grid, qrcode, page, ... see more at https://volantis.js.org/
+
+
+
+footer:
+  # layout of footer: [aplayer, social, license, info, copyright]
+  layout: [aplayer, social, license, info, copyright]
+  social:
+    - icon: fas fa-rss
+      url: atom.xml
+    - icon: fas fa-envelope
+      url: mailto:me@xaoxuu.com
+    - icon: fab fa-github
+      url: https://github.com/xaoxuu
+    - icon: fas fa-headphones-alt
+      url: https://music.163.com/#/user/home?id=63035382
+  copyright: '[Copyright © 2017-2020 Mr. X](https://xaoxuu.com)'
+  # You can add your own property here. (Support markdown, for example: br: '<br>')
+  br: '<br>'
+
+
+############################### SEO ###############################
+seo:
+  # When there are no keywords in the article's front-matter, use tags as keywords.
+  use_tags_as_keywords: true
+  # When there is no description in the article's front-matter, use excerpt as the description.
+  use_excerpt_as_description: true
+  robots:
+    home_first_page: index,follow
+    home_other_pages: noindex,follow
+    archive: noindex,follow
+    category: noindex,follow
+    tag: noindex,follow
+    # robots can be written in front-matter
+
+
+############################### Plugins ###############################
+plugins:
+  ######## Plugins to improve loading speed:
+  # Preload (The menu's url must end with ‘/’)
+  instant_page: https://cdn.jsdelivr.net/gh/xaoxuu/cdn-volantis@2/js/instant_page.js
+
+  ######## Plugins to optimize the experience:
+  # highlight.js
+  highlightjs:
+    js: https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.18.1/build/highlight.min.js
+    css: https://cdn.jsdelivr.net/npm/highlight.js@9.18.1/styles/solarized-light.css
+    # more: https://www.jsdelivr.com/package/npm/highlight.js?path=styles
+  # Picture Zoom
+  fancybox:
+    css: https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css
+    js: https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js
+
+  # Page Scrolling Animation
+  scrollreveal: #https://cdn.jsdelivr.net/npm/scrollreveal@4.0.5/dist/scrollreveal.min.js
+
+  # Codeblock Copy Button
+  clipboard: https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js
+
+  # mathjax
+  mathjax: https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
+
+  ######## Plugins for SEO:
+  # Traffic statistics (very slow loading)
+  busuanzi: https://cdn.jsdelivr.net/gh/xaoxuu/cdn-busuanzi@2.3/js/busuanzi.pure.mini.js
+
+  # npm i --save hexo-wordcount
+  wordcount: #true
+
+  ######## Plugins for ...
+  # Button Ripple Effect
+  nodewaves:
+    css: https://cdn.jsdelivr.net/npm/node-waves@0.7.6/dist/waves.min.css
+    js: https://cdn.jsdelivr.net/npm/node-waves@0.7.6/dist/waves.min.js
+
+  # Typing Effects
+  comment_typing: https://cdn.jsdelivr.net/gh/xaoxuu/cdn-volantis@2/js/comment_typing.js
+
+  # Slide Background
+  backstretch:
+    enable: true
+    js: https://cdn.jsdelivr.net/npm/jquery-backstretch@2.1.18/jquery.backstretch.min.js
+    position: cover       # cover: sticky on the cover.   fixed: Fixed as background for the site.
+    shuffle: true         # shuffle playlist
+    duration: 20000       # Duration (ms)
+    fade: 1500            # fade duration (ms) (Not more than 1500)
+    images:               # For personal use only. At your own risk if used for commercial purposes !!!
+      - https://cdn.jsdelivr.net/gh/xaoxuu/cdn-wallpaper/abstract/41F215B9-261F-48B4-80B5-4E86E165259E.jpeg
+      # - https://cdn.jsdelivr.net/gh/xaoxuu/cdn-wallpaper/abstract/BBC19066-E176-47C2-9D22-48C81EE5DF6B.jpeg
+      # - https://cdn.jsdelivr.net/gh/xaoxuu/cdn-wallpaper/abstract/B18FCBB3-67FD-48CC-B4F3-457BA145F17A.jpeg
+      # - https://cdn.jsdelivr.net/gh/xaoxuu/cdn-wallpaper/abstract/35F12181-F0E9-45BD-B134-37E4B4A660CF.jpeg
+      # - https://cdn.jsdelivr.net/gh/xaoxuu/cdn-wallpaper/abstract/00E0F0ED-9F1C-407A-9AA6-545649D919F4.jpeg
+      # - https://cdn.jsdelivr.net/gh/xaoxuu/cdn-wallpaper/abstract/67239FBB-E15D-4F4F-8EE8-0F1C9F3C4E7C.jpeg
+      # - https://cdn.jsdelivr.net/gh/xaoxuu/cdn-wallpaper/abstract/B951AE18-D431-417F-B3FE-A382403FF21B.jpeg
+      # - https://cdn.jsdelivr.net/gh/xaoxuu/cdn-wallpaper/landscape/AEB33F9D-7294-4CF1-B8C5-3020748A9D45.jpeg
+      # - https://cdn.jsdelivr.net/gh/xaoxuu/cdn-wallpaper/abstract/2884F904-F1F3-479E-AE27-5EBC291B63B0.jpeg
+      # - https://cdn.jsdelivr.net/gh/xaoxuu/cdn-wallpaper/landscape/10A0FCE5-36A1-4AD0-8CF0-019259A89E03.jpeg
+      # - https://cdn.jsdelivr.net/gh/xaoxuu/cdn-wallpaper/landscape/250662D4-5A21-4AAA-BB63-CD25CF97CFF1.jpeg
+      # - https://cdn.jsdelivr.net/gh/xaoxuu/cdn-wallpaper/landscape/298468D7-E388-44A8-8CC5-8213BDC33CED.jpeg
+
+  # APlayer is only available in mainland China.
+  # APlayer config: https://github.com/metowolf/MetingJS
+  aplayer:
+    enable: true
+    js:
+      - https://cdn.jsdelivr.net/npm/aplayer@1.10/dist/APlayer.min.js
+      - https://cdn.jsdelivr.net/npm/meting@2.0/dist/Meting.min.js
+    # Required
+    server: netease   # netease, tencent, kugou, xiami, baidu
+    type: playlist    # song, playlist, album, search, artist
+    id: 3175833810    # song id / playlist id / album id / search keyword
+    # Optional
+    fixed: false      # enable fixed mode
+    theme: '#1BCDFC'  # main color
+    autoplay: false   # audio autoplay
+    order: list       # player play order, values: 'list', 'random'
+    loop: all         # player loop play, values: 'all', 'one', 'none'
+    volume: 0.7       # default volume, notice that player will remember user setting, default volume will not work after user set volume themselves
+    list_max_height: 340px # list max height
+    list_folded: true
+
+
+
+
+############################### Comments ###############################
+comments:
+  title: <i class='fas fa-comments'></i> 评论
+  subtitle:
+  service: valine # valine, minivaline, disqus, gitalk, livere
+  valine:
+    appId: # your appId
+    appKey: # your appKey
+    # js: https://cdn.jsdelivr.net/gh/xaoxuu/cdn-volantis@2.4.2/js/valine.js
+    path: # All pages use the same path (share the same comments data)
+    meta: nick,mail,link #valine comment header info
+    placeholder: 快来评论吧~ # valine comment input placeholder(like: Please leave your footprints )
+    avatar: mp # gravatar style https://valine.js.org/avatar
+    pageSize: 10 # comment list page size
+    lang: zh-cn
+    highlight: true
+    visitor: false # unavailable for now...
+    mathJax: false
+  # MiniValine
+  # See: https://github.com/MiniValine/MiniValine
+  minivaline:
+    appId: # Your leancloud application appid
+    appKey: # Your leancloud application appkey
+    placeholder: Write a Comment # Comment box placeholder
+    adminEmailMd5: # The MD5 of Admin Email to show Admin Flag.
+    math: true # Support MathJax.
+    md: true # Support Markdown.
+    # MiniValine's display language depends on user's browser or system environment
+    # If you want everyone visiting your site to see a uniform language, you can set a force language value
+    # Available values: en  | zh-CN | (and many more)
+    # More i18n info: https://github.com/MiniValine/minivaline-i18n
+    lang:
+  disqus:
+    shortname:
+  gitalk:
+    clientID:
+    clientSecret:
+    repo:
+    owner:
+    admin: # []
+  livere:
+    uid:
+
+
+
+
+############################### Search ###############################
+# To use hexo search, you need to install the following plugins:
+# npm i -S hexo-generator-search hexo-generator-json-content
+search:
+  enable: true
+  service: hexo  # hexo, google, algolia, azure, baidu
+  js: https://cdn.jsdelivr.net/gh/xaoxuu/cdn-volantis@2.4/js/search.js
+  google:
+    apiKey:
+    engineId:
+  algolia:
+    applicationID:
+    apiKey:
+    indexName:
+  azure:
+    serviceName:
+    indexName:
+    queryKey:
+  baidu:
+    apiId:
+  path: search.xml
+  field: post
+  format: html
+  limit: 10000
