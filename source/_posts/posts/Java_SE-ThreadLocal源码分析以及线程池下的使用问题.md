@@ -152,8 +152,8 @@ public class ThreadLocal<T> {
     }
 }
 ```
-可以看到`ThreadLocalMap`是以`ThreadLocal`对象为`Key`, `Object`为`Value`的`Map`集合.
-而`Entry`继承了弱引用`WeakReference`, 所以当每次`GC`发生时, 扫描到这个对象就会回收`ThreadLocal`. 但这里会有个问题, 会导致一些内存问题, 这里后面讲.
+可以看到`ThreadLocalMap`是以`ThreadLocal`对象的弱引用为`Key`, `Object`为`Value`的`Map`集合.
+而`Entry`继承了弱引用`WeakReference`, 所以当每次`GC`发生时, 扫描到这个对象就会回收`ThreadLocal`. 但这里会导致一些内存问题, 这里后面讲.
 
 接下来是`ThreadLocalMap`的`set`和`get`方法, 和普通的`HashMap`差不多, 无非就是扩容, `rehash`那一套.
 ```java
@@ -251,10 +251,11 @@ public class ThreadLocalTest {
 ## ThreadLocal的 内存泄漏 问题
 ![ThreadLocal引用链](https://yuml.me/diagram/nofunky/class/[Thread]->[ThreadLocalMap],[ThreadLocalMap]->[Entry],[Entry]->[value])
 
-我们注意到`ThreadLocalMap`的`Key`是`ThreadLocal`的弱引用对象. 也就是说, 不管`ThreadLocal`对象是否因为弱引用被`GC`回收, `Entry`节点都会持有`value`的强引用.
+`ThreadLocalMap`的`Key`是`ThreadLocal`的弱引用对象. 
+不管`ThreadLocal`对象是否因为弱引用被`GC`回收, `Entry`节点都会持有`value`的强引用.
 要回收掉`value`只有两种方法
 1. 结束当前线程
-2. 手动释放`Key`为`null`的`Entry`
+2. 手动释放`Key`为`null`的`Entry`, 常用的是`remove`方法
 
 在`ThreadLocal`的`set`、`get`、`remove`方法内都有对`Key`为`null`的`Entry`做清除引用的操作.
 
@@ -262,7 +263,7 @@ public class ThreadLocalTest {
 我们反推一下, 如果`Entry`的`Key`是强引用, 当`ThreadLocal`的外部强引用取消后, `ThreadLocalMap`内部的`Entry`还持有`ThreadLocal`的强引用.
 那么`ThreadLocal`就一直不能被`GC`回收, 需要手动`remove`才能回收.
 反之, 如果是弱引用, 那么`ThreadLocal`的外部强引用取消后, 因为`Entry`持有的是`ThreadLocal`的弱引用, 当发生`GC`时, 能及时回收掉`ThreadLocal`.
-在下次`set`、`get`、`remove`方法做清除引用的操作.
+在下次`set`、`get`、`remove`方法做清除`key`为`null`的`value`的操作.
 
 ## 总结
 `Thread`线程有一个`ThreadLocalMap`成员变量, 这是一个存储了以`ThreadLocal`为`Key`, 值为`Value`的`Map`集合.
@@ -578,7 +579,10 @@ public class TransmittableThreadLocal<T> extends InheritableThreadLocal<T> imple
 # 总结
 `ThreadLocal`算是高频面试考点, 并且一个用的不小心就会造成线上生产问题. 使用的时候只要注意套模版就可以了.
 1. `static`修饰`ThreadLocal`
-2. `set`之后要用`try {} finally {}`做`remove`
+2. `set`之后要用`try {} finally {}`做`remove`操作
 3. 线程池要用`TransmittableThreadLocal`来传递变量.
 
 另外, `Netty`还有一个`FastThreadLocal`的东西, 不过没有涉及本篇的线程变量传递的主题, 所以就不讲了.
+
+# 参考资料
+- [小伙伴同学们写的 TTL使用场景 与 设计实现解析的文章（写得都很好！ ）❤️](https://github.com/alibaba/transmittable-thread-local/issues/123)
