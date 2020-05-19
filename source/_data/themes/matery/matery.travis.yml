@@ -1,0 +1,41 @@
+language: node_js
+node_js: lts/*
+branches:
+  only:
+    - source
+cache:
+  apt: true
+  yarn: true
+  directories:
+    - node_modules
+    - theme
+before_install:
+  - git config --global user.name "用户名"
+  - git config --global user.email "邮箱"
+  # 由于使用了yarn，所以需要下载，如不用yarn这两行可以删除
+  - curl -o- -L https://yarnpkg.com/install.sh | bash
+  - export PATH=$HOME/.yarn/bin:$PATH
+  # npm模块安装
+  - yarn global add hexo-cli
+  - yarn add hexo-asset-image --save
+  - yarn add hexo-generator-searchdb --save
+  - yarn add hexo-generator-feed --save
+  - yarn add hexo-related-popular-posts --save
+  - yarn add hexo-symbols-count-time --save
+  - yarn add hexo-generator-sitemap --save
+  - yarn add hexo-generator-baidu-sitemap --save
+  - yarn add hexo-deployer-git --save
+  - yarn add hexo-helper-live2d --save
+  # 将 GitHub Token 替换到 matery.yml 中
+  - sed -i "s/REPO_TOKEN/${REPO_TOKEN}/" source/_data/matery.yml
+  # matery主题下载
+  - git clone https://github.com/blinkfox/hexo-theme-matery.git themes/matery
+  - cd themes/matery && git checkout v1.3.0 && cd -
+  - yes | cp -rf source/_data/matery.yml themes/matery/_config.yml
+install:
+  # 不用yarn的话这里改成 npm i 即可
+  - yarn
+script:
+  - hexo clean --config source/_data/matery.yml
+  - hexo g --config source/_data/matery.yml
+  - hexo d --config source/_data/matery.yml
