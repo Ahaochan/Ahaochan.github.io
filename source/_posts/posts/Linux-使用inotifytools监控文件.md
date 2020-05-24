@@ -11,8 +11,8 @@ categories:
 # 前言
 监控文件变化是一个很常用的功能, 比如监控密码文件, `html`文件, 如果被恶意修改, 那就发送一个请求给服务器, 发送短信给管理员。
 这里使用`inotify-tools`来监控文件变化, 安装命令如下:
-```sh
-$ yum install -y inotify-tools
+```bash
+apt install -y inotify-tools
 ```
 `inotify-tools`提供了两个命令: 
 1. `inotifywait`, 它是用来监控文件或目录的变化
@@ -25,13 +25,17 @@ $ yum install -y inotify-tools
 
 | 文件路径 | 默认值 | 说明 |
 |:------------:|:---------:|:------:|
-| `/proc/sys/fs/inotify/max_queued_evnets` | 16384 | 表示调用`inotify_init`时分配给`inotify instance`中可排队的`event`的数目的最大值，超出这个值的事件被丢弃，但会触发`IN_Q_OVERFLOW`事件。|
+| `/proc/sys/fs/inotify/max_queued_events` | 16384 | 表示调用`inotify_init`时分配给`inotify instance`中可排队的`event`的数目的最大值，超出这个值的事件被丢弃，但会触发`IN_Q_OVERFLOW`事件。|
 | `/proc/sys/fs/inotify/max_user_instances` | 128 |表示每一个real user [id](http://man.linuxde.net/id "id命令")可创建的`inotify instatnces`的数量上限 |
 | `/proc/sys/fs/inotify/max_user_watches` | 8192 | 表示每个`inotify instatnces`可监控的最大目录数量。如果监控的文件数目巨大，需要根据情况，适当增加此值的大小。|
 
 如修改每个`inotify instatnces`可监控的最大目录数量为`104857600 `
-```sh
-$ echo 104857600 > /proc/sys/fs/inotify/max_user_watches
+```bash
+echo 104857600 > /proc/sys/fs/inotify/max_user_watches
+cat /proc/sys/fs/inotify/max_queued_events
+cat /proc/sys/fs/inotify/max_user_instances
+cat /proc/sys/fs/inotify/max_user_watches
+
 ```
 
 # inotifywait监控文件变化
@@ -47,49 +51,64 @@ $ echo 104857600 > /proc/sys/fs/inotify/max_user_watches
 | `--event`| 只监听某些事件, 事件参考[可监听的事件](http://man.linuxde.net/inotifywait) |
 
 先来个简单的例子, 监控`test`文件夹下的变化。
-```sh
+```bash
 # 1. 在终端1开启inotifywait, -r表示递归监视, -m表示持续监视, -q表示只输出事件
-$ mkdir test
-$ inotify -rmq test/
+mkdir /opt/test -p
+inotifywait -rmq /opt/test/
 # 2. 在终端2写入文件
-$ echo 123 > test/123.txt
+echo 123 > /opt/test/123.txt
 # 3. 终端1显示如下信息
-test/ CREATE 123.txt
-test/ OPEN 123.txt
-test/ MODIFY 123.txt
-test/ CLOSE_WRITE,CLOSE 123.txt
+# test/ CREATE 123.txt
+# test/ OPEN 123.txt
+# test/ MODIFY 123.txt
+# test/ CLOSE_WRITE,CLOSE 123.txt
 ```
 
 下面来一个复杂点的例子, 后台监控`test`文件夹变化, 并将变化内容发送到邮箱。(注意! 这种注释方式会[损耗性能](https://stackoverflow.com/a/12797512/6335926)! 这里只是为了直观才加的注释)
-```sh
-# 在终端1操作
-$ vim inotify.sh
-#/bin/bash
-/usr/bin/inotifywait -rmq               `# 1. -r表示递归监视, -m表示持续监视, -q表示只输出事件` \
-   --timefmt '%Y-%m-%d %H:%M:%S'        `# 2. 时间格式为 2018-08-15 16:16:12` \
-   --format  '%T %w%f %e'               `# 3. 输出格式为: 时间 目录 文件 事件` \
-   --event modify,attrib,create,delete  `# 4. 只监控特定事件` \
-   test/                                `# 5. 监控test文件夹` \
-   | while read log; do echo $log | mail -s '文件改变' root; done; `# 6. 读取管道流, 执行发送邮件给 root 的命令`
+```bash
+# 安装依赖
+apt install mailutils -y
 
-$ chmod 755 inotify.sh
-$ nohup inotify.sh >> /dev/null 2>&1 &
+# 在终端1操作
+vim inotify.sh
+# #/bin/bash
+# /usr/bin/inotifywait -rmq               `# 1. -r表示递归监视, -m表示持续监视, -q表示只输出事件` \
+#    --timefmt '%Y-%m-%d %H:%M:%S'        `# 2. 时间格式为 2018-08-15 16:16:12` \
+#    --format  '%T %w%f %e'               `# 3. 输出格式为: 时间 目录 文件 事件` \
+#    --event modify,attrib,create,delete  `# 4. 只监控特定事件` \
+#    /opt/test/                           `# 5. 监控test文件夹` \
+#    | while read log; do echo $log | mail -s '文件改变' root; done; `# 6. 读取管道流, 执行发送邮件给 root 的命令`
+
+chmod 755 inotify.sh
+nohup inotify.sh >> /dev/null 2>&1 &
 
 # 在终端2操作
-$ echo 123 > test/123.txt
+echo 123 > /opt/test/123.txt
 
 # 在终端3操作, ctrl+D结束查看邮件
-$ mail
-Heirloom Mail version 12.5 7/5/10.  Type ? for help.
-"/var/spool/mail/root": 1 message 1 new
->N  1 root                  Wed Aug 15 17:14  18/697   "文件改变"
-& Held 1 message in /var/spool/mail/root
+mail
+# "/var/mail/root": 1 message 1 new
+#  >N   1 root               日 5月 24 13:1  13/451   文件改变
+# ? 1
+# Return-Path: <root@ahao-vm>
+# X-Original-To: root@ahao-vm
+# Delivered-To: root@ahao-vm
+# Received: by ahao-vm.localdomain (Postfix, from userid 0)
+# 	id AB4CBA3D5E; Sun, 24 May 2020 13:17:25 +0800 (CST)
+# Subject: 文件改变
+# To: <root@ahao-vm>
+# X-Mailer: mail (GNU Mailutils 2.99.99)
+# Message-Id: <20200524051725.AB4CBA3D5E@ahao-vm.localdomain>
+# Date: Sun, 24 May 2020 13:17:25 +0800 (CST)
+# From: root@ahao-vm (root)
+# 
+# 2020-05-24 13:17:25 /opt/test/123.txt MODIFY
 ```
 
 # inotifywatch统计访问次数
 
 一个简单的例子, 监控`test`文件夹下`60s`内的变化次数
-```sh
+```bash
 inotifywatch -v -e modify,delete,create,attrib,move,open,close,access -e modify -t 60 -r test/
 ```
 
