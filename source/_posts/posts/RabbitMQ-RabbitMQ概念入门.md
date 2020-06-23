@@ -23,7 +23,7 @@ date: 2020-06-02 14:21:00
 
 `Message`: 消息, 应用程序和`Broker`之间传送的数据, 由`Properties`属性和`Body`消息体组成.
 
-`Virtual Host`: 虚拟地址, 用于逻辑隔离. 一般用与区分`dev`环境, `test`环境.
+`Virtual Host`: 虚拟地址, 用于逻辑隔离. 一般用于区分`dev`环境, `test`环境.
 `Exchange`: 交换机, 接收消息, 根据消息的路由`Key`和绑定规则, 投递到对应的`Queue`队列中.
 `Binding`: `Exchange`交换机和`Queue`队列之间的绑定规则.
 `Queue`: 队列, 保存消息并转发给消费者.
@@ -71,14 +71,14 @@ public class Main {
 ```
 一般一个应用程序共享一个`Connection`, 每个线程创建自己的`Channel`.
 所有的操作, 包括`Exchange`、`Queue`的创建绑定, 消息的生产消费, 都是在`Channel`上执行的.
-{% img /images/RabbitMQ基础之Exchange和Queue_01.png %}
+{% img /images/RabbitMQ概念入门_01.png %}
 
 ## Virtual Host、Exchange、Binding、Queue
-{% img /images/RabbitMQ基础之Exchange和Queue_02.png %}
+{% img /images/RabbitMQ概念入门_02.png %}
 `Virtual Host`用来区分`dev`环境和`test`环境, 避免两个环境的数据混淆在一起.
 
 从图中可以看到, 生产者只管投递到`Exchange`上, 消费者也只管从`Queue`消费消息, 其中它们是怎么路由的, 生产者和消费者不需要关心.
-而`Exchange`和`Queue`之间的路由规则, 就是根据`Message`消息提供的路由`Key`, 以及`Exchange`和`Queue`之间的绑定`Key`, 两者匹配上, 路由成功就投递到`Queue`队列上.
+而`Exchange`和`Queue`之间的路由规则, 就是根据`Message`消息提供的`RoutingKey`, 以及`Exchange`和`Queue`之间的`BindingKey`, 两者匹配上, 路由成功就投递到`Queue`队列上.
 
 # Demo 例子
 概念讲完, 这里提供简单的一个[单元测试](https://github.com/Ahaochan/project/blob/master/ahao-spring-boot-rabbitmq/src/test/java/com/ahao/spring/boot/rabbitmq/NativeTest.java)
