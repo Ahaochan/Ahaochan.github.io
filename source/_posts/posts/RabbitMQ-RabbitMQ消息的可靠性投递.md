@@ -24,7 +24,7 @@ date: 2020-06-19 19:29:00
 比如消息中间件`MQ`接收到消息后, 所在的服务器重启了, 没能告诉生产者`Producer`消息接收成功, 也没能将消息投递给消费者`Consumer`, 这时候就应该让生产者`Producer`重新投递.
 比如发生了重放攻击, 生产者`Producer`连续发送了两条相同的消息, 那么消费者`Consumer`应该判断此消息是否消费过, 不应该重复消费.
 
-业界有两种方案
+业界有两种方案保证消息的可靠性投递
 1. 消息落库, 对消息状态进行打标
 2. 消息延迟投递, 做二次确认, 回调检查
 
@@ -63,8 +63,8 @@ primary key (`id`)
 订单落库和消息落库, 我们可以看成是两次`insert`写库操作, 如果订单库和消息库在同一个`DB`实例下, 直接开启本地事务保存即可.
 但是如果订单库和消息库在不同的`DB`实例下, 我们要使用分布式事务吗? 业务是否能接受分布式事务带来的性能损耗吗?
 
-如果体量小的项目, 用分布式事务是可以的, 但如果碰到了海量请求的情况下.
-我们可以通过快速失败的方式, 来保证两个消息落库成功.
+如果体量小的项目, 用分布式事务是可以的, 但如果碰到了海量请求的情况下. 我们也可以通过快速失败的方式, 来保证两个消息落库成功.
+但是如果遇到更大的流量请求, 就要通过方案二来解决了.
 ```java
 public String order() {
     // 1. 生成订单号
@@ -364,18 +364,14 @@ public class MyConfig {
 ```
 也可以使用注解的形式声明`Exchange`和`Queue`实现持久化.
 ```java
-public void create(String exchange, String routingKey, String msg) {
-    // Exchange.DeclareOk exchangeDeclare(String exchange, BuiltinExchangeType type, boolean durable, boolean autoDelete, boolean internal, Map<String, Object> arguments);
-    channel.exchangeDeclare(EXCHANGE_NAME, BuiltinExchangeType.DIRECT, true, false, false, null);
-
-    // Queue.DeclareOk queueDeclare(String queue, boolean durable, boolean exclusive, boolean autoDelete, Map<String, Object> arguments) throws IOException;
-    channel.queueDeclare(QUEUE_NAME, true, false, false, null);
-    
-    // public BasicProperties(String contentType, String contentEncoding, Map<String,Object> headers, Integer deliveryMode, 
-    //                          Integer priority, String correlationId, String replyTo, String expiration, String messageId,
-    //                          Date timestamp, String type, String userId, String appId, String clusterId)
-    // new BasicProperties("text/plain", null, null, 2, 0, null, null, null, null, null, null, null, null, null)
-    channel.basicPublish(EXCHANGE_NAME, ROUTING_KEY, MessageProperties.PERSISTENT_TEXT_PLAIN, msg.getBytes(StandardCharsets.UTF_8));
+public class Consumer {
+    @RabbitListener(bindings = @QueueBinding(key = "#",
+            exchange = @Exchange(type = ExchangeTypes.TOPIC, name = EXCHANGE_NAME, durable = "true"),
+            value = @Queue(name = QUEUE_NAME, durable = "true")))
+    public void consumer(@Payload String msg, Channel channel, @Header(AmqpHeaders.DELIVERY_TAG) long tag,
+                         @Headers Map<String, Object> header) {
+        // 消费消息
+    }
 }
 ```
 消息的持久化也是在发消息时通过指定`MessageProperties`实现
@@ -394,9 +390,10 @@ public void send(String exchange, String routingKey, String msg) {
 默认情况下, 消费者是开启自动`ACK`的. 也就是说一条消息过来, 不管有没有执行成功, 都会告诉`RabbitMQ`消费成功. 如果出现异常, 也告诉`RabbitMQ`消费成功. 这明显是不合理的.
 
 ### 原生 API 手动 ACK
+可以看到, 自动`ACK`的配置, 是在创建消费者的时候就声明的.
 ```java
 public void consumer(Channel channel) {
-    boolean autoAck = true; // 声明自动 ACK
+    boolean autoAck = false; // 声明自动 ACK
     channel.basicConsume(QUEUE_NAME, autoAck, new DefaultConsumer(channel) {
         @Override
         public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
@@ -412,8 +409,7 @@ public void consumer(Channel channel) {
     });
 }
 ```
-可以看到, 自动`ACK`的配置, 是在创建消费者的时候就声明的.
-如果设置成手动`ACK`, 那么就要手动调用几个方法.
+如果设置成手动`ACK`, 那么就要手动调用几个方法来通知`MQ`消息的消费情况.
 1. `channel.basicAck(long deliveryTag, boolean multiple)`, 表示正确处理这条消息.
 2. `channel.basicNack(long deliveryTag, boolean multiple, boolean requeue)`, 表示消息处理失败, 决定是否重回队列.
 3. `channel.basicReject(long deliveryTag, boolean requeue)`, 表示消息处理失败, 决定是否重回队列.
@@ -475,7 +471,7 @@ public class Consumer {
 以上都是流程正常的情况. 
 那万一中间哪一步出现异常, 要怎么保证消息再次重发呢? 关键点就在于这个用于**检查**的延迟消息.
 
-这个用于检查的延迟消息, 会在一段时间, 比如十分钟后投递到`MQ`消息中间件, 消息体带上订单号等业务信息, 然后回调系统会去检查消息库.
+这个用于检查的延迟消息, 消息体带上订单号等业务信息, 会在一段时间, 比如十分钟后投递到`MQ`消息中间件, 然后回调系统消费这条消息, 去检查消息库.
 如果看到这条订单消息没有被处理, 那么就调用订单系统的接口, 让订单系统重新投递这条消息.
 
 这里有个大问题, 如果这条延迟消息丢失了怎么办?
