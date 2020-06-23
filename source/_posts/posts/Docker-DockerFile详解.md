@@ -80,6 +80,7 @@ LABEL maintainer="作者" version="版本号" description="描述"
 有两点需要注意
 1. 千万不要使用`RUN cd`, 因为每一次`RUN`都会产生一层`Image Layer`.
 2. 尽量使用绝对目录, 避免弄混淆了
+
 ```dockerfile
 WORKDIR /test
 WORKDIR demo
@@ -134,12 +135,13 @@ docker build --build-arg VERSION=2.7 -t ahaochan/ahao-alpine-2.7 .
 值得注意的是, 官方文档提到, `ARG`不要传递敏感数据, 不安全.
 
 还有就是同名变量`ENV`会覆盖`ARG`. 根据这个特性, 可以做一些默认的操作.
+
 ```dockerfile
 FROM alpine
 ARG VERSION
 ENV VERSION ${VERSION:-lastest}
 CMD /bin/echo $VERSION
-``` 
+```
 
 ## COPY
 `ADD`和`COPY`都是在构建镜像的时候, 将上下文的文件拷贝到镜像中.
@@ -232,6 +234,7 @@ docker run ahaochan/ahao-alpine
 `RUN`有2种形式
 1. `shell`形式: `RUN <command>`
 1. `exec`形式: `RUN ["executable", "param1", "param2"]`
+
 ```dockerfile
 FROM alpine
 ENV VAR ahao
