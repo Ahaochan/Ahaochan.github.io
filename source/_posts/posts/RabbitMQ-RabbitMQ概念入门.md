@@ -73,7 +73,7 @@ public class Main {
 所有的操作, 包括`Exchange`、`Queue`的创建绑定, 消息的生产消费, 都是在`Channel`上执行的.
 {% img /images/RabbitMQ概念入门_01.png %}
 
-## Virtual Host、Exchange、Binding、Queue
+# Virtual Host、Exchange、Binding、Queue
 {% img /images/RabbitMQ概念入门_02.png %}
 `Virtual Host`用来区分`dev`环境和`test`环境, 避免两个环境的数据混淆在一起.
 
