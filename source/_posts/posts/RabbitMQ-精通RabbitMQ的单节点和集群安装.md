@@ -12,7 +12,7 @@ date: 2019-09-02 22:28:00
 官方提供了一个`Docker`镜像, 直接执行下面命令即可.
 ```bash
 mkdir -p /opt/rabbitmq/config && touch /opt/rabbitmq/config/rabbitmq.config
-docker run -it --rm --name rabbitmq -p 5672:5672 -p 15672:15672 \
+docker run -it --name rabbitmq -p 5672:5672 -p 15672:15672 \
     -v /opt/rabbitmq/config/rabbitmq.config:/etc/rabbitmq/rabbitmq.config \
     --hostname my-rabbit \
     rabbitmq:3-management
@@ -53,7 +53,7 @@ services:
     ports:
       - 5672:5672
     volumes:
-      - ./haproxy:/usr/local/etc/haproxy # HAProxy 的配置文件路径
+      - ./haproxy:/usr/local/etc/haproxy:ro # HAProxy 的配置文件路径
   rabbitmq-master:
     image: rabbitmq:3-alpine
   rabbitmq-backup:
@@ -71,15 +71,44 @@ vim ./haproxy/haproxy.cfg
 docker-compose up
 ```
 
-# 不研究了, 都是运维相关的, 有机会再补充
-## 远程模式(Shovel模式)
-在跨地域的集群进行数据复制
+## Shovel模式
 ![Shovel模式](https://yuml.me/diagram/nofunky;dir:lr/class/[用户]->[RabbitMQ华南],[RabbitMQ华南]-同步>[RabbitMQ华北])
-```bash
-rabbitmq-plugins enable amqp_client rabbitmq_shovel
+`Shovel`是`RabbitMQ`的一个插件, 本质上就是一个消费者, 消费当前节点的某个队列里的消息, 然后生产消息发送到目标节点的`Exchange`上, 使用`confirm`机制保证消息的可靠性投递.
+
+这里先创建一个简单的`Docker`镜像, 官方并没有提供开启了`Shovel`的`RabbitMQ`镜像.
+```dockerfile
+FROM rabbitmq:3.7-management
+RUN rabbitmq-plugins enable --offline rabbitmq_shovel rabbitmq_shovel_management
+EXPOSE 5672 15672
+# docker build -t rabbitmq-shovel .
+# docker run -it --name rabbitmq1 -p 5672:5672 -p 15672:15672 rabbitmq-shovel
 ```
 
+`Shovel`分为静态配置和动态配置
+
+| 静态`Shovels` | 动态`Shovels` |
+|:------------:|:-------------:|
+| 在配置文件中设置 | 在命令行中设置 |
+| 修改后要重启 | 修改后不需要重启 |
+
+具体部署参阅官方文档
+- [静态`Shovel`官方文档](https://www.rabbitmq.com/shovel-static.html)
+- [动态`Shovel`官方文档](https://www.rabbitmq.com/shovel-dynamic.html)
+
 ## 镜像集群(Mirror模式)
+![Mirror模式](https://yuml.me/diagram/nofunky;dir:ud/class/[应用]-VIP>[HAProxy&KeepAlived1],[应用]-VIP>[HAProxy&KeepAlived2],[HAProxy&KeepAlived1]->[RabbitMQ1],[HAProxy&KeepAlived1]->[RabbitMQ2],[HAProxy&KeepAlived1]->[RabbitMQ3],[HAProxy&KeepAlived2]->[RabbitMQ1],[HAProxy&KeepAlived2]->[RabbitMQ2],[HAProxy&KeepAlived2]->[RabbitMQ3])
+
+```bash
+# https://github.com/pardahlman/docker-rabbitmq-cluster
+git clone https://github.com/pardahlman/docker-rabbitmq-cluster.git
+cd docker-rabbitmq-cluster
+docker-compose up
+```
 
 ## 异地多集群(多活模式)
 ![多活模式](https://yuml.me/diagram/nofunky;dir:ud/class/[应用]->[LBS负载均衡1],[应用]->[LBS负载均衡2],[LBS负载均衡1]->[RabbitMQ1,RabbitMQ2,RabbitMQ3],[LBS负载均衡2]->[RabbitMQ3,RabbitMQ4,RabbitMQ5])
+
+# 参考资料
+- [`Shovel`官方文档](https://www.rabbitmq.com/shovel.html)
+- [静态`Shovel`官方文档](https://www.rabbitmq.com/shovel-static.html)
+- [动态`Shovel`官方文档](https://www.rabbitmq.com/shovel-dynamic.html)
