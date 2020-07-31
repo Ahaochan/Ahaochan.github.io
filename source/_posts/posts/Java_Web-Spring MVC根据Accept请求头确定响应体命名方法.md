@@ -59,24 +59,24 @@ public class MyController {
 // org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter
 public class RequestMappingHandlerAdapter extends AbstractHandlerMethodAdapter implements BeanFactoryAware, InitializingBean {
     @Override
-	public void afterPropertiesSet() {
+    public void afterPropertiesSet() {
         // 省略其他代码
-		if (this.returnValueHandlers == null) {
+        if (this.returnValueHandlers == null) {
             // 这里初始化一堆默认的返回值处理器, 其中就包括了 @ResponseBody 的处理器
-			List<HandlerMethodReturnValueHandler> handlers = getDefaultReturnValueHandlers();
-			this.returnValueHandlers = new HandlerMethodReturnValueHandlerComposite().addHandlers(handlers);
-		}
-	}
+            List<HandlerMethodReturnValueHandler> handlers = getDefaultReturnValueHandlers();
+            this.returnValueHandlers = new HandlerMethodReturnValueHandlerComposite().addHandlers(handlers);
+        }
+    }
     private List<HandlerMethodReturnValueHandler> getDefaultReturnValueHandlers() {
-		List<HandlerMethodReturnValueHandler> handlers = new ArrayList<>();
-		// 省略其他代码
-		handlers.add(new RequestResponseBodyMethodProcessor(getMessageConverters(), this.contentNegotiationManager, this.requestResponseBodyAdvice));
-		// WebMvcConfigurer 自定义处理器
-		if (getCustomReturnValueHandlers() != null) {
-			handlers.addAll(getCustomReturnValueHandlers());
-		}
-		return handlers;
-	}
+        List<HandlerMethodReturnValueHandler> handlers = new ArrayList<>();
+        // 省略其他代码
+        handlers.add(new RequestResponseBodyMethodProcessor(getMessageConverters(), this.contentNegotiationManager, this.requestResponseBodyAdvice));
+        // WebMvcConfigurer 自定义处理器
+        if (getCustomReturnValueHandlers() != null) {
+            handlers.addAll(getCustomReturnValueHandlers());
+        }
+        return handlers;
+    }
 }
 ```
 这里就有个问题了, 我通过实现`WebMvcConfigurer`自定义的处理器, 它的优先级永远比`RequestResponseBodyMethodProcessor`处理器的优先级要低.
