@@ -131,7 +131,7 @@ sitemap:
 
 # If false, merge configs from `_data/next.yml` into default configuration (rewrite).
 # If true, will fully override default configuration by options from `_data/next.yml` (override). Only for NexT settings.
-# And if true, all config from default NexT `_config.yml` must be copied into `next.yml`. Use if you know what you are doing.
+# And if true, all config from default NexT `_config.yml` have to be copied into `next.yml`. Use if you know what you are doing.
 # Useful if you want to comment some options from NexT `_config.yml` by `next.yml` without editing default config.
 override: false
 
@@ -148,7 +148,7 @@ minify: false
 # Define custom file paths.
 # Create your custom files in site directory `source/_data` and uncomment needed files below.
 custom_file_path:
-  #head: source/_data/head.swig
+  head: source/_data/head.swig
   #header: source/_data/header.swig
   #sidebar: source/_data/sidebar.swig
   #postMeta: source/_data/post-meta.swig
@@ -173,6 +173,9 @@ favicon:
   #android_manifest: /images/manifest.json
   #ms_browserconfig: /images/browserconfig.xml
 
+# Show multilingual switcher in footer.
+language_switcher: true
+
 footer:
   # Specify the date when the site was setup. If not defined, current year will be used.
   since: 2020
@@ -190,17 +193,8 @@ footer:
   # If not defined, `author` from Hexo `_config.yml` will be used.
   copyright:
 
-  powered:
-    # Hexo link (Powered by Hexo).
-    enable: true
-    # Version info of Hexo after Hexo link (vX.X.X).
-    version: true
-
-  theme:
-    # Theme & scheme info link (Theme - NexT.scheme).
-    enable: true
-    # Version info of NexT after scheme info (vX.X.X).
-    version: true
+  # Powered by Hexo & NexT
+  powered: true
 
   # Beian ICP and gongan information for Chinese users. See: http://www.beian.miit.gov.cn, http://www.beian.gov.cn
   beian:
@@ -250,10 +244,10 @@ darkmode: false
 # External url should start with http:// or https://
 menu:
   home: / || home
+  about: /about/ || user
   tags: /tags/ || tags
   categories: /categories/ || th
   archives: /archives/ || archive
-  about: /about/ || user
   #schedule: /schedule/ || calendar
   #sitemap: /sitemap.xml || sitemap
   #commonweal: /404/ || heartbeat
@@ -316,7 +310,6 @@ social:
   #Google: https://plus.google.com/yourname || google
   #Twitter: https://twitter.com/yourname || twitter
   #FB Page: https://www.facebook.com/yourname || facebook
-  #VK Group: https://vk.com/yourname || vk
   #StackOverflow: https://stackoverflow.com/yourname || stack-overflow
   #YouTube: https://youtube.com/yourname || youtube
   #Instagram: https://instagram.com/yourname || instagram
@@ -483,9 +476,6 @@ mobile_layout_ezconomy: true
 # Android Chrome header panel color ($brand-bg / $headband-bg => $black-deep).
 android_chrome_color: "#222"
 
-# Hide sticky headers and color the menu bar on Safari (iOS / macOS).
-safari_rainbow: false
-
 # Custom Logo (Do not support scheme Mist)
 custom_logo: #/uploads/custom-logo.jpg
 
@@ -593,14 +583,6 @@ font:
 # Disable Baidu transformation on mobile devices.
 disable_baidu_transformation: false
 
-# Set a canonical link tag for your Hexo site.
-# See: https://support.google.com/webmasters/answer/139066
-# Remember to set up your URL in Hexo `_config.yml` (e.g. url: http://yoursite.com)
-canonical: true
-
-# Change headers hierarchy on site-subtitle (will be main site description) and on all post / page titles for better SEO-optimization.
-seo: true
-
 # If true, site-subtitle will be added to index page.
 # Remember to set up your site-subtitle in Hexo `_config.yml` (e.g. subtitle: Subtitle)
 index_with_subtitle: false
@@ -631,6 +613,7 @@ baidu_push: true
 # ---------------------------------------------------------------
 # Third Party Plugins & Services Settings
 # See: https://theme-next.org/docs/third-party-services/
+# More plugins: https://github.com/theme-next/awesome-next
 # You may need to install dependencies or set CDN URLs in `vendors`
 # There are two different CDN providers by default:
 #   - jsDelivr (cdn.jsdelivr.net), works everywhere even in China
@@ -678,6 +661,7 @@ lazyload: true
 pangu: false
 
 # Quicklink Support
+# Do not enable both `pjax` and `quicklink`.
 # For more information: https://github.com/GoogleChromeLabs/quicklink
 # Front-matter (unsupport home archive).
 quicklink:
@@ -755,18 +739,18 @@ changyan:
 # Valine
 # For more information: https://valine.js.org, https://github.com/xCss/Valine
 valine:
-  enable: false # When enable is set to be true, leancloud_visitors is recommended to be closed for the re-initialization problem within different leancloud adk version.
-  appid:  # your leancloud application appid
-  appkey:  # your leancloud application appkey
-  notify: false # mail notifier, See: https://github.com/xCss/Valine/wiki
+  enable: false
+  appid: # Your leancloud application appid
+  appkey: # Your leancloud application appkey
+  notify: false # Mail notifier
   verify: false # Verification code
-  placeholder: Just go go # comment box placeholder
-  avatar: mm # gravatar style
-  guest_info: nick,mail,link # custom comment header
-  pageSize: 10 # pagination size
-  language: # language, available values: en, zh-cn
-  visitor: false # leancloud-counter-security is not supported for now. When visitor is set to be true, appid and appkey are recommended to be the same as leancloud_visitors' for counter compatibility. Article reading statistic https://valine.js.org/visitor.html
-  comment_count: true # if false, comment count will only be displayed in post page, not in home page
+  placeholder: Just go go # Comment box placeholder
+  avatar: mm # Gravatar style
+  guest_info: nick,mail,link # Custom comment header
+  pageSize: 10 # Pagination size
+  language: # Language, available values: en, zh-cn
+  visitor: false # Article reading statistic
+  comment_count: true # If false, comment count will only be displayed in post page, not in home page
   recordIP: false # Whether to record the commenter IP
   serverURLs: # When the custom domain name is enabled, fill it in here (it will be detected automatically by default, no need to fill in)
   #post_meta_order: 0
@@ -815,13 +799,13 @@ add_this_id:
 
 # Google Analytics
 google_analytics:
-  tracking_id:
+  tracking_id: # <app_id>
   # By default, NexT will load an external gtag.js script on your site.
   # If you only need the pageview feature, set the following option to true to get a better performance.
   only_pageview: false
 
 # Baidu Analytics
-baidu_analytics:
+baidu_analytics: # <app_id>
 
 # Growingio Analytics
 growingio_analytics: # <project_id>
@@ -835,8 +819,10 @@ cnzz_siteid:
 # Do not enable both `valine.visitor` and `leancloud_visitors`.
 leancloud_visitors:
   enable: false
-  app_id: #<app_id>
-  app_key: #<app_key>
+  app_id: # <your app id>
+  app_key: # <your app key>
+  # Required for apps from CN region
+  server_url: # <your server url>
   # Dependencies: https://github.com/theme-next/hexo-leancloud-counter-security
   # If you don't care about security in leancloud counter and just want to use it directly
   # (without hexo-leancloud-counter-security plugin), set `security` to `false`.
@@ -863,8 +849,6 @@ busuanzi_count:
   post_views: true
   post_views_icon: eye
 
-# Tencent analytics ID
-#tencent_analytics:
 
 # ---------------------------------------------------------------
 # Search Services
@@ -946,10 +930,9 @@ tabs:
     tabs: false
     labels: true
 
-# PDF tag, requires two plugins: pdfObject and pdf.js
-# pdfObject will try to load pdf files natively, if failed, pdf.js will be used.
-# The following `cdn` setting is only for pdfObject, because cdn for pdf.js might be blocked by CORS policy.
-# So, you must install the dependency of pdf.js if you want to use pdf tag and make it available to all browsers.
+# PDF tag
+# NexT will try to load pdf files natively, if failed, pdf.js will be used.
+# So, you have to install the dependency of pdf.js if you want to use pdf tag and make it available to all browsers.
 # See: https://github.com/theme-next/theme-next-pdf
 pdf:
   enable: true
@@ -1004,17 +987,6 @@ three:
   three_waves: false
   canvas_lines: false
   canvas_sphere: false
-
-# Canvas-nest
-# Dependencies: https://github.com/theme-next/theme-next-canvas-nest
-# For more information: https://github.com/hustcc/canvas-nest.js
-canvas_nest:
-  enable: true
-  onmobile: true # Display on mobile or not
-  color: "0,0,255" # RGB values, use `,` to separate
-  opacity: 0.5 # The opacity of line: 0~1
-  zIndex: -1 # z-index property of the background
-  count: 99 # The number of lines
 
 # Canvas-ribbon
 # Dependencies: https://github.com/theme-next/theme-next-canvas-ribbon
@@ -1079,7 +1051,7 @@ vendors:
 
   # Lazyload
   # lazyload: //cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js
-  # lazyload: //cdnjs.cloudflare.com/ajax/libs/lozad.js/1.9.0/lozad.min.js
+  # lazyload: //cdnjs.cloudflare.com/ajax/libs/lozad.js/1.14.0/lozad.min.js
   lazyload:
 
   # Pangu
@@ -1104,7 +1076,7 @@ vendors:
 
   # Gitalk
   # gitalk_js: //cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js
-  # gitalk_css: //cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css
+  # gitalk_css: //cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css
   gitalk_js:
   gitalk_css:
 
@@ -1114,14 +1086,9 @@ vendors:
   algolia_search:
   instant_search:
 
-  # PDF
-  # pdfobject: //cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js
-  # pdfobject: //cdnjs.cloudflare.com/ajax/libs/pdfobject/2.1.1/pdfobject.min.js
-  pdfobject:
-
   # Mermaid
   # mermaid: //cdn.jsdelivr.net/npm/mermaid@8/dist/mermaid.min.js
-  # mermaid: //cdnjs.cloudflare.com/ajax/libs/mermaid/8.3.0/mermaid.min.js
+  # mermaid: //cdnjs.cloudflare.com/ajax/libs/mermaid/8.4.8/mermaid.min.js
   mermaid:
 
   # Internal version: 1.2.1
@@ -1149,12 +1116,6 @@ vendors:
   three_waves:
   canvas_lines:
   canvas_sphere:
-
-  # Internal version: 1.0.0
-  # canvas_nest: //cdn.jsdelivr.net/gh/theme-next/theme-next-canvas-nest@1/canvas-nest.min.js
-  # canvas_nest_nomobile: //cdn.jsdelivr.net/gh/theme-next/theme-next-canvas-nest@1/canvas-nest-nomobile.min.js
-  canvas_nest:
-  canvas_nest_nomobile:
 
   # Internal version: 1.0.0
   # canvas_ribbon: //cdn.jsdelivr.net/gh/theme-next/theme-next-canvas-ribbon@1/canvas-ribbon.js

@@ -40,7 +40,7 @@ before_install:
   - sed -i "s/REPO_TOKEN/${REPO_TOKEN}/" source/_data/next.yml
   # next主题下载
   - git clone https://github.com/theme-next/hexo-theme-next themes/next
-  - cd themes/next && git checkout v7.7.2 && cd -
+  - cd themes/next && git checkout v7.8.0 && cd -
   # next主题依赖下载
   - git clone https://github.com/theme-next/theme-next-pdf themes/next/source/lib/pdf
   - git clone https://github.com/theme-next/theme-next-pace themes/next/source/lib/pace
