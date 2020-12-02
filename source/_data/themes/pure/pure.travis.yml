@@ -1,0 +1,51 @@
+# 使用语言
+language: node_js
+# node版本
+node_js:
+  - 10
+# 设置只监听哪个分支
+branches:
+  only:
+    - source
+# 缓存，可以节省集成的时间，这里我用了yarn，如果不用可以删除
+cache:
+  apt: true
+  yarn: true
+  directories:
+    - node_modules
+    - theme
+before_install:
+  #  配置git
+  - git config --global user.name "用户名"
+  - git config --global user.email "邮箱"
+  # 由于使用了yarn，所以需要下载，如不用yarn这两行可以删除
+  - curl -o- -L https://yarnpkg.com/install.sh | bash
+  - export PATH=$HOME/.yarn/bin:$PATH
+  # npm模块安装
+  - yarn global add hexo-cli
+  # - yarn remove hexo-renderer-marked
+  - yarn add hexo-renderer-kramed
+  - yarn add hexo-asset-image
+  # - yarn add hexo-generator-searchdb
+  - yarn add hexo-generator-feed
+  # - yarn add hexo-related-popular-posts
+  - yarn add hexo-symbols-count-time
+  - yarn add hexo-generator-sitemap
+  - yarn add hexo-generator-baidu-sitemap
+  - yarn add hexo-deployer-git
+  - yarn add hexo-helper-live2d
+  - yarn add hexo-generator-json-content
+
+  # 将 GitHub Token 替换到 pure.yml 中
+  - sed -i "s/REPO_TOKEN/${REPO_TOKEN}/" source/_data/pure.yml
+  # 主题下载
+  - git clone https://github.com/cofess/hexo-theme-pure.git themes/pure
+  - cd themes/pure && git checkout v1.0.1 && cd -
+  - yes | cp -rf source/_data/pure.yml themes/pure/_config.yml
+install:
+  # 不用yarn的话这里改成 npm i 即可
+  - yarn
+script:
+  - hexo clean --config source/_data/pure.yml
+  - hexo g --config source/_data/pure.yml
+  - hexo d --config source/_data/pure.yml
