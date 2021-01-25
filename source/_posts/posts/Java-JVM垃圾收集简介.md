@@ -63,18 +63,18 @@ class MyGC {
 但它有两个缺点
 1. 执行效率不稳定, 对象越多, 标记清除花费的时间越多
 2. 内存碎片化问题, 下次分配大内存对象的时候找不到足够连续大的内存空间导致提前进行垃圾回收
-![image.png](https://upload-images.jianshu.io/upload_images/6879007-c33c8f4725fe0d91.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+{% img /images/JVM垃圾收集简介_01.jpg %}
 
 
 ## 标记-复制算法
 标记-清除算法会出现内存碎片化的问题, 要解决内存碎片化的问题, 就需要对内存碎片进行整理. 标记-复制算法用了巧妙的方式, 用复制的方法避过了整理. 
 原理是将**新生代**内存空间划分为一个`Eden`区和两个`Survivor`区, 默认比例是`8:1:1`,
 每次`GC`的时候, 会把`Eden`区和其中一块`Survivor`区做垃圾回收, 存活的对象复制到另一块未使用的`Survivor`区. 每次存活下来的对象年龄会加一, 到达一定年龄, 就复制到老年代去.
-![image.png](https://upload-images.jianshu.io/upload_images/6879007-212e61c1f68fb647.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+{% img /images/JVM垃圾收集简介_02.jpg %}
 
 ## 标记-整理算法
 标记-清除算法如果每次`GC`时存活的对象越多, 进行复制的成本也越高, 那就还不如直接进行内存整理了.
-![image.png](https://upload-images.jianshu.io/upload_images/6879007-0e1d1a842ca8fc3d.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+{% img /images/JVM垃圾收集简介_03.jpg %}
 
 # 垃圾收集器
 从上面的垃圾收集算法, 可以知道, 根据不同分代的垃圾特性, 需要使用不同的垃圾收集算法, 也需要使用不同垃圾收集器.
