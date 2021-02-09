@@ -16,7 +16,7 @@ language: zh-CN
 timezone: Asia/Shanghai
 
 # URL
-## If your site is put in a subdirectory, set url as 'http://yoursite.com/child' and root as '/child/'
+## If your site is put in a subdirectory, set url as 'http://example.com/child' and root as '/child/'
 url: http://用户名.github.io
 root: /
 permalink: posts/:url.html
@@ -55,6 +55,11 @@ highlight:
   tab_replace: ''
   wrap: true
   hljs: false
+prismjs:
+  enable: false
+  preprocess: true
+  line_number: true
+  tab_replace: ''
 
 # Home page setting
 # path: Root path for your blogs index page. (default = '')
@@ -80,8 +85,8 @@ meta_generator: true
 ## http://momentjs.com/docs/#/displaying/format/
 date_format: YYYY-MM-DD
 time_format: HH:mm:ss
-## Use post's date for updated date unless set in front-matter
-use_date_for_updated: false
+## updated_option supports 'mtime', 'date', 'empty'
+updated_option: 'mtime'
 
 # Pagination
 ## Set per_page to 0 to disable pagination
@@ -101,25 +106,11 @@ ignore:
 theme: next
 
 # Deployment
-## Docs: https://hexo.io/docs/deployment.html
+## Docs: https://hexo.io/docs/one-command-deployment
 deploy:
   - type: git
     repo: https://REPO_TOKEN@github.com/用户名/用户名.github.io.git
     branch: master
-
-feed:
-  type: rss2
-  path: rss.xml
-  limit: 20
-
-search:
-  path: search.xml
-  field: post
-  format: html
-  limit: 10000
-
-sitemap:
-  path: sitemap.xml
 
 ################################
 ######## 主题配置文件  #########
@@ -403,10 +394,10 @@ reward:
 # Subscribe through Telegram Channel, Twitter, etc.
 # Usage: `Key: permalink || icon` (Font Awesome)
 follow_me:
-#Twitter: https://twitter.com/username || twitter
-#Telegram: https://t.me/channel_name || telegram
-#WeChat: /images/wechat_channel.jpg || wechat
-#RSS: /atom.xml || rss
+  #Twitter: https://twitter.com/username || twitter
+  #Telegram: https://t.me/channel_name || telegram
+  #WeChat: /images/wechat_channel.jpg || wechat
+  #RSS: /atom.xml || rss
 
 # Related popular posts
 # Dependencies: https://github.com/tea3/hexo-related-popular-posts
@@ -471,7 +462,7 @@ text_align:
   mobile: justify
 
 # Reduce padding / margin indents on devices with narrow width.
-mobile_layout_ezconomy: true
+mobile_layout_economy: true
 
 # Android Chrome header panel color ($brand-bg / $headband-bg => $black-deep).
 android_chrome_color: "#222"
@@ -702,11 +693,11 @@ comments:
   lazyload: true
   # Modify texts or order for any navs, here are some examples.
   nav:
-  #disqus:
-  #  text: Load Disqus
-  #  order: -1
-  #gitalk:
-  #  order: -2
+    #disqus:
+    #  text: Load Disqus
+    #  order: -1
+    #gitalk:
+    #  order: -2
 
 # Disqus
 disqus:
@@ -1153,3 +1144,17 @@ live2d:
     show: false
   react:
     opacity: 0.7
+
+feed:
+  type: rss2
+  path: rss.xml
+  limit: 20
+
+search:
+  path: search.xml
+  field: post
+  format: html
+  limit: 10000
+
+sitemap:
+  path: sitemap.xml
