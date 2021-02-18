@@ -66,10 +66,10 @@ jobs:
           yarn add hexo-generator-sitemap
           yarn add hexo-generator-baidu-sitemap
           yarn add hexo-deployer-git
-          npm install hexo-leancloud-counter-security
+          yarn add hexo-leancloud-counter-security
           yarn add hexo-helper-live2d
           yarn add theme-next/next-util
-          npm ci
+          yarn
       - name: Hexo deploy
         run: |
           hexo lc-counter register $leancloud_username $leancloud_password --config source/_data/${{ env.CONFIG_NAME }}
