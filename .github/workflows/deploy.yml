@@ -72,7 +72,7 @@ jobs:
           yarn
       - name: Hexo deploy
         run: |
-          hexo lc-counter register ${{ secrets.LEANCLOUD_USERNAME }} ${{ secrets.LEANCLOUD_PASSWORD }} --config source/_data/${{ env.CONFIG_NAME }}
-          hexo clean --config source/_data/${{ env.CONFIG_NAME }}
-          hexo g --config source/_data/${{ env.CONFIG_NAME }}
-          hexo d --config source/_data/${{ env.CONFIG_NAME }}
+          yarn run hexo lc-counter register ${{ secrets.LEANCLOUD_USERNAME }} ${{ secrets.LEANCLOUD_PASSWORD }} --config source/_data/${{ env.CONFIG_NAME }}
+          yarn run hexo clean --config source/_data/${{ env.CONFIG_NAME }}
+          yarn run hexo g --config source/_data/${{ env.CONFIG_NAME }}
+          yarn run hexo d --config source/_data/${{ env.CONFIG_NAME }}
