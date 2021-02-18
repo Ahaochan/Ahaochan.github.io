@@ -1,0 +1,78 @@
+# This workflow will do a clean install of node dependencies, build the source code and run tests across different versions of node
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
+
+name: Hexo Blog CI
+
+on:
+  push:
+    branches: [ source ]
+    paths-ignore:
+      - README.md
+
+env:
+  THEME_REPO: theme-next/hexo-theme-next
+  THEME_VERSION: 7.8.0
+  THEME_PATH: themes/next
+  REPO_TOKEN: ${{ secrets.REPO_TOKEN }}
+  CONFIG_REPO: https://gist.github.com/9555c5cadf148279bfb6745ac0350e31.git
+  CONFIG_NAME: next.yml
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [14.x]
+        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v2
+        with:
+          ref: source
+      - name: Checkout theme repo
+        uses: actions/checkout@v2
+        with:
+          repository: ${{ env.THEME_REPO }}
+          ref: ${{ env.THEME_VERSION }}
+          path: ${{ env.THEME_PATH }}
+      - name: Node.js ${{ matrix.node-version }} Use
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Node.js modules Cache
+        uses: actions/cache@v2
+        with:
+          # path: node_modules # https://github.com/actions/cache/blob/9ab95382c899bf0953a0c6c1374373fc40456ffe/examples.md#node---npm
+          path: ~/.npm
+          key: ${{ runner.OS }}-node-${{ hashFiles('**/package-lock.json') }}
+      - name: Git Config
+        run: |
+          git config --global user.name "Ahaochan"
+          git config --global user.email "844394093@qq.com"
+          git clone ${{ CONFIG_REPO }} config
+          cp config/${{ CONFIG_NAME }} source/_data/${{ CONFIG_NAME }}
+          sed -i "s/REPO_TOKEN/${{ env.REPO_TOKEN }}/" source/_data/${{ CONFIG_NAME }}
+          git clone https://github.com/theme-next/theme-next-pdf themes/next/source/lib/pdf
+          git clone https://github.com/theme-next/theme-next-pace themes/next/source/lib/pace
+      - name: Hexo Install dependencies
+        run: |
+          yarn global add hexo-cli
+          yarn add hexo-renderer-kramed
+          yarn add hexo-asset-image
+          yarn add hexo-generator-searchdb
+          yarn add hexo-generator-feed
+          yarn add hexo-related-popular-posts
+          yarn add hexo-symbols-count-time
+          yarn add hexo-generator-sitemap
+          yarn add hexo-generator-baidu-sitemap
+          yarn add hexo-deployer-git
+          npm install hexo-leancloud-counter-security
+          yarn add hexo-helper-live2d
+          yarn add theme-next/next-util
+          npm ci
+      - name: Hexo deploy
+        run: |
+          hexo lc-counter register $leancloud_username $leancloud_password --config source/_data/${{ CONFIG_NAME }}
+          hexo clean --config source/_data/${{ CONFIG_NAME }}
+          hexo g --config source/_data/${{ CONFIG_NAME }}
+          hexo d --config source/_data/${{ CONFIG_NAME }}
