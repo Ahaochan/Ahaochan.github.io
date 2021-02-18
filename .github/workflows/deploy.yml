@@ -49,9 +49,9 @@ jobs:
         run: |
           git config --global user.name "Ahaochan"
           git config --global user.email "844394093@qq.com"
-          git clone ${{ CONFIG_REPO }} config
-          cp config/${{ CONFIG_NAME }} source/_data/${{ CONFIG_NAME }}
-          sed -i "s/REPO_TOKEN/${{ env.REPO_TOKEN }}/" source/_data/${{ CONFIG_NAME }}
+          git clone ${{ env.CONFIG_REPO }} config
+          cp config/${{ env.CONFIG_NAME }} source/_data/${{ env.CONFIG_NAME }}
+          sed -i "s/REPO_TOKEN/${{ env.REPO_TOKEN }}/" source/_data/${{ env.CONFIG_NAME }}
           git clone https://github.com/theme-next/theme-next-pdf themes/next/source/lib/pdf
           git clone https://github.com/theme-next/theme-next-pace themes/next/source/lib/pace
       - name: Hexo Install dependencies
@@ -72,7 +72,7 @@ jobs:
           npm ci
       - name: Hexo deploy
         run: |
-          hexo lc-counter register $leancloud_username $leancloud_password --config source/_data/${{ CONFIG_NAME }}
-          hexo clean --config source/_data/${{ CONFIG_NAME }}
-          hexo g --config source/_data/${{ CONFIG_NAME }}
-          hexo d --config source/_data/${{ CONFIG_NAME }}
+          hexo lc-counter register $leancloud_username $leancloud_password --config source/_data/${{ env.CONFIG_NAME }}
+          hexo clean --config source/_data/${{ env.CONFIG_NAME }}
+          hexo g --config source/_data/${{ env.CONFIG_NAME }}
+          hexo d --config source/_data/${{ env.CONFIG_NAME }}
