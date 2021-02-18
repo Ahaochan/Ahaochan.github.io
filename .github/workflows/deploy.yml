@@ -11,7 +11,7 @@ on:
 
 env:
   THEME_REPO: theme-next/hexo-theme-next
-  THEME_VERSION: 7.8.0
+  THEME_VERSION: v7.8.0
   THEME_PATH: themes/next
   REPO_TOKEN: ${{ secrets.REPO_TOKEN }}
   CONFIG_REPO: https://gist.github.com/9555c5cadf148279bfb6745ac0350e31.git
