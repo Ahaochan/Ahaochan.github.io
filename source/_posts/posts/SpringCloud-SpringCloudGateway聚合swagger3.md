@@ -215,7 +215,7 @@ public class PredicateDefinition {
 有的同学会发现, 注册中心生成的服务`id`特别长, 不美观. 
 ~~我只想安安静静做一个美男子~~
 我只想要显示服务名, 可以把前缀都去掉吗?
-{% img SpringCloudGateway聚合swagger3_01.png %}
+{% img /images/SpringCloudGateway聚合swagger3_01.png %}
 
 答案是不行.
 在配置文件中加入配置项`spring.cloud.gateway.discovery.locator.route-id-prefix: "你想要的前缀"`即可.
