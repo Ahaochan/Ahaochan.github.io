@@ -13,6 +13,8 @@ date: 2021-02-25 11:18:11
 原以为可以和`notepad++`录制宏, 但是`office`居然把录制宏这个功能干掉了, 要实现这个需求, 只能自己写`VBA`.
 本文从零开始学习`VBA`使用.
 
+<!-- more -->
+
 # 什么是VBA
 > Visual Basic for Applications（VBA）是Visual Basic的一种宏语言，主要能用来扩展Windows的应用程序功能，特别是Microsoft Office软件。也可说是一种应用程序视觉化的Basic Script。 1994年发行的Excel 5.0版本中，即具备了VBA的宏功能。
 
