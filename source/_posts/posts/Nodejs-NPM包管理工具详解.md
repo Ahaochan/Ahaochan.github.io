@@ -89,7 +89,7 @@ npm config ls
 但万一不按规范来, 比如`1.0.2`和`1.0.0`是不兼容的. 而`npm install`每次都会根据主版本号去拉取最新的依赖, 那风险就很大了.
 
 为了解决这个问题, `package-lock.json`就出现了. `package-lock.json`和`package.json`结构差不多.
-执行`npm install`的时候, `npm`会根据`package.json`拉取最新的依赖版本, 然后生成`package-lock.json`.
+执行`npm install`的时候, `npm`会根据`package.json`拉取最新的依赖版本, 然后生成`package-lock.json`, 锁定版本号.
 然后下次`npm install`的时候, 就会从`package-lock.json`中获取准确的版本号, 就不会出现升级风险. 
 
 # 参考资料
