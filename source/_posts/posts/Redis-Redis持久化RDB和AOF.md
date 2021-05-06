@@ -10,7 +10,7 @@ date: 2019-02-19 22:47:55
 
 # 前言
 `Redis`的高速建立在数据存储在内存中, 但是断电的话, 就会导致数据丢失的问题.
-为此我们需要对数据进行持久化到硬盘中.
+为此我们需要对数据进行持久化到硬盘中, 用于数据恢复.
 `Redis`提供了两种持久化存储方案, `Redis`在启动时会优先加载`AOF`文件恢复数据.
 1. `AOF(Append Only File)`: 记录每次执行的命令到日志中, 恢复数据时重新执行一次日志文件中的命令.
 2. `RDB(Redis Database Backup)`: 将数据库的所有数据直接写入磁盘
@@ -61,21 +61,24 @@ rdbchecksum yes
 值得注意的是, 即使在配置文件中关闭`RDB`自动持久化, 在以下情况, 仍会产生`RDB`文件.
 1. 主从复制之全量复制时, 会生成RDB文件
 2. `debug reload`重启Redis, 会生成RDB文件
-3. `shutdown save`保存退出时, 会生成RDB文件
+3. `redis-cli SHUTDOWN`保存退出时, 如果没有开启AOF, 则自动执行`bgsave`
 
 # AOF(Append Only File)
-`AOF`会将执行的命令**优化(重写)**后, 保存到内存中, 然后再从内存`fsync`到硬盘中.
-待恢复时, 重新执行这些命令.
-
+`Redis`开启`AOF`持久化的时候, 每次写操作都会**追加**到日志文件中. 这个顺序写操作是很快的.
+并且, `AOF`记录是直接写在操作系统层面的`cache`内存上的, 不是直接写入磁盘的. 基于内存的操作也是很快的.
 ```bash
 # 1. 打开 AOF 持久化
 appendonly no
 
 # 2. 三种 fsync 方式
-# appendfsync always # 每次执行命令都会 fsync
+# appendfsync always # 每次执行命令都会 fsync, 性能超级差
 appendfsync everysec # 每秒执行 fsync
 # appendfsync no     # 取决于操作系统执行 fsync (不可控)
 ```
+这里有三种配置方式, 一般生产环境都用`everysec`.
+因为你既然用了`Redis`, 那肯定是为了应对超高并发的读写操作. 如果你用了`always`, 那相当于每次都写入磁盘, 就失去了读写内存带来的高性能优势了.
+
+当然`AOF`日志文件不可能无限增长, 下面介绍下如何压缩重写`AOF`文件.
 
 ## 手动重写
 假设要执行以下命令
@@ -89,10 +92,22 @@ set a c
 可以极大的减少`AOF`文件大小, 加快`AOF`恢复速度.
 
 要手动重写, 只需要执行`bgrewriteaof`命令即可.
-它会`fork`一个子进程来执行`AOF`重写操作.
+1. 首先, `Redis`会`fork`一个子进程.
+2. 基于当前内存中的数据, 而不是之前的`AOF`文件, 来生成一个新的`AOF`文件.
+3. 此时`Redis`仍在接收写请求, 会往内存、旧`AOF`文件、新`AOF`文件, 三个地方写入日志.
+4. 新`AOF`文件生成完毕, 则会将内存中的`AOF`日志追加写入新`AOF`文件.
+5. 用新`AOF`文件覆盖旧`AOF`文件, 保证只有一个`AOF`文件.
+
+这里为什么要基于当前内存中的数据, 而不是之前的`AOF`文件, 来生成一个新的`AOF`文件呢?
+因为这个`AOF`很容易出现破损的情况, 比如断电, 磁盘满了.
+然后新`AOF`文件是根据破损的旧`AOF`文件生成的, 又是破损的`AOF`文件.
+所以干脆基于内存已有数据生成新`AOF`文件.
+
+然后`Redis`还提供了一个命令修复破损的`AOF`记录, `redis-check-aof --fix my.aof`
 
 ## 自动重写
-`Redis`也在配置文件`/etc/redis.conf`中提供了满足一定条件就自动重写的配置.
+`Redis`在`2.4`之后提供了自动重写`AOF`的功能, 就不用再去手动执行`bgrewriteaof`了.
+配置文件`/etc/redis.conf`中提供了满足一定条件就自动重写的配置.
 ```bash
 # 1. 当 AOF 文件大于某个值时进行重写
 auto-aof-rewrite-min-size 64mb
@@ -108,7 +123,7 @@ info persistence
 # aof_base_size     上次AOF文件重写时的大小
 ```
 
-当满足以下条件时, `AOF`文件会自动重写.
+当同时满足以下条件时, `AOF`文件会自动重写.
 ```text
 aof_current_size > auto_aof_rewrite_min_size
 aof_current_size - aof_base_size / aof_base_size > auto_aof_rewrite_percentage
@@ -131,6 +146,10 @@ auto-aof-rewrite-min-size 64mb
 # 7. AOF 文件增长率, 下次就是到达 128mb、 256mb 就会重写
 auto-aof-rewrite-percentage 100
 ```
+
+# 当 RDB 遇到 AOF
+1. `RDB`快照生成和`AOF`重写操作是互斥的, 同一时间只能有一个执行.
+2. 当同时有`RDB`和`AOF`文件的时候, 优先使用`AOF`文件进行数据恢复.
 
 # 参考资料
 - [slowlog官方文档](https://redis.io/commands/slowlog)
