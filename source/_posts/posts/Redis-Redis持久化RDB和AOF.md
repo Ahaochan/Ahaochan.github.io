@@ -42,10 +42,10 @@ save 60 10000
 
 ## 最佳配置 ( 开启 RDB 时 )
 ```bash
-# 1. 注释掉所有的 save 命令
-# save 900 1
-# save 300 10
-# save 60 10000
+# 1. 开启默认的 save 策略, save 60 10000 视数据量而定
+save 900 1
+save 300 10
+save 60 10000
 
 # 2. 指定 RDB 文件名
 dbfilename dump-6379.rdb
@@ -141,7 +141,7 @@ dir /data
 appendfsync everysec
 # 5. AOF 重写时是否正常执行 AOF
 no-appendfsync-on-rewrite yes
-# 6. 当 AOF 文件大于 64mb 时进行重写
+# 6. 当 AOF 文件大于 64mb 时进行重写, 视数据量而定
 auto-aof-rewrite-min-size 64mb
 # 7. AOF 文件增长率, 下次就是到达 128mb、 256mb 就会重写
 auto-aof-rewrite-percentage 100
@@ -150,6 +150,24 @@ auto-aof-rewrite-percentage 100
 # 当 RDB 遇到 AOF
 1. `RDB`快照生成和`AOF`重写操作是互斥的, 同一时间只能有一个执行.
 2. 当同时有`RDB`和`AOF`文件的时候, 优先使用`AOF`文件进行数据恢复.
+
+# 数据备份和恢复
+不管是`RDB`还是`AOF`, 每次生成都会覆盖掉原有的旧文件.
+那么我们就需要定时的把旧的备份文件移动到别的目录下, 避免被覆盖掉.
+
+1. 每小时复制一份`RDB`到备份目录下, 只保留`48`小时的数据
+2. 每天复制一份`RDB`到备份目录下, 只保留`1`个月的数据
+3. 每晚将服务器上所有`RDB`发送到远程的云存储上.
+
+既然有备份, 就会要恢复. 恢复`AOF`数据只要将`AOF`文件复制到`Redis`数据目录下, 然后重启`Redis`即可.
+恢复`RDB`数据的方案就有点复杂了.
+1. 停止`Redis`, 修改配置文件`appendonly no`.
+2. 复制`RDB`备份到`Redis`数据目录下, 重启`Redis`, 确认数据恢复.
+3. 在命令行热修改配置`config set appendonly yes`, 开启`AOF`.
+4. 停止`Redis`, 修改配置文件`appendonly yes`, 重启`Redis`
+
+当`Redis`开启`AOF`的时候, 是优先使用`AOF`恢复数据的. 即使`AOF`文件被删除, 也会基于重启后的数据生成一份新的`AOF`文件, 然后覆盖掉你复制进来的有数据的`RDB`文件, 变成一个空的`RDB`文件.
+所以我们才需要提前先手动把`AOF`关闭. 上面的恢复步骤这么复杂, 就是为了规避这个`case`带来的问题. 
 
 # 参考资料
 - [slowlog官方文档](https://redis.io/commands/slowlog)
