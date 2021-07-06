@@ -1,0 +1,25 @@
+User-agent: *
+Allow: /
+Allow: /archives/
+Allow: /about/
+Allow: /tags/
+Allow: /categories/
+Allow: /posts/
+
+Disallow: /vendors/
+Disallow: /js/
+Disallow: /css/
+Disallow: /fonts/
+Disallow: /vendors/
+Disallow: /fancybox/
+Disallow: /�㷨/
+Disallow: /%E7%AE%97%E6%B3%95/
+Disallow: /����/
+Disallow: /%E5%B7%A5%E5%85%B7/
+Disallow: /Java/
+Disallow: /��Ŀ������/
+Disallow: /%E9%A1%B9%E7%9B%AE%E7%AE%A1%E7%90%86%E5%B7%A5%E5%85%B7/
+Disallow: /Webǰ��/
+Disallow: /Web%E5%89%8D%E7%AB%AF/
+
+Sitemap: https://blog.ahao.moe/sitemap.xml
