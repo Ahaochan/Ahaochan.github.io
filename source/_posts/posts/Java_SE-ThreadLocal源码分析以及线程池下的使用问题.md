@@ -10,7 +10,7 @@ date: 2020-05-03 20:15:00
 
 # 前言
 如果我想要在多线程下, 同一个变量在不同线程下使用不同的值, 如何去做?
-我可以声明一个`Map`, 线程作为`Key`, `Map`作为`value`, 存储当前线程下的键值对.
+我可以声明一个`Map`, 线程作为`Key`(实际上并不是这样设计的), `Map`作为`value`, 存储当前线程下的键值对.
 下面是一个简单的例子(生产不要这样用)
 
 <!-- more -->
@@ -80,11 +80,10 @@ main get hello 2020-04-19 00:54:44:230
 // java.lang.ThreadLocal
 public class ThreadLocal<T> {
     public void set(T value) {
-        // 1. 获取当前线程作为key
+        // 1. 获取当前线程内的 ThreadLocalMap
         Thread t = Thread.currentThread();
-        // 2. 获取一个以线程为key的Map
         ThreadLocalMap map = getMap(t);
-        // 3. 设置Map的值
+        // 2. 往 Map 塞值, 以 ThreadLocal为key
         if (map != null) map.set(this, value);
         else createMap(t, value);
     }
@@ -102,15 +101,14 @@ public class ThreadLocal<T> {
 // java.lang.ThreadLocal
 public class ThreadLocal<T> {
     public T get() {
-        // 1. 获取当前线程作为key
+        // 1. 获取当前线程内的 ThreadLocalMap
         Thread t = Thread.currentThread();
-        // 2. 获取一个以线程为key的Map
         ThreadLocalMap map = getMap(t);
-        // 3. 根据 key 获取 value
+        // 2. 根据 key 获取 value
         if (map != null) {
             ThreadLocalMap.Entry e = map.getEntry(this);
             if (e != null) {
-                return (T)e.value;
+                return (T) e.value;
             }
         }
         // 4. 找不到就返回一个默认值, 默认为 null
@@ -121,10 +119,10 @@ public class ThreadLocal<T> {
     }
 }
 ```
-也一样, 就是从一个`Map`里, 把当前线程作为`key`, 获取数据.
+也一样, 就是从一个`Map`里, 把`ThreadLocal`作为`key`, 获取数据.
 
 那么不同点来了, 就是这个`Map`的构造, 可以看到不是我用的`HashMap`.
-而是当前线程里的`ThreadLocalMap`变量`threadLocals`.
+而是当前线程里的`ThreadLocalMap`实例变量`threadLocals`.
 
 ## ThreadLocalMap 源码分析
 `ThreadLocalMap`是`ThreadLocal`的静态内部类, 而每一个线程`Thread`都有各自的`ThreadLocalMap`成员变量.
@@ -141,7 +139,7 @@ public class ThreadLocal<T> {
     static class ThreadLocalMap {
         // 1. 节点数组
         private Entry[] table;
-        // 2. 弱引用, GC扫描到就回收掉 ThreadLocal 对象
+        // 2. 弱引用
         static class Entry extends WeakReference<ThreadLocal<?>> {
             Object value;
             Entry(ThreadLocal<?> k, Object v) {
@@ -153,7 +151,7 @@ public class ThreadLocal<T> {
 }
 ```
 可以看到`ThreadLocalMap`是以`ThreadLocal`对象的弱引用为`Key`, `Object`为`Value`的`Map`集合.
-而`Entry`继承了弱引用`WeakReference`, 所以当每次`GC`发生时, 扫描到这个对象就会回收`ThreadLocal`. 但这里会导致一些内存问题, 这里后面讲.
+而`Entry`继承了弱引用`WeakReference`, 所以当每次`GC`发生时, 扫描到这个对象时, **如果没有强引用持有这个对象**, 就会回收`ThreadLocal`. 但这里会导致一些内存问题, 这里后面讲.
 
 接下来是`ThreadLocalMap`的`set`和`get`方法, 和普通的`HashMap`差不多, 无非就是扩容, `rehash`那一套.
 ```java
@@ -192,6 +190,7 @@ public class ThreadLocal<T> {
             if (e != null && e.get() == key)
                 return e;
             else
+                // 开放定址法获取数据
                 return getEntryAfterMiss(key, i, e);
         }
     }
@@ -249,7 +248,7 @@ public class ThreadLocalTest {
 另外还有一点需要注意的是, `ThreadLocal`如果设置成`static`了, 就会被当前类对象强引用, 下面的内存泄漏问题会提到.
 
 ## ThreadLocal的 内存泄漏 问题
-![ThreadLocal引用链](https://yuml.me/diagram/nofunky/class/[Thread]->[ThreadLocalMap],[ThreadLocalMap]->[Entry],[Entry]->[value])
+![ThreadLocal引用链](https://yuml.me/diagram/nofunky;dir:LR/class/[Thread引用]->[Thread对象],[Thread对象]->[ThreadLocalMap],[ThreadLocalMap]->[Entry],[Entry]-弱引用>[ThreadLocal对象],[Entry]->[value],[ThreadLocal引用]-强引用>[ThreadLocal对象])
 
 `ThreadLocalMap`的`Key`是`ThreadLocal`的弱引用对象. 
 不管`ThreadLocal`对象是否因为弱引用被`GC`回收, `Entry`节点都会持有`value`的强引用.
