@@ -64,11 +64,7 @@ jobs:
       - name: Hexo Install dependencies
         run: |
           yarn global add hexo-cli
-          yarn add hexo-renderer-kramed
-          yarn add hexo-asset-image
           yarn add hexo-generator-searchdb
-          yarn add hexo-generator-feed
-          yarn add hexo-symbols-count-time
           yarn add hexo-generator-sitemap
           yarn add hexo-generator-baidu-sitemap
           yarn add hexo-deployer-git
