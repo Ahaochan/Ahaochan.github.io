@@ -58,7 +58,7 @@ jobs:
           git config --global user.email "${{ env.GIT_EMAIL }}"
           git clone ${{ env.CONFIG_REPO }} config
           cp config/${{ env.CONFIG_NAME }} ${{ env.CONFIG_NAME }}
-          sed -i "s/REPO_TOKEN/${{ env.REPO_TOKEN }}/" source/_data/${{ env.CONFIG_NAME }}
+          sed -i "s/REPO_TOKEN/${{ env.REPO_TOKEN }}/" ${{ env.CONFIG_NAME }}
           git clone https://github.com/theme-next/theme-next-pdf themes/next/source/lib/pdf
           git clone https://github.com/theme-next/theme-next-pace themes/next/source/lib/pace
       - name: Hexo Install dependencies
@@ -79,7 +79,7 @@ jobs:
           yarn
       - name: Hexo deploy
         run: |
-          yarn run hexo lc-counter register ${{ env.LEANCLOUD_USERNAME }} ${{ env.LEANCLOUD_PASSWORD }} --config source/_data/${{ env.CONFIG_NAME }}
-          yarn run hexo clean --config source/_data/${{ env.CONFIG_NAME }}
-          yarn run hexo g --config source/_data/${{ env.CONFIG_NAME }}
-          yarn run hexo d --config source/_data/${{ env.CONFIG_NAME }}
+          yarn run hexo lc-counter register ${{ env.LEANCLOUD_USERNAME }} ${{ env.LEANCLOUD_PASSWORD }}
+          yarn run hexo clean
+          yarn run hexo g
+          yarn run hexo d
