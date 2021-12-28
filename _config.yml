@@ -3,19 +3,17 @@
 ## Source: https://github.com/hexojs/hexo/
 
 # Site
-title: Hexo
-subtitle: ''
-description: ''
+title: Japari Park
+subtitle: 你也是程序猿friends呢~
+description: 你也是程序猿friends呢~
 keywords:
-author: John Doe
-language: en
-timezone: ''
+author: Ahaochan
+language: zh-CN
+timezone: Asia/Shanghai
 
 # URL
-## If your site is put in a subdirectory, set url as 'http://example.com/child' and root as '/child/'
-url: http://example.com
-root: /
-permalink: :year/:month/:day/:title/
+url: https://blog.ahao.moe/
+permalink: posts/:url.html
 permalink_defaults:
 pretty_urls:
   trailing_index: true # Set to false to remove trailing 'index.html' from permalinks
@@ -82,7 +80,7 @@ meta_generator: true
 date_format: YYYY-MM-DD
 time_format: HH:mm:ss
 ## updated_option supports 'mtime', 'date', 'empty'
-updated_option: 'mtime'
+updated_option: 'empty'
 
 # Pagination
 ## Set per_page to 0 to disable pagination
@@ -92,15 +90,69 @@ pagination_dir: page
 # Include / Exclude file(s)
 ## include:/exclude: options only apply to the 'source/' folder
 include:
+  - _redirects
 exclude:
 ignore:
 
 # Extensions
 ## Plugins: https://hexo.io/plugins/
 ## Themes: https://hexo.io/themes/
-theme: landscape
+theme: next
 
 # Deployment
 ## Docs: https://hexo.io/docs/one-command-deployment
 deploy:
-  type: ''
+  - type: git
+    repo: https://REPO_TOKEN@github.com/Ahaochan/Ahaochan.github.io.git
+    branch: master
+  #  - type: git
+  #    repo: https://Ahaochan:CODING_TOKEN@git.dev.tencent.com/Ahaochan/Ahaochan.coding.me.git
+  #    branch: master
+  - type: leancloud_counter_security_sync
+
+# 主题无关插件
+# RSS订阅
+feed:
+  type: rss2
+  path: rss.xml
+  limit: 20
+
+# 本地搜索
+search:
+  path: search.xml
+  field: post
+  content: true
+  format: html
+  limit: 10000
+
+# sitemap
+sitemap:
+  path: sitemap.xml
+
+# Live2D
+## https://github.com/EYHN/hexo-helper-live2d
+live2d:
+  enable: true
+  scriptFrom: local # 默认
+  pluginRootPath: live2dw/ # 插件在站点上的根目录(相对路径)
+  pluginJsPath: lib/ # 脚本文件相对与插件根目录路径
+  pluginModelPath: assets/ # 模型文件相对与插件根目录路径
+  # scriptFrom: jsdelivr # jsdelivr CDN
+  # scriptFrom: unpkg # unpkg CDN
+  # scriptFrom: https://cdn.jsdelivr.net/npm/live2d-widget@3.x/lib/L2Dwidget.min.js # 你的自定义 url
+  tagMode: false # 标签模式, 是否仅替换 live2d tag标签而非插入到所有页面中
+  debug: false # 调试, 是否在控制台输出日志
+  model:
+    # use: live2d-widget-model-wanko # npm-module package name
+    # use: wanko # 博客根目录/live2d_models/ 下的目录名
+    # use: ./wives/wanko # 相对于博客根目录的路径
+    use: https://cdn.jsdelivr.net/npm/live2d-widget-model-shizuku@1.0.5/assets/shizuku.model.json # 你的自定义 url
+    scale: 1.2
+  display:
+    position: right
+    width: 150
+    height: 300
+  mobile:
+    show: false
+  react:
+    opacity: 0.7

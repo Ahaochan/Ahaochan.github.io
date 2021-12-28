@@ -15,8 +15,8 @@ env:
   GIT_EMAIL: 844394093@qq.com
   REPO_TOKEN: ${{ secrets.REPO_TOKEN }}
   # 主题仓库
-  THEME_REPO: theme-next/hexo-theme-next
-  THEME_VERSION: v7.8.0
+  THEME_REPO: next-theme/hexo-theme-next
+  THEME_VERSION: v8.8.2
   THEME_PATH: themes/next
   # 主题配置
   CONFIG_REPO: ${{ secrets.CONFIG_REPO }}

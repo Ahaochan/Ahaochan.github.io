@@ -6,4 +6,4 @@ cdn/
 public/
 .deploy*/
 .idea/
-source/_data/next.yml
+_config.next.yml
