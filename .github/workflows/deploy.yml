@@ -20,7 +20,7 @@ env:
   THEME_PATH: themes/next
   # 主题配置
   CONFIG_REPO: ${{ secrets.CONFIG_REPO }}
-  CONFIG_NAME: next.yml
+  CONFIG_NAME: _config.next.yml
   LEANCLOUD_USERNAME: ${{ secrets.LEANCLOUD_USERNAME }}
   LEANCLOUD_PASSWORD: ${{ secrets.LEANCLOUD_PASSWORD }}
 
@@ -57,7 +57,7 @@ jobs:
           git config --global user.name "${{ env.GIT_USERNAME }}"
           git config --global user.email "${{ env.GIT_EMAIL }}"
           git clone ${{ env.CONFIG_REPO }} config
-          cp config/${{ env.CONFIG_NAME }} source/_data/${{ env.CONFIG_NAME }}
+          cp config/${{ env.CONFIG_NAME }} ${{ env.CONFIG_NAME }}
           sed -i "s/REPO_TOKEN/${{ env.REPO_TOKEN }}/" source/_data/${{ env.CONFIG_NAME }}
           git clone https://github.com/theme-next/theme-next-pdf themes/next/source/lib/pdf
           git clone https://github.com/theme-next/theme-next-pace themes/next/source/lib/pace
