@@ -64,21 +64,17 @@ jobs:
       - name: Hexo Install dependencies
         run: |
           yarn global add hexo-cli
-          yarn add hexo-renderer-kramed
-          yarn add hexo-asset-image
           yarn add hexo-generator-searchdb
           yarn add hexo-generator-feed
           yarn add hexo-symbols-count-time
           yarn add hexo-generator-sitemap
           yarn add hexo-generator-baidu-sitemap
           yarn add hexo-deployer-git
-          yarn add hexo-leancloud-counter-security
           yarn add hexo-helper-live2d
           yarn add theme-next/next-util
           yarn
       - name: Hexo deploy
         run: |
-          yarn run hexo lc-counter register ${{ env.LEANCLOUD_USERNAME }} ${{ env.LEANCLOUD_PASSWORD }} --config _config.yml,${{ env.CONFIG_NAME }}
           yarn run hexo clean
           yarn run hexo g
           yarn run hexo d

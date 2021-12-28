@@ -108,7 +108,6 @@ deploy:
   #  - type: git
   #    repo: https://Ahaochan:CODING_TOKEN@git.dev.tencent.com/Ahaochan/Ahaochan.coding.me.git
   #    branch: master
-  - type: leancloud_counter_security_sync
 
 # 主题无关插件
 # RSS订阅
