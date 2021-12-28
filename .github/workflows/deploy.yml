@@ -73,7 +73,6 @@ jobs:
           yarn add hexo-generator-sitemap
           yarn add hexo-generator-baidu-sitemap
           yarn add hexo-deployer-git
-          yarn add hexo-leancloud-counter-security
           yarn add hexo-helper-live2d
           yarn add theme-next/next-util
           yarn
