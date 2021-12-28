@@ -10,14 +10,19 @@ on:
       - README.md
 
 env:
+  # Git用户信息
   GIT_USERNAME: Ahaochan
   GIT_EMAIL: 844394093@qq.com
+  REPO_TOKEN: ${{ secrets.REPO_TOKEN }}
+  # 主题仓库
   THEME_REPO: theme-next/hexo-theme-next
   THEME_VERSION: v7.8.0
   THEME_PATH: themes/next
-  REPO_TOKEN: ${{ secrets.REPO_TOKEN }}
-  CONFIG_REPO: https://gist.github.com/9555c5cadf148279bfb6745ac0350e31.git
+  # 主题配置
+  CONFIG_REPO: ${{ secrets.CONFIG_REPO }}
   CONFIG_NAME: next.yml
+  LEANCLOUD_USERNAME: ${{ secrets.LEANCLOUD_USERNAME }}
+  LEANCLOUD_PASSWORD: ${{ secrets.LEANCLOUD_PASSWORD }}
 
 jobs:
   build:
@@ -74,7 +79,7 @@ jobs:
           yarn
       - name: Hexo deploy
         run: |
-          yarn run hexo lc-counter register ${{ secrets.LEANCLOUD_USERNAME }} ${{ secrets.LEANCLOUD_PASSWORD }} --config source/_data/${{ env.CONFIG_NAME }}
+          yarn run hexo lc-counter register ${{ env.LEANCLOUD_USERNAME }} ${{ env.LEANCLOUD_PASSWORD }} --config source/_data/${{ env.CONFIG_NAME }}
           yarn run hexo clean --config source/_data/${{ env.CONFIG_NAME }}
           yarn run hexo g --config source/_data/${{ env.CONFIG_NAME }}
           yarn run hexo d --config source/_data/${{ env.CONFIG_NAME }}
