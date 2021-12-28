@@ -65,6 +65,8 @@ jobs:
         run: |
           yarn global add hexo-cli
           yarn add hexo-generator-searchdb
+          yarn add hexo-word-counter
+          yarn add hexo-related-popular-posts
           yarn add hexo-generator-feed
           yarn add hexo-symbols-count-time
           yarn add hexo-generator-sitemap
