@@ -59,8 +59,6 @@ jobs:
           git clone ${{ env.CONFIG_REPO }} config
           cp config/${{ env.CONFIG_NAME }} ${{ env.CONFIG_NAME }}
           sed -i "s/REPO_TOKEN/${{ env.REPO_TOKEN }}/" _config.yml
-          git clone https://github.com/theme-next/theme-next-pdf themes/next/source/lib/pdf
-          git clone https://github.com/theme-next/theme-next-pace themes/next/source/lib/pace
       - name: Hexo Install dependencies
         run: |
           yarn global add hexo-cli
