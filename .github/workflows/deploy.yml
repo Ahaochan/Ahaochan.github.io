@@ -76,6 +76,7 @@ jobs:
           yarn
       - name: Hexo deploy
         run: |
-          yarn run hexo clean
-          yarn run hexo g
-          yarn run hexo d
+          yarn run hexo lc-counter register ${{ env.LEANCLOUD_USERNAME }} ${{ env.LEANCLOUD_PASSWORD }} --config _config.yml,${{ env.CONFIG_NAME }}
+          yarn run hexo clean --config _config.yml,${{ env.CONFIG_NAME }}
+          yarn run hexo g --config _config.yml,${{ env.CONFIG_NAME }}
+          yarn run hexo d --config _config.yml,${{ env.CONFIG_NAME }}
