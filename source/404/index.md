@@ -1,3 +1,8 @@
+---
+comments: false
+permalink: /404
+layout: false
+---
 <!DOCTYPE html>
 <html lang="zh">
 <head>
@@ -38,3 +43,4 @@
 </section>
 </body>
 </html>
+<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=1 height=1 src="//music.163.com/outchain/player?type=2&id=461519996&auto=1&height=66"></iframe>
