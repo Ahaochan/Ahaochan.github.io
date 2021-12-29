@@ -21,8 +21,8 @@ layout: false
                 <div class="errors-16-info">
                     <h3>404 </h3>
                     <p>你似乎来到了没有知识存在的荒原...</p>
-                    <form action="/" method="post" class="d-flex error-page-form">
-                        <input type="search" placeholder="Search here" required="required">
+                    <form action="/" method="get" class="d-flex error-page-form">
+                        <input type="search" placeholder="Search here">
                         <button type="submit"><span class="fa fa-search" aria-hidden="true"></span></button>
                     </form>
                     <div class="social-coming-icons">
