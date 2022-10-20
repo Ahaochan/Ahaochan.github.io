@@ -67,6 +67,7 @@ jobs:
           yarn add hexo-generator-baidu-sitemap
           yarn add hexo-deployer-git
           yarn add hexo-helper-live2d
+          yarn add js-yaml@latest # https://github.com/hexojs/hexo/issues/4917#issuecomment-1193351742
           yarn add theme-next/next-util
           yarn
       - name: Hexo deploy
