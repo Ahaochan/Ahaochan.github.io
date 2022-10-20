@@ -1,1 +1,12 @@
 <script color="0,0,255" opacity="0.5" zIndex="-1" count="99" src="https://cdn.jsdelivr.net/npm/canvas-nest.js@1/dist/canvas-nest.js"></script>
+<script src="https://readmore.openwrite.cn/js/readmore.js" type="text/javascript"></script>
+<script>
+    const btw = new BTWPlugin();
+    btw.init({
+        id: 'container',
+        blogId: '30660-1666263355112-307',
+        name: '岁寒的编程随想',
+        qrcode: 'https://blog.ahao.moe/images/config/wechat_channel.jpg',
+        keyword: 'more',
+    });
+</script>
