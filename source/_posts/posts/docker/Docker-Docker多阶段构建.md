@@ -17,12 +17,13 @@ date: 2020-06-22 22:36:00
 
 # 两个 Dockerfile 的部署方式
 创建用于打包的`Dockerfile`文件
+
 ```dockerfile
 # Dockerfile.build
 FROM registry.cn-hangzhou.aliyuncs.com/acs/maven:3-jdk-8
 WORKDIR /usr/app
 VOLUME /root/.m2
-COPY . .
+COPY ../../../.. .
 CMD ["mvn", "clean", "package", "-DfinalName=ahao"]
 ```
 创建用于部署的`Dockerfile`文件.

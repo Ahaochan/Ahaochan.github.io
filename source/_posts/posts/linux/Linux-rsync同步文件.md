@@ -119,7 +119,7 @@ rsync --daemon --config=/etc/rsync.conf
 # 自动同步
 自动同步有两种方案
 1. 使用`crontab`定时调用
-2. 使用`inotifytools`监控文件变化, 请参照另一篇文章{% post_link posts/使用inotifytools监控文件 %}
+2. 使用`inotifytools`监控文件变化, 请参照另一篇文章**使用`inotifytools`监控文件**
 
 这里提供一个简单的`shell`脚本
 ```bash

@@ -79,7 +79,6 @@ public class MyBean2 extends QuartzJobBean {
 ```
 
 # 创建触发器Trigger的两种方法
-关于cron表达式，请参照另一篇文章{% post_link posts/Java_Web-Quartz之cron表达式详解 %}
 ```xml
 <beans >
     <bean id="trigger1" class="org.springframework.scheduling.quartz.SimpleTriggerFactoryBean">

@@ -6,7 +6,7 @@
 title: Japari Park
 subtitle: 你也是程序猿friends呢~
 description: 你也是程序猿friends呢~
-keywords:
+keywords: 后端,Java,架构,云原生,Docker
 author: Ahaochan
 language: zh-CN
 timezone: Asia/Shanghai
@@ -32,6 +32,7 @@ skip_render:
 # Writing
 new_post_name: :title.md # File name of new posts
 default_layout: post
+auto_spacing: false
 titlecase: false # Transform title into titlecase
 external_link:
   enable: true # Open external links in new tab
@@ -44,15 +45,18 @@ relative_link: false
 future: true
 highlight:
   enable: true
-  line_number: true
   auto_detect: false
-  tab_replace: ''
+  line_number: true
+  line_threshold: 0
+  tab_replace: '  '
+  exclude_languages:
+    - example
   wrap: true
   hljs: false
 prismjs:
   enable: false
   preprocess: true
-  line_number: true
+  line_threshold: 0
   tab_replace: ''
 
 # Home page setting
@@ -90,7 +94,6 @@ pagination_dir: page
 # Include / Exclude file(s)
 ## include:/exclude: options only apply to the 'source/' folder
 include:
-  - _redirects
 exclude:
 ignore:
 
@@ -128,6 +131,10 @@ search:
 # sitemap
 sitemap:
   path: sitemap.xml
+
+# https://github.com/theme-next/hexo-leancloud-counter-security
+leancloud_counter_security:
+  enable_sync: true
 
 # Live2D
 ## https://github.com/EYHN/hexo-helper-live2d

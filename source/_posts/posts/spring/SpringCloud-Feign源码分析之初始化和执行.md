@@ -12,7 +12,7 @@ date: 2021-01-22 18:29:15
 # 前言
 `Feign`是一个面向对象的`http`客户端, 这里主要介绍`Feign`是如何初始化的, 并如何进行`http`请求的.
 省略部分不重要的代码. 剥离了`hystrix`和`ribbon`的相关逻辑.
-读完这篇源码解析, 之前写的{% post_link posts/SpringCloud-Feign之重复出现的FeignClientSpecification %}也可以再复习下.
+读完这篇源码解析, 之前写的**`SpringCloud-Feign`之重复出现的`FeignClientSpecification`**也可以再复习下.
 
 <!-- more -->
 

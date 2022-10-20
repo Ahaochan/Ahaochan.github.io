@@ -20,6 +20,7 @@ date: 2021-04-25 22:27:00
 | `vmid` | 如果是本地虚拟机, 那就是`jps`的进程号. 如果是远程虚拟机, 则应该是`[protocol:][//]lvmid[@hostname[:port]/servername]` |
 
 选项`option`代表要查询的数据
+
 | 选项 | 作用 |
 |:------:|:------:|
 | `-dump` | 生成堆内存快照. 格式为`-dump:[live,]format=b,file=/tmp/heap.dump`, 其中`live`说明是否只`dump`存活的对象 |

@@ -123,8 +123,6 @@ public class JDBCTest {
 ```
 
 ## 调用存储过程的CallableStatement
-{% post_link posts/MySQL-MySQL常用语句 %}
-
 自定义一个加法的存储过程
 ```sql
 delimiter //
@@ -154,7 +152,6 @@ public class JDBCTest {
 
 
 # 事务
-{% post_link 数据库/MySQL/MySQL事务 MySQL事务 %}
 ```java
 public class JDBCTest {
     //省略初始化代码

@@ -27,7 +27,7 @@ date: 2016-10-09 22:31:08
 - 优点：容易实现增删改操作
 - 缺点：`xml`过大时容易造成内存溢出
 
-[Document API文档](http://tool.oschina.net/uploads/apidocs/jdk-zh/org/w3c/dom/Document.html) 和`js`中的{% post_link Web前端/JavaScript/DOM操作 DOM操作.md %}类似
+[Document API文档](http://tool.oschina.net/uploads/apidocs/jdk-zh/org/w3c/dom/Document.html) 和`js`中的DOM操作类似
 
 ```java
 public static void main(String[] args) throws Exception{
