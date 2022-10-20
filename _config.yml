@@ -111,7 +111,6 @@ deploy:
   #  - type: git
   #    repo: https://Ahaochan:CODING_TOKEN@git.dev.tencent.com/Ahaochan/Ahaochan.coding.me.git
   #    branch: master
-  - type: leancloud_counter_sync
 
 # 主题无关插件
 # RSS订阅
@@ -131,10 +130,6 @@ search:
 # sitemap
 sitemap:
   path: sitemap.xml
-
-# https://github.com/theme-next/hexo-leancloud-counter-security
-leancloud_counter_security:
-  enable_sync: true
 
 # Live2D
 ## https://github.com/EYHN/hexo-helper-live2d

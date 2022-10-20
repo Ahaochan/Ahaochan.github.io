@@ -20,8 +20,6 @@ env:
   THEME_PATH: themes/next
   THEME_CONFIG_REPO: ${{ secrets.CONFIG_REPO }}
   THEME_CONFIG_NAME: _config.next.yml
-  LEANCLOUD_USERNAME: ${{ secrets.LEANCLOUD_USERNAME }}
-  LEANCLOUD_PASSWORD: ${{ secrets.LEANCLOUD_PASSWORD }}
 
 jobs:
   build:
@@ -68,13 +66,11 @@ jobs:
           yarn add hexo-generator-sitemap
           yarn add hexo-generator-baidu-sitemap
           yarn add hexo-deployer-git
-          yarn add hexo-leancloud-counter-security
           yarn add hexo-helper-live2d
           yarn add theme-next/next-util
           yarn
       - name: Hexo deploy
         run: |
-          yarn run hexo lc-counter register ${{ env.LEANCLOUD_USERNAME }} ${{ env.LEANCLOUD_PASSWORD }}
           yarn run hexo clean
           yarn run hexo g
           yarn run hexo d
