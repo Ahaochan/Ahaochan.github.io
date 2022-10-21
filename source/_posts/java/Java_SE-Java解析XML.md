@@ -9,7 +9,7 @@ date: 2016-10-09 22:31:08
 ---
 
 # 前言
-> {% post_link posts/编程杂谈-XML语法详解 %}
+> {% post_link 编程杂谈-XML语法详解 %}
 
 定义一个`xml`文档
 <!-- more -->
