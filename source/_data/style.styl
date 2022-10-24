@@ -1,0 +1,22 @@
+// 链接高亮下划线显示
+.post-body p a, a > code {
+  color: #0593d3;
+  border-bottom: none;
+
+  &:hover {
+    color: #0477ab;
+    text-decoration: underline;
+  }
+}
+
+// 博客背景图
+body {
+  background:url(https://api.dujin.org/bing/1920.php);
+  background-repeat: no-repeat;
+  background-attachment:fixed; //不重复
+  background-size: cover;      //填充
+  background-position:50% 50%;
+}
+.header-inner { background: rgba(255, 255, 255, 0.9); }
+.sidebar { opacity: 0.9; }
+.index,.post { opacity: 0.95; }
