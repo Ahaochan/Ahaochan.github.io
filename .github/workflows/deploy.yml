@@ -69,6 +69,7 @@ jobs:
           yarn add hexo-helper-live2d
           yarn add js-yaml@latest # https://github.com/hexojs/hexo/issues/4917#issuecomment-1193351742
           yarn add hexo-asset-img 
+          yarn add hexo-filter-plantuml
           yarn add theme-next/next-util
           yarn
       - name: Hexo deploy
