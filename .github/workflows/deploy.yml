@@ -16,7 +16,7 @@ env:
   REPO_TOKEN: ${{ secrets.REPO_TOKEN }}
   # 主题配置
   THEME_REPO: next-theme/hexo-theme-next
-  THEME_VERSION: v8.8.2
+  THEME_VERSION: v8.13.1
   THEME_PATH: themes/next
   THEME_CONFIG_REPO: ${{ secrets.CONFIG_REPO }}
   THEME_CONFIG_NAME: _config.next.yml
