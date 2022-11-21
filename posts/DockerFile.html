@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/config/favicon-32x32-next.jpg">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/config/favicon-16x16-next.jpg">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="google-site-verification" content="ZmER9fymckNfZ_Zxw6p3fpvqhvR6LitG9pR-cNVflx0">
+  <meta name="msvalidate.01" content="5351f65e5e79bb62584189a5e6906b8b">
+  <meta name="baidu-site-verification" content="jgtczlqzuk">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic%7CConsolas:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" integrity="sha256-AbA177XfpSnFEvgpYu1jMygiLabzPCJCRIBtR5jGc0k=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"blog.ahao.moe","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.13.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"disqusjs","storage":true,"lazyload":true,"nav":null,"activeClass":"disqusjs"},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":true}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="前言我们使用Docker镜像, 一般都是从远程Registry仓库pull下来的. 1docker pull hello-world 但是实际开发过程中, 经常会需要把自己的应用程序打包成一个images镜像. 这个镜像是需要自己打包的.打包的方式一般有两种, Docker File和Docker Compose.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="DockerFile详解">
+<meta property="og:url" content="https://blog.ahao.moe/posts/DockerFile.html">
+<meta property="og:site_name" content="Ahaochan&#39;s Blog">
+<meta property="og:description" content="前言我们使用Docker镜像, 一般都是从远程Registry仓库pull下来的. 1docker pull hello-world 但是实际开发过程中, 经常会需要把自己的应用程序打包成一个images镜像. 这个镜像是需要自己打包的.打包的方式一般有两种, Docker File和Docker Compose.">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-06-18T16:47:00.000Z">
+<meta property="article:modified_time" content="2022-11-21T02:35:06.056Z">
+<meta property="article:author" content="Ahaochan">
+<meta property="article:tag" content="Docker">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://blog.ahao.moe/posts/DockerFile.html">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://blog.ahao.moe/posts/DockerFile.html","path":"posts/DockerFile.html","title":"DockerFile详解"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>DockerFile详解 | Ahaochan's Blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-108454440-1"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"UA-108454440-1","only_pageview":false}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+  <script src="/js/third-party/analytics/baidu-analytics.js"></script>
+  <script async src="https://hm.baidu.com/hm.js?32635d85cec06e8822234c4d2aec2b54"></script>
+
+
+
+
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+  (adsbygoogle = window.adsbygoogle || []).push({
+    google_ad_client: "ca-pub-5208025300813046",
+    enable_page_level_ads: true
+  });
+</script>
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/rss.xml" title="Ahaochan's Blog" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Ahaochan's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">你也是程序猿friends呢~</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">91</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">30</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">217</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E5%9C%A8%E5%B7%B2%E6%9C%89-image-%E4%B8%8A%E5%81%9A%E4%BF%AE%E6%94%B9"><span class="nav-number">2.</span> <span class="nav-text">如何在已有 image 上做修改</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8-Dockerfile-%E6%94%B9%E9%80%A0%E4%B8%8A%E8%BF%B0%E4%BE%8B%E5%AD%90"><span class="nav-number">3.</span> <span class="nav-text">使用 Dockerfile 改造上述例子</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Dockerfile-%E8%AF%AD%E6%B3%95"><span class="nav-number">4.</span> <span class="nav-text">Dockerfile 语法</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#FROM"><span class="nav-number">4.1.</span> <span class="nav-text">FROM</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LABEL"><span class="nav-number">4.2.</span> <span class="nav-text">LABEL</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#WORKDIR"><span class="nav-number">4.3.</span> <span class="nav-text">WORKDIR</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ENV"><span class="nav-number">4.4.</span> <span class="nav-text">ENV</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ARG"><span class="nav-number">4.5.</span> <span class="nav-text">ARG</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#COPY"><span class="nav-number">4.6.</span> <span class="nav-text">COPY</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ADD"><span class="nav-number">4.7.</span> <span class="nav-text">ADD</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#RUN"><span class="nav-number">4.8.</span> <span class="nav-text">RUN</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CMD"><span class="nav-number">4.9.</span> <span class="nav-text">CMD</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ENTRYPOINT"><span class="nav-number">4.10.</span> <span class="nav-text">ENTRYPOINT</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Docker-Compose-%E8%AF%AD%E6%B3%95"><span class="nav-number">5.</span> <span class="nav-text">Docker Compose 语法</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%90%AD%E5%BB%BA-wordpress"><span class="nav-number">5.1.</span> <span class="nav-text">搭建 wordpress</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E6%A1%A3"><span class="nav-number">6.</span> <span class="nav-text">参考文档</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Ahaochan"
+      src="/images/config/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Ahaochan</p>
+  <div class="site-description" itemprop="description">你也是程序猿friends呢~</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">217</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">30</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">91</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Ahaochan" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Ahaochan" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:844394093@qq.com" title="E-Mail → mailto:844394093@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://greasyfork.org/zh-CN/users/30831" title="Greasyfork → https:&#x2F;&#x2F;greasyfork.org&#x2F;zh-CN&#x2F;users&#x2F;30831" rel="noopener" target="_blank"><i class="fab fa-google fa-fw"></i>Greasyfork</a>
+      </span>
+  </div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/Ahaochan" class="github-corner" title="我的Github" aria-label="我的Github" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blog.ahao.moe/posts/DockerFile.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/config/avatar.jpg">
+      <meta itemprop="name" content="Ahaochan">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ahaochan's Blog">
+      <meta itemprop="description" content="你也是程序猿friends呢~">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="DockerFile详解 | Ahaochan's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          DockerFile详解<a href="https://github.com/Ahaochan/Ahaochan.github.io/blob/source/source/_posts/docker/Docker-DockerFile%E8%AF%A6%E8%A7%A3.md" class="post-edit-link" title="编辑" rel="noopener" target="_blank"><i class="fa fa-pen-nib"></i></a>
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2020-06-19 00:47:00" itemprop="dateCreated datePublished" datetime="2020-06-19T00:47:00+08:00">2020-06-19</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Docker/" itemprop="url" rel="index"><span itemprop="name">Docker</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>2.6k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>10 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>我们使用<code>Docker</code>镜像, 一般都是从远程<a target="_blank" rel="noopener" href="https://hub.docker.com/"><code>Registry</code></a>仓库<code>pull</code>下来的.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker pull hello-world</span><br></pre></td></tr></table></figure>
+<p>但是实际开发过程中, 经常会需要把自己的应用程序打包成一个<code>images</code>镜像. 这个镜像是需要自己打包的.<br>打包的方式一般有两种, <code>Docker File</code>和<code>Docker Compose</code>.</p>
+<span id="more"></span>
+
+<h1 id="如何在已有-image-上做修改"><a href="#如何在已有-image-上做修改" class="headerlink" title="如何在已有 image 上做修改"></a>如何在已有 image 上做修改</h1><p>官方虽然提供了很多的<code>Image</code>, 但是我们总会要做一些定制化需求.<br>比如往<code>Image</code>里面塞一些应用程序. 下面列举一个不推荐使用的修改<code>Image</code>的方法.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 1. 拉取基础image</span></span><br><span class="line">docker pull alpine</span><br><span class="line"><span class="comment"># 2. 运行基础image, 并创建一个 hello.txt 文件</span></span><br><span class="line">docker run -it --name base-alpine alpine /bin/sh</span><br><span class="line"><span class="comment"># /bin/echo hello &gt; /hello.txt</span></span><br><span class="line"><span class="comment"># exit</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 3. 使用这个退出后的container, 重新构建一个新的image</span></span><br><span class="line">docker commit base-alpine ahao-alpine</span><br><span class="line"><span class="comment"># 4. 使用这个新构建的镜像, 能找到之前编辑过的 hello.txt</span></span><br><span class="line">docker run -it ahao-alpine /bin/sh</span><br><span class="line"><span class="comment"># /bin/cat /hello.txt</span></span><br></pre></td></tr></table></figure>
+<p>但是这种方法不推荐, 也不安全.<br>如果是有恶意的人, 在第二步创建了一个恶意脚本, 然后发布到官方仓库. 使用者根本不知道上传者做了什么操作, 无法进行<code>Review</code>.<br>为了能进行<code>Review</code>代码审查, <code>Docker</code>提供了一个叫<code>DockerFile</code>的文件. 用来记录修改了哪些操作.</p>
+<h1 id="使用-Dockerfile-改造上述例子"><a href="#使用-Dockerfile-改造上述例子" class="headerlink" title="使用 Dockerfile 改造上述例子"></a>使用 Dockerfile 改造上述例子</h1><figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 1. 基于 alpine 镜像构建</span></span><br><span class="line"><span class="keyword">FROM</span> alpine</span><br><span class="line"><span class="comment"># 2. 创建一个 hello.txt 文件</span></span><br><span class="line"><span class="keyword">RUN</span><span class="language-bash"> /bin/echo hello &gt; /hello.txt</span></span><br><span class="line"><span class="comment"># 3. 输出 hello.txt</span></span><br><span class="line"><span class="keyword">ENTRYPOINT</span><span class="language-bash"> [<span class="string">&quot;/bin/cat&quot;</span>, <span class="string">&quot;/hello.txt&quot;</span>]</span></span><br></pre></td></tr></table></figure>
+<p>我们创建了一个<code>Dockerfile</code>文件, 然后执行构建命令, 输出了<code>hello</code></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 1. 在当前目录根据 Dockerfile 构建 Docker 镜像</span></span><br><span class="line">docker build -t ahaochan/ahao-alpine .</span><br><span class="line"><span class="comment"># 2. 运行构建的镜像, 输出</span></span><br><span class="line">docker run ahaochan/ahao-alpine</span><br><span class="line"><span class="comment"># hello</span></span><br></pre></td></tr></table></figure>
+
+<h1 id="Dockerfile-语法"><a href="#Dockerfile-语法" class="headerlink" title="Dockerfile 语法"></a>Dockerfile 语法</h1><p>下面讲讲<code>Dockerfile</code>的一些命令的语法和使用, 不过建议还是看<a target="_blank" rel="noopener" href="https://docs.docker.com/engine/reference/builder/">官方文档</a>的好.</p>
+<h2 id="FROM"><a href="#FROM" class="headerlink" title="FROM"></a>FROM</h2><p><code>FROM</code>表示当前镜像是基于哪个镜像做的.<br>比如之前用的<code>FROM alpine</code>, 表示当前镜像是基于<code>alpine</code>来做定制化需求.<br>推荐使用官方的<code>Image</code>来作为<code>FROM</code>基础镜像.</p>
+<h2 id="LABEL"><a href="#LABEL" class="headerlink" title="LABEL"></a>LABEL</h2><p><code>LABEL</code>用来标记一些元数据<code>metadata</code>, 相当于镜像的注释.<br>虽然可以没有, 但是建议要有. 不然就是一个三无产品<code>Image</code>, 谁敢放心用呢?</p>
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 1. 基于 alpine 镜像构建</span></span><br><span class="line"><span class="keyword">FROM</span> alpine</span><br><span class="line"><span class="comment"># 2. 元数据 metadata</span></span><br><span class="line"><span class="keyword">LABEL</span><span class="language-bash"> maintainer=<span class="string">&quot;作者&quot;</span> version=<span class="string">&quot;版本号&quot;</span> description=<span class="string">&quot;描述&quot;</span></span></span><br></pre></td></tr></table></figure>
+
+<h2 id="WORKDIR"><a href="#WORKDIR" class="headerlink" title="WORKDIR"></a>WORKDIR</h2><p><code>WORKDIR</code>相当于<code>linux</code>的<code>cd</code>命令, 用于进入某个目录中, 如果目录不存在会自动创建目录.<br>有两点需要注意</p>
+<ol>
+<li>千万不要使用<code>RUN cd</code>, 因为每一次<code>RUN</code>都会产生一层<code>Image Layer</code>.</li>
+<li>尽量使用绝对目录, 避免弄混淆了</li>
+</ol>
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">WORKDIR</span><span class="language-bash"> /test</span></span><br><span class="line"><span class="keyword">WORKDIR</span><span class="language-bash"> demo</span></span><br><span class="line"><span class="comment"># 输出 /test/demo</span></span><br><span class="line"><span class="keyword">RUN</span><span class="language-bash"> <span class="built_in">pwd</span></span></span><br></pre></td></tr></table></figure>
+
+<h2 id="ENV"><a href="#ENV" class="headerlink" title="ENV"></a>ENV</h2><p><code>ENV</code>用于设置环境变量, 提高可维护性.<br>比如我要升级<code>MySQL</code>版本, 改变量就可以了.</p>
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">ENV</span> MYSQL_VERSION <span class="number">5.6</span></span><br><span class="line"><span class="keyword">RUN</span><span class="language-bash"> apt-get update &amp;&amp; \</span></span><br><span class="line"><span class="language-bash">    apt-get install -y mysql-server=<span class="string">&quot;<span class="variable">$&#123;MYSQL_VERSION&#125;</span>&quot;</span> &amp;&amp; \</span></span><br><span class="line"><span class="language-bash">    <span class="built_in">rm</span> -rf /var/lib/apt/lists/*</span></span><br></pre></td></tr></table></figure>
+<p>除了上面这种简单用法还有一些高级用法</p>
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">FROM</span> alpine</span><br><span class="line"><span class="keyword">ENV</span> VAR ahao</span><br><span class="line"><span class="keyword">CMD</span><span class="language-bash"> [<span class="string">&quot;/bin/sh&quot;</span>, <span class="string">&quot;-c&quot;</span>, <span class="string">&quot;echo <span class="variable">$&#123;VAR&#125;</span> <span class="variable">$&#123;VAR:-default&#125;</span> <span class="variable">$&#123;NO:-default&#125;</span> <span class="variable">$&#123;VAR:+value&#125;</span> <span class="variable">$&#123;NO:+value&#125;</span>&quot;</span>]</span></span><br><span class="line"><span class="comment"># ahao ahao default value</span></span><br></pre></td></tr></table></figure>
+<ol>
+<li><code>$&#123;VAR:-default&#125;</code>的意思是, 当<code>VAR</code>没有被定义的时候, 使用后面的<code>default</code>值</li>
+<li><code>$&#123;VAR:+default&#125;</code>的意思是, 当<code>VAR</code>被定义的时候, 使用后面的<code>value</code>值, 否则使用空字符串</li>
+</ol>
+<p>当重复定义一个变量的时候, 当前<code>Image Layer</code>会使用上一层<code>Image Layer</code>定义的变量.</p>
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">FROM</span> alpine</span><br><span class="line"><span class="keyword">ENV</span> a=hello</span><br><span class="line"><span class="keyword">ENV</span> a=world b=$a</span><br><span class="line"><span class="keyword">ENV</span> c=$a</span><br><span class="line"><span class="keyword">CMD</span><span class="language-bash"> [<span class="string">&quot;/bin/sh&quot;</span>, <span class="string">&quot;-c&quot;</span>, <span class="string">&quot;echo <span class="variable">$&#123;a&#125;</span> <span class="variable">$&#123;b&#125;</span> <span class="variable">$&#123;c&#125;</span>&quot;</span>]</span></span><br><span class="line"><span class="comment"># world hello world</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="ARG"><a href="#ARG" class="headerlink" title="ARG"></a>ARG</h2><p><code>ARG &lt;name&gt;[=&lt;default value&gt;]</code><br>在<code>docker build</code>镜像的时候使用<code>--build-arg &lt;varname&gt;=&lt;value&gt;</code>参数, 可以将外部参数传入<code>Dockerfile</code>文件中, 用来构建镜像.</p>
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">ARG</span> VERSION=latest</span><br><span class="line"><span class="keyword">FROM</span> alpine:$&#123;VERSION&#125;</span><br><span class="line"><span class="keyword">CMD</span><span class="language-bash"> /bin/echo hello</span></span><br></pre></td></tr></table></figure>
+<p>构建镜像</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 1. 构建基于 最新alpine 的镜像</span></span><br><span class="line">docker build -t ahaochan/ahao-alpine-last .</span><br><span class="line"><span class="comment"># 2. 构建基于 2.7 alpine 的镜像</span></span><br><span class="line">docker build --build-arg VERSION=2.7 -t ahaochan/ahao-alpine-2.7 .</span><br></pre></td></tr></table></figure>
+<p>值得注意的是, 官方文档提到, <code>ARG</code>不要传递敏感数据, 不安全.</p>
+<p>还有就是同名变量<code>ENV</code>会覆盖<code>ARG</code>. 根据这个特性, 可以做一些默认的操作.</p>
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">FROM</span> alpine</span><br><span class="line"><span class="keyword">ARG</span> VERSION</span><br><span class="line"><span class="keyword">ENV</span> VERSION $&#123;VERSION:-lastest&#125;</span><br><span class="line"><span class="keyword">CMD</span><span class="language-bash"> /bin/echo <span class="variable">$VERSION</span></span></span><br></pre></td></tr></table></figure>
+
+<h2 id="COPY"><a href="#COPY" class="headerlink" title="COPY"></a>COPY</h2><p><code>ADD</code>和<code>COPY</code>都是在构建镜像的时候, 将上下文的文件拷贝到镜像中.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker build -t ahaochan/ahao-alpine .</span><br></pre></td></tr></table></figure>
+<p>关于上下文, 其实我们一直有在用, 在构建的时候会传入一个参数<code>.</code>, 表示将当前目录作为上下文.<br>构建的时候, <code>docker</code>客户端会把上下文中的所有文件发送给<code>docker daemon</code>.<br>那么如果<code>docker</code>客户端和<code>docker daemon</code>不在同一台机器上, <code>docker daemon</code>是获取不到除了上下文之外的文件的.<br>所以<code>Dockerfile</code>里面的文件, 都要基于这个上下文来访问.</p>
+<p>如果只是简单的将文件复制到镜像中, 直接使用<code>COPY</code>就可以了</p>
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">FROM</span> alpine</span><br><span class="line"><span class="comment"># 1. 将 file1 文件 复制到镜像内 /tmp/test1/ 目录下</span></span><br><span class="line"><span class="keyword">COPY</span><span class="language-bash"> file1  /tmp/test1/</span></span><br><span class="line"><span class="comment"># 2. 将 file2开头的 文件 复制到镜像内 /tmp/test2/ 目录下</span></span><br><span class="line"><span class="keyword">COPY</span><span class="language-bash"> file2* /tmp/test2/</span></span><br><span class="line"><span class="comment"># 3. 将 file3开头的 文件 复制到镜像内 /tmp/test3/ 目录下, ?占一个字符, *占多个字符</span></span><br><span class="line"><span class="keyword">COPY</span><span class="language-bash"> file3? /tmp/test3/</span></span><br><span class="line"><span class="comment"># 4. 将 dir4目录下的 文件 复制到镜像内 /tmp/test4/ 目录下</span></span><br><span class="line"><span class="keyword">COPY</span><span class="language-bash"> dir4/ /tmp/test4/</span></span><br><span class="line"><span class="comment"># 5. 将 dir5目录下的 文件 复制到镜像内 /tmp/test4/ 目录下, 不会复制 dir5目录本身</span></span><br><span class="line"><span class="keyword">COPY</span><span class="language-bash"> dir5 /tmp/test5/</span></span><br><span class="line"><span class="keyword">CMD</span><span class="language-bash"> /bin/ls /tmp/test*</span></span><br></pre></td></tr></table></figure>
+<p>构建完毕后, 我们进去看看</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 1. 准备文件</span></span><br><span class="line"><span class="built_in">touch</span> file1</span><br><span class="line"><span class="built_in">touch</span> file2 file22 file222</span><br><span class="line"><span class="built_in">touch</span> file3 file33 file333</span><br><span class="line"><span class="built_in">mkdir</span> dir4 &amp;&amp; <span class="built_in">touch</span> dir4/1 dir4/2 dir4/3</span><br><span class="line"><span class="built_in">mkdir</span> dir5 &amp;&amp; <span class="built_in">touch</span> dir5/1 dir5/2 dir5/3</span><br><span class="line"></span><br><span class="line"><span class="comment"># 2. 构建镜像并运行</span></span><br><span class="line">docker build -t ahaochan/ahao-alpine .</span><br><span class="line">docker run ahaochan/ahao-alpine</span><br><span class="line"><span class="comment"># /tmp/test1:</span></span><br><span class="line"><span class="comment"># file1</span></span><br><span class="line"><span class="comment"># /tmp/test2:</span></span><br><span class="line"><span class="comment"># file2     file22       file222</span></span><br><span class="line"><span class="comment"># /tmp/test3:</span></span><br><span class="line"><span class="comment"># file33</span></span><br><span class="line"><span class="comment"># /tmp/test4:</span></span><br><span class="line"><span class="comment"># 1         2           3</span></span><br><span class="line"><span class="comment"># /tmp/test5:</span></span><br><span class="line"><span class="comment"># 1         2           3</span></span><br></pre></td></tr></table></figure>
+
+<p>另外, <code>COPY</code>还能在多阶段构建中使用, 这是区别于<code>ADD</code>的一个用法.<br>多阶段构建常用在编译打包阶段, 这里不细讲.</p>
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">FROM</span> alpine</span><br><span class="line"><span class="keyword">RUN</span><span class="language-bash"> /bin/echo hello &gt; /hello.txt</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">FROM</span> alpine</span><br><span class="line"><span class="comment"># from = 0 引用第一个阶段的 stage, 拉取 hello.txt</span></span><br><span class="line"><span class="keyword">COPY</span><span class="language-bash"> --from=0 /hello.txt .</span></span><br><span class="line"><span class="keyword">CMD</span><span class="language-bash"> [<span class="string">&quot;/bin/sh&quot;</span>, <span class="string">&quot;-c&quot;</span>, <span class="string">&quot;/bin/cat hello.txt&quot;</span>]</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="ADD"><a href="#ADD" class="headerlink" title="ADD"></a>ADD</h2><p><code>ADD</code>和<code>COPY</code>差不多, 也是将上下文的文件拷贝到镜像中.<br><code>ADD</code>除了不能应用在多阶段构建的场景之外, <code>ADD</code>比<code>COPY</code>多了两个功能.</p>
+<ol>
+<li>自动解压缩文件并添加到镜像中</li>
+<li>从<code>url</code>拷贝文件并添加到镜像中. (<a target="_blank" rel="noopener" href="https://docs.docker.com/develop/develop-images/dockerfile_best-practices/#add-or-copy">官方不推荐</a>, 使用<code>curl</code>或<code>wget</code>替代)</li>
+</ol>
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">FROM</span> alpine</span><br><span class="line"><span class="keyword">ADD</span><span class="language-bash"> hello.tar.gz /</span></span><br><span class="line"><span class="keyword">ADD</span><span class="language-bash"> https://greasyfork.org/zh-CN/users/30831.json /</span></span><br><span class="line"><span class="keyword">CMD</span><span class="language-bash"> [<span class="string">&quot;/bin/sh&quot;</span>, <span class="string">&quot;-c&quot;</span>, <span class="string">&quot;/bin/ls -l hello.txt 30831.json&quot;</span>]</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 1. 准备压缩包</span></span><br><span class="line"><span class="built_in">echo</span> hello &gt; hello.txt</span><br><span class="line">tar zcvf hello.tar.gz hello.txt</span><br><span class="line"></span><br><span class="line"><span class="comment"># 2. 构建镜像</span></span><br><span class="line">docker build -t ahaochan/ahao-alpine .</span><br><span class="line">docker run ahaochan/ahao-alpine</span><br><span class="line"><span class="comment"># -rw-------    1 root  root  7748 Jan  1  1970 30831.json</span></span><br><span class="line"><span class="comment"># -rw-r--r--    1 root  root     6 Jun  7 08:09 hello.txt</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="RUN"><a href="#RUN" class="headerlink" title="RUN"></a>RUN</h2><p><code>RUN</code>有2种形式</p>
+<ol>
+<li><code>shell</code>形式: <code>RUN &lt;command&gt;</code></li>
+<li><code>exec</code>形式: <code>RUN [&quot;executable&quot;, &quot;param1&quot;, &quot;param2&quot;]</code></li>
+</ol>
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">FROM</span> alpine</span><br><span class="line"><span class="keyword">ENV</span> VAR ahao</span><br><span class="line"><span class="keyword">RUN</span><span class="language-bash"> <span class="built_in">echo</span> <span class="string">&quot;<span class="variable">$&#123;VAR&#125;</span>&quot;</span></span></span><br><span class="line"><span class="comment"># ahao</span></span><br><span class="line"><span class="keyword">RUN</span><span class="language-bash"> <span class="built_in">echo</span> <span class="variable">$&#123;VAR&#125;</span></span></span><br><span class="line"><span class="comment"># ahao</span></span><br><span class="line"><span class="keyword">RUN</span><span class="language-bash"> [<span class="string">&quot;/bin/echo&quot;</span>, <span class="string">&quot;<span class="variable">$&#123;VAR&#125;</span>&quot;</span>]</span></span><br><span class="line"><span class="comment"># $&#123;VAR&#125;</span></span><br><span class="line"><span class="keyword">RUN</span><span class="language-bash"> [<span class="string">&quot;/bin/sh&quot;</span>, <span class="string">&quot;-c&quot;</span>, <span class="string">&quot;echo <span class="variable">$&#123;VAR&#125;</span>&quot;</span>]</span></span><br><span class="line"><span class="comment"># ahao</span></span><br></pre></td></tr></table></figure>
+<p>可以看到, <code>exec</code>形式的<code>RUN</code>命令(其实不止<code>RUN</code>, 还有<code>CMD</code>和<code>ENTRYPOINT</code>), 不会去解析<code>$&#123;VAR&#125;</code>.</p>
+<p><code>RUN</code>命令一般用来安装一些依赖, 删除缓存等操作.<br>但是每一次<code>RUN</code>都会产生一层<code>Image Layer</code>, 所以需要尽可能的少用<code>RUN</code>, 安装依赖尽量一行代码搞定.</p>
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># yum 安装例子</span></span><br><span class="line"><span class="keyword">RUN</span><span class="language-bash"> yum update &amp;&amp; \</span></span><br><span class="line"><span class="language-bash">    yum install -y vim</span></span><br><span class="line"><span class="comment"># apt 安装例子, 注意删除缓存</span></span><br><span class="line"><span class="keyword">RUN</span><span class="language-bash"> apt-get update &amp;&amp; \</span></span><br><span class="line"><span class="language-bash">    apt-get install -y vim &amp;&amp; \</span></span><br><span class="line"><span class="language-bash">    <span class="built_in">rm</span> -rf /var/lib/apt/lists/*</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="CMD"><a href="#CMD" class="headerlink" title="CMD"></a>CMD</h2><p><code>CMD</code>有3种形式</p>
+<ol>
+<li><code>shell</code>形式: <code>CMD &lt;command&gt;</code></li>
+<li><code>exec</code>形式: <code>CMD [&quot;executable&quot;, &quot;param1&quot;, &quot;param2&quot;]</code></li>
+<li><code>exec</code>形式: <code>CMD [&quot;param1&quot;,&quot;param2&quot;]</code>, 作为<code>ENTRYPOINT</code>的默认参数.<br><code>CMD</code>是<code>container</code>启动时默认执行的命令.<br>使用<code>CMD</code>有几个需要注意的地方.</li>
+<li>如果<code>Dockerfile</code>有多个<code>CMD</code>, 就只会执行最后一个.</li>
+<li>外部命令会覆盖内部的<code>CMD</code>.</li>
+</ol>
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 1. 基于 alpine 镜像构建</span></span><br><span class="line"><span class="keyword">FROM</span> alpine</span><br><span class="line"><span class="comment"># 2. 第1个 CMD 命令</span></span><br><span class="line"><span class="keyword">CMD</span><span class="language-bash"> [<span class="string">&quot;/bin/ping&quot;</span>, <span class="string">&quot;127.0.0.1&quot;</span>]</span></span><br><span class="line"><span class="comment"># 3. 第2个 CMD 命令</span></span><br><span class="line"><span class="keyword">CMD</span><span class="language-bash"> [<span class="string">&quot;/bin/echo&quot;</span>, <span class="string">&quot;hello&quot;</span>]</span></span><br></pre></td></tr></table></figure>
+<p>编写完<code>Dockerfile</code>后, 我们来构建它.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 1. 构建镜像</span></span><br><span class="line">docker build -t ahaochan/ahao-alpine .</span><br><span class="line"><span class="comment"># 2. 不指定外部命令, 默认执行 Dockerfile 最后一个 CMD 命令 </span></span><br><span class="line">docker run ahaochan/ahao-alpine</span><br><span class="line"><span class="comment"># hello</span></span><br><span class="line"><span class="comment"># 3. 指定外部命令, 覆盖 Dockerfile 里的 CMD 命令</span></span><br><span class="line">docker run -it ahaochan/ahao-alpine /bin/echo ahao</span><br><span class="line"><span class="comment"># ahao</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="ENTRYPOINT"><a href="#ENTRYPOINT" class="headerlink" title="ENTRYPOINT"></a>ENTRYPOINT</h2><p><code>ENTRYPOINT</code>有2种形式</p>
+<ol>
+<li><code>shell</code>形式: <code>ENTRYPOINT command param1 param2</code></li>
+<li><code>exec</code>形式: <code>ENTRYPOINT [&quot;executable&quot;, &quot;param1&quot;, &quot;param2&quot;]</code>, 推荐使用.</li>
+</ol>
+<p><code>ENTRYPOINT</code>让<code>container</code>以应用程序或者服务的形式在后台运行.<br>等价于<code>docker run --entrypoint &quot;command&quot;</code></p>
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">FROM</span> alpine</span><br><span class="line"><span class="keyword">ENTRYPOINT</span><span class="language-bash"> [<span class="string">&quot;/bin/ping&quot;</span>, <span class="string">&quot;127.0.0.1&quot;</span>]</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">docker build -t ahaochan/ahao-alpine .</span><br><span class="line"><span class="comment"># 1. 错误使用--entrypoint覆盖</span></span><br><span class="line">docker run --entrypoint <span class="string">&quot;/bin/echo hello&quot;</span> ahaochan/ahao-alpine</span><br><span class="line"><span class="comment"># docker: Error response from daemon: OCI runtime create failed: container_linux.go:345: starting container process caused &quot;exec: \&quot;/bin/echo hello\&quot;: stat /bin/echo hello: no such file or directory&quot;: unknown.</span></span><br><span class="line"><span class="comment"># 2. 正确使用--entrypoint覆盖</span></span><br><span class="line">docker run --entrypoint /bin/echo ahaochan/ahao-alpine hello</span><br><span class="line"><span class="comment"># hello</span></span><br><span class="line"><span class="comment"># 3. 循环执行ping 127.0.0.1</span></span><br><span class="line">docker run ahaochan/ahao-alpine </span><br><span class="line"><span class="comment"># 4. CMD 和 ENTRYPOINT 组合使用, ping 127.0.0.1 -c 3</span></span><br><span class="line">docker run ahaochan/ahao-alpine -c 3</span><br></pre></td></tr></table></figure>
+
+<h1 id="Docker-Compose-语法"><a href="#Docker-Compose-语法" class="headerlink" title="Docker Compose 语法"></a>Docker Compose 语法</h1><p>我们在进行容器间的通信的时候, 要分别启动容器, 关闭还要一个个关闭.<br>比如我要在<code>ahao-alpine2</code>向<code>ahao-alpine1</code>发送请求, 需要先启动<code>ahao-alpine1</code>, 然后再启动<code>ahao-alpine2</code>.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">docker run -d --name ahao-alpine1  alpine /bin/ping 127.0.0.1</span><br><span class="line">docker run --name ahao-alpine2 --<span class="built_in">link</span> ahao-alpine1 alpine /bin/ping ahao-alpine1</span><br></pre></td></tr></table></figure>
+<p>为了解决这个繁琐的操作, <code>Docker</code>提供了一个工具<code>Docker Compose</code>.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 不推荐使用 apt install, 这安装的是旧版本</span></span><br><span class="line"><span class="comment"># apt install docker-compose -y</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># https://docs.docker.com/compose/install/#install-compose-on-linux-systems</span></span><br><span class="line">curl -L <span class="string">&quot;https://github.com/docker/compose/releases/download/1.26.0/docker-compose-<span class="subst">$(uname -s)</span>-<span class="subst">$(uname -m)</span>&quot;</span> -o /usr/local/bin/docker-compose</span><br><span class="line"><span class="built_in">chmod</span> +x /usr/local/bin/docker-compose</span><br><span class="line"><span class="built_in">ln</span> -s /usr/local/bin/docker-compose /usr/bin/docker-compose</span><br><span class="line">docker-compose --version</span><br></pre></td></tr></table></figure>
+<p>我们创建一个<code>docker-compose.yml</code>文件</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">version:</span> <span class="string">&quot;3&quot;</span></span><br><span class="line"><span class="attr">services:</span></span><br><span class="line">  <span class="attr">ahao-alpine1:</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">alpine</span></span><br><span class="line">    <span class="attr">command:</span> [<span class="string">&quot;/bin/ping&quot;</span>, <span class="string">&quot;127.0.0.1&quot;</span>]</span><br><span class="line">  <span class="attr">ahao-alpine2:</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">alpine</span></span><br><span class="line">    <span class="attr">links:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">ahao-alpine1</span></span><br><span class="line">    <span class="attr">command:</span> [<span class="string">&quot;/bin/ping&quot;</span>, <span class="string">&quot;127.0.0.1&quot;</span>]</span><br></pre></td></tr></table></figure>
+<p>一个<code>Service</code>代表一个<code>Container</code>, 启动类似<code>docker run</code>, 可以为其指定<code>network</code>和<code>volume</code>.<br>然后执行以下命令</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 在后台启动 compose</span></span><br><span class="line">docker-compose up -d</span><br><span class="line"><span class="comment"># 进行容器间的网络通信</span></span><br><span class="line">docker-compose <span class="built_in">exec</span> ahao-alpine2 /bin/ping -c 3 ahao-alpine1</span><br><span class="line"><span class="comment"># 关闭进程并删除镜像</span></span><br><span class="line">docker-compose down</span><br></pre></td></tr></table></figure>
+
+<h2 id="搭建-wordpress"><a href="#搭建-wordpress" class="headerlink" title="搭建 wordpress"></a>搭建 wordpress</h2><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">version:</span> <span class="string">&quot;3&quot;</span></span><br><span class="line"><span class="attr">services:</span></span><br><span class="line">  <span class="attr">wordpress:</span></span><br><span class="line">    <span class="attr">depends_on:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">db</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">wordpress:latest</span></span><br><span class="line">    <span class="attr">restart:</span> <span class="string">always</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="number">80</span><span class="string">:80</span></span><br><span class="line">    <span class="attr">environment:</span></span><br><span class="line">      <span class="attr">WORDPRESS_DB_HOST:</span> <span class="string">db:3306</span></span><br><span class="line">      <span class="attr">WORDPRESS_DB_USER:</span> <span class="string">wordpress</span></span><br><span class="line">      <span class="attr">WORDPRESS_DB_PASSWORD:</span> <span class="string">wordpress</span></span><br><span class="line">      <span class="attr">WORDPRESS_DB_NAME:</span> <span class="string">wordpress</span></span><br><span class="line">    <span class="attr">networks:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">my-bridge</span></span><br><span class="line">  <span class="attr">db:</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">mysql:5.7</span></span><br><span class="line">    <span class="attr">restart:</span> <span class="string">always</span></span><br><span class="line">    <span class="attr">volumes:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">mysql-data:/var/lib/mysql</span></span><br><span class="line">    <span class="attr">environment:</span></span><br><span class="line">      <span class="attr">MYSQL_ROOT_PASSWORD:</span> <span class="string">root</span></span><br><span class="line">      <span class="attr">MYSQL_DATABASE:</span> <span class="string">wordpress</span></span><br><span class="line">      <span class="attr">MYSQL_USER:</span> <span class="string">wordpress</span></span><br><span class="line">      <span class="attr">MYSQL_PASSWORD:</span> <span class="string">wordpress</span></span><br><span class="line">    <span class="attr">networks:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">my-bridge</span></span><br><span class="line">  <span class="attr">pma:</span></span><br><span class="line">    <span class="attr">depends_on:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">db</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">phpmyadmin/phpmyadmin</span></span><br><span class="line">    <span class="attr">restart:</span> <span class="string">always</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="number">8080</span><span class="string">:80</span></span><br><span class="line">    <span class="attr">environment:</span></span><br><span class="line">      <span class="comment"># https://docs.phpmyadmin.net/en/latest/setup.html#docker-environment-variables</span></span><br><span class="line">      <span class="attr">PMA_HOST:</span> <span class="string">db</span></span><br><span class="line">      <span class="attr">PMA_PORT:</span> <span class="number">3306</span></span><br><span class="line">      <span class="attr">MYSQL_ROOT_PASSWORD:</span> <span class="string">root</span></span><br><span class="line">    <span class="attr">networks:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">my-bridge</span></span><br><span class="line"><span class="attr">volumes:</span></span><br><span class="line">  <span class="attr">mysql-data:</span> &#123;&#125;</span><br><span class="line"><span class="attr">networks:</span></span><br><span class="line">  <span class="attr">my-bridge:</span></span><br><span class="line">    <span class="attr">driver:</span> <span class="string">bridge</span></span><br></pre></td></tr></table></figure>
+
+<h1 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h1><ul>
+<li><a target="_blank" rel="noopener" href="https://docs.docker.com/engine/reference/builder/">官方文档</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.docker.com/compose/compose-file/"><code>compose-file</code>文档</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+      
+
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>很高兴得到您的赞赏</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="/images/config/wechatpay.jpg" alt="Ahaochan 微信">
+        <span>微信</span>
+      </div>
+      <div>
+        <img src="/images/config/alipay.jpg" alt="Ahaochan 支付宝">
+        <span>支付宝</span>
+      </div>
+
+  </div>
+</div>
+
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>Ahaochan
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://blog.ahao.moe/posts/DockerFile.html" title="DockerFile详解">https://blog.ahao.moe/posts/DockerFile.html</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="followme">
+  <span>欢迎关注我的其它发布渠道</span>
+
+  <div class="social-list">
+
+      <div class="social-item">
+        <a target="_blank" class="social-link" href="/images/config/wechat_channel.jpg">
+          <span class="icon">
+            <i class="fab fa-weixin"></i>
+          </span>
+
+          <span class="label">WeChat</span>
+        </a>
+      </div>
+
+      <div class="social-item">
+        <a target="_blank" class="social-link" href="/rss.xml">
+          <span class="icon">
+            <i class="fa fa-rss"></i>
+          </span>
+
+          <span class="label">RSS</span>
+        </a>
+      </div>
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/Docker/" rel="tag"><i class="fa fa-tag"></i> Docker</a>
+          </div>
+
+        
+  <div class="post-widgets">
+    <div class="wpac-rating-container">
+      <div id="wpac-rating"></div>
+    </div>
+  </div>
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/posts/Getting_started_with_RabbitMQ.html" rel="prev" title="RabbitMQ概念入门">
+                  <i class="fa fa-chevron-left"></i> RabbitMQ概念入门
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/posts/How_to_ensure_the_reliable_delivery_of_RabbitMQ.html" rel="next" title="RabbitMQ消息的可靠性投递">
+                  RabbitMQ消息的可靠性投递 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    
+  <div class="comments disqusjs">
+    <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+  </div>
+  
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2016 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ahaochan</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">172k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">10:25</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+  <div class="addthis_inline_share_toolbox">
+    <script src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-59047aaab9bddb67" async="async"></script>
+  </div><script color="0,0,255" opacity="0.5" zIndex="-1" count="99" src="https://cdn.jsdelivr.net/npm/canvas-nest.js@1/dist/canvas-nest.js"></script>
+
+
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js" integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lozad.js/1.16.0/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script>
+
+  
+  <script src="https://embed.widgetpack.com/widget.js" async></script>
+  <script class="next-config" data-name="rating" type="application/json">{"enable":true,"id":33332,"color":"#fc6423"}</script>
+  <script src="/js/third-party/rating.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.0/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/9.1.7/mermaid.min.js","integrity":"sha256-G58AID1YoX5YaEtWfXSI0VLrZ6N4kvNvwg0BI8zUFxE="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/quicklink/2.3.0/quicklink.umd.js" integrity="sha256-yvJQOINiH9fWemHn0vCA5lsHWJaHs6/ZmO+1Ft04SvM=" crossorigin="anonymous"></script>
+  <script class="next-config" data-name="quicklink" type="application/json">{"enable":true,"home":true,"archive":true,"delay":true,"timeout":3000,"priority":true,"url":"https://blog.ahao.moe/posts/DockerFile.html"}</script>
+  <script src="/js/third-party/quicklink.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/disqusjs/3.0.2/styles/disqusjs.css" integrity="sha256-71XarXwNr1Td27HmZI9zjY+rMzRdush6/glo6VFXp7o=" crossorigin="anonymous">
+
+<script class="next-config" data-name="disqusjs" type="application/json">{"enable":true,"api":"https://disqus.skk.moe/disqus/","apikey":"OC1zbKiBF5cPo1EJObILJmZftsWl4ZbbAh9YqV0qNxiMq8rQFqBiw8PYcXQCyG9S","shortname":"ahaochan-blog","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/disqusjs/3.0.2/disqusjs.es2015.umd.min.js","integrity":"sha256-okP99ZQKVpIy7+NogAMpGlIQzJa9XKXhIJcFgdju5bU="}}</script>
+<script src="/js/third-party/comments/disqusjs.js"></script>
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"scale":1.2,"jsonPath":"https://cdn.jsdelivr.net/npm/live2d-widget-model-shizuku@1.0.5/assets/shizuku.model.json"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":false},"react":{"opacity":0.7},"log":false});</script></body>
+</html>

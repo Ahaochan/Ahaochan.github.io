@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/config/favicon-32x32-next.jpg">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/config/favicon-16x16-next.jpg">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="google-site-verification" content="ZmER9fymckNfZ_Zxw6p3fpvqhvR6LitG9pR-cNVflx0">
+  <meta name="msvalidate.01" content="5351f65e5e79bb62584189a5e6906b8b">
+  <meta name="baidu-site-verification" content="jgtczlqzuk">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic%7CConsolas:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" integrity="sha256-AbA177XfpSnFEvgpYu1jMygiLabzPCJCRIBtR5jGc0k=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"blog.ahao.moe","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.13.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"disqusjs","storage":true,"lazyload":true,"nav":null,"activeClass":"disqusjs"},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":true}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="前言本文适用范围：已参加项目开发的人 写这篇文章的目的是为方便地对代码进行管理，让整个团队的代码规范化。这里的部分规定可能和你在其他地方看到的不一样，但还是请遵守这些规则。  编码规范是泯灭程序猿个性的一项制度，但对于整个团队而言，却是一件利器-《App 研发录》">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android命名规范和编码规范">
+<meta property="og:url" content="https://blog.ahao.moe/posts/Android_naming_conventions_and_coding_specifications.html">
+<meta property="og:site_name" content="Ahaochan&#39;s Blog">
+<meta property="og:description" content="前言本文适用范围：已参加项目开发的人 写这篇文章的目的是为方便地对代码进行管理，让整个团队的代码规范化。这里的部分规定可能和你在其他地方看到的不一样，但还是请遵守这些规则。  编码规范是泯灭程序猿个性的一项制度，但对于整个团队而言，却是一件利器-《App 研发录》">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://blog.ahao.moe/images/Android%E5%91%BD%E5%90%8D%E8%A7%84%E8%8C%83%E5%92%8C%E7%BC%96%E7%A0%81%E8%A7%84%E8%8C%83_01.jpg">
+<meta property="og:image" content="https://blog.ahao.moe/images/Android%E5%91%BD%E5%90%8D%E8%A7%84%E8%8C%83%E5%92%8C%E7%BC%96%E7%A0%81%E8%A7%84%E8%8C%83_02.png">
+<meta property="article:published_time" content="2016-06-23T01:11:07.000Z">
+<meta property="article:modified_time" content="2022-11-21T02:35:06.052Z">
+<meta property="article:author" content="Ahaochan">
+<meta property="article:tag" content="编码规范">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://blog.ahao.moe/images/Android%E5%91%BD%E5%90%8D%E8%A7%84%E8%8C%83%E5%92%8C%E7%BC%96%E7%A0%81%E8%A7%84%E8%8C%83_01.jpg">
+
+
+<link rel="canonical" href="https://blog.ahao.moe/posts/Android_naming_conventions_and_coding_specifications.html">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://blog.ahao.moe/posts/Android_naming_conventions_and_coding_specifications.html","path":"posts/Android_naming_conventions_and_coding_specifications.html","title":"Android命名规范和编码规范"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Android命名规范和编码规范 | Ahaochan's Blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-108454440-1"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"UA-108454440-1","only_pageview":false}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+  <script src="/js/third-party/analytics/baidu-analytics.js"></script>
+  <script async src="https://hm.baidu.com/hm.js?32635d85cec06e8822234c4d2aec2b54"></script>
+
+
+
+
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+  (adsbygoogle = window.adsbygoogle || []).push({
+    google_ad_client: "ca-pub-5208025300813046",
+    enable_page_level_ads: true
+  });
+</script>
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/rss.xml" title="Ahaochan's Blog" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Ahaochan's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">你也是程序猿friends呢~</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">91</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">30</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">217</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%BB%9F%E4%B8%80%E4%BB%A3%E7%A0%81%E6%A0%BC%E5%BC%8F"><span class="nav-number">2.</span> <span class="nav-text">统一代码格式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A1%B9%E7%9B%AE%E7%BB%93%E6%9E%84"><span class="nav-number">2.1.</span> <span class="nav-text">项目结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%91%BD%E5%90%8D%E8%A7%84%E8%8C%83"><span class="nav-number">2.2.</span> <span class="nav-text">命名规范</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8E%A7%E4%BB%B6-Id-%E5%91%BD%E5%90%8D%E6%96%B9%E5%BC%8F"><span class="nav-number">2.2.1.</span> <span class="nav-text">控件 Id 命名方式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Layout-%E7%9B%B8%E5%85%B3"><span class="nav-number">2.2.2.</span> <span class="nav-text">Layout 相关</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Color-%E7%9B%B8%E5%85%B3"><span class="nav-number">2.2.3.</span> <span class="nav-text">Color 相关</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Dimen-%E7%9B%B8%E5%85%B3"><span class="nav-number">2.2.4.</span> <span class="nav-text">Dimen 相关</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#String-%E7%9B%B8%E5%85%B3"><span class="nav-number">2.2.5.</span> <span class="nav-text">String 相关</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Drawable-%E7%9B%B8%E5%85%B3"><span class="nav-number">2.2.6.</span> <span class="nav-text">Drawable 相关</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Android-%E7%BC%96%E7%A0%81%E8%A7%84%E8%8C%83"><span class="nav-number">2.3.</span> <span class="nav-text">Android 编码规范</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#XML-%E6%96%87%E4%BB%B6%E8%A7%84%E8%8C%83"><span class="nav-number">2.3.1.</span> <span class="nav-text">XML 文件规范</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Java-%E4%BB%A3%E7%A0%81%E8%A7%84%E8%8C%83"><span class="nav-number">2.4.</span> <span class="nav-text">Java 代码规范</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Field"><span class="nav-number">2.4.1.</span> <span class="nav-text">Field</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Entity"><span class="nav-number">2.4.2.</span> <span class="nav-text">Entity</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%B1%BB%E6%88%90%E5%91%98%E6%8E%92%E5%BA%8F"><span class="nav-number">2.4.3.</span> <span class="nav-text">类成员排序</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%B8%B8%E9%87%8F%E7%9A%84%E5%91%BD%E5%90%8D"><span class="nav-number">2.4.4.</span> <span class="nav-text">字符串常量的命名</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Activity-%E4%B8%8E-Fragment-%E6%89%93%E5%BC%80%E6%96%B9%E5%BC%8F"><span class="nav-number">2.4.5.</span> <span class="nav-text">Activity 与 Fragment 打开方式</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%BB%93%E8%AF%AD"><span class="nav-number">3.</span> <span class="nav-text">结语</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">4.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Ahaochan"
+      src="/images/config/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Ahaochan</p>
+  <div class="site-description" itemprop="description">你也是程序猿friends呢~</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">217</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">30</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">91</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Ahaochan" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Ahaochan" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:844394093@qq.com" title="E-Mail → mailto:844394093@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://greasyfork.org/zh-CN/users/30831" title="Greasyfork → https:&#x2F;&#x2F;greasyfork.org&#x2F;zh-CN&#x2F;users&#x2F;30831" rel="noopener" target="_blank"><i class="fab fa-google fa-fw"></i>Greasyfork</a>
+      </span>
+  </div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/Ahaochan" class="github-corner" title="我的Github" aria-label="我的Github" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blog.ahao.moe/posts/Android_naming_conventions_and_coding_specifications.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/config/avatar.jpg">
+      <meta itemprop="name" content="Ahaochan">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ahaochan's Blog">
+      <meta itemprop="description" content="你也是程序猿friends呢~">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Android命名规范和编码规范 | Ahaochan's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Android命名规范和编码规范<a href="https://github.com/Ahaochan/Ahaochan.github.io/blob/source/source/_posts/andorid/Android-Android%E5%91%BD%E5%90%8D%E8%A7%84%E8%8C%83%E5%92%8C%E7%BC%96%E7%A0%81%E8%A7%84%E8%8C%83.md" class="post-edit-link" title="编辑" rel="noopener" target="_blank"><i class="fa fa-pen-nib"></i></a>
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2016-06-23 09:11:07" itemprop="dateCreated datePublished" datetime="2016-06-23T09:11:07+08:00">2016-06-23</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Android/" itemprop="url" rel="index"><span itemprop="name">Android</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>1.8k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>6 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>本文适用范围：已参加项目开发的人</p>
+<p>写这篇文章的目的是为方便地对代码进行管理，让整个团队的代码规范化。这里的部分规定可能和你在其他地方看到的不一样，但还是请遵守这些规则。</p>
+<blockquote>
+<p>编码规范是泯灭程序猿个性的一项制度，但对于整个团队而言，却是一件利器<br>-《App 研发录》</p>
+</blockquote>
+<span id="more"></span>
+
+<h1 id="统一代码格式"><a href="#统一代码格式" class="headerlink" title="统一代码格式"></a>统一代码格式</h1><p>首先请参照这篇文章设置 <code>Android Studio</code> 的 <code>Code Style</code>：<br><a target="_blank" rel="noopener" href="http://blog.qiji.tech/archives/5153">设置 Code Style</a><br>细心的同学可能会发现代码风格跟 <code>Google</code> 推荐的不一致，但请记住，我们是一个团队。</p>
+<h2 id="项目结构"><a href="#项目结构" class="headerlink" title="项目结构"></a>项目结构</h2><img data-src="/images/Android%E5%91%BD%E5%90%8D%E8%A7%84%E8%8C%83%E5%92%8C%E7%BC%96%E7%A0%81%E8%A7%84%E8%8C%83_01.jpg" class="">
+<h2 id="命名规范"><a href="#命名规范" class="headerlink" title="命名规范"></a>命名规范</h2><h3 id="控件-Id-命名方式"><a href="#控件-Id-命名方式" class="headerlink" title="控件 Id 命名方式"></a>控件 Id 命名方式</h3><p>命名模式：<code>View</code> 缩写_逻辑名称<br>例如一个登陆按钮 <code>Button</code>：<code>id</code> 为 <code>btn_login</code>，私有成员变量 <code>mBtnLogin</code></p>
+<table>
+<thead>
+<tr>
+<th align="left">View</th>
+<th align="left">@Id</th>
+<th align="left">ava variable（private）</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">Button</td>
+<td align="left">btn_</td>
+<td align="left">mBtnLogin</td>
+</tr>
+<tr>
+<td align="left">TextView</td>
+<td align="left">txt_</td>
+<td align="left">mTxtLogin</td>
+</tr>
+<tr>
+<td align="left">ImageView</td>
+<td align="left">img_</td>
+<td align="left">mImageLogin</td>
+</tr>
+<tr>
+<td align="left">EditText</td>
+<td align="left">edt_</td>
+<td align="left">mEdtContent</td>
+</tr>
+<tr>
+<td align="left">Spinner</td>
+<td align="left">spinner_</td>
+<td align="left">mSpinnerNation</td>
+</tr>
+<tr>
+<td align="left">TabLayout</td>
+<td align="left">tab_</td>
+<td align="left">mTabLayout</td>
+</tr>
+<tr>
+<td align="left">LinearLayout</td>
+<td align="left">linear_</td>
+<td align="left">mLinearLayout</td>
+</tr>
+</tbody></table>
+<h3 id="Layout-相关"><a href="#Layout-相关" class="headerlink" title="Layout 相关"></a>Layout 相关</h3><table>
+<thead>
+<tr>
+<th align="left">Component</th>
+<th align="left">Class Name</th>
+<th align="left">Layout Name</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">Activity</td>
+<td align="left">UserProfileActivity</td>
+<td align="left">activity_user_profile.xml</td>
+</tr>
+<tr>
+<td align="left">Fragment</td>
+<td align="left">SignUpFragment</td>
+<td align="left">fragment_sign_up.xml</td>
+</tr>
+<tr>
+<td align="left">Dialog</td>
+<td align="left">ChangePasswordDialog</td>
+<td align="left">dialog_change_password.xml</td>
+</tr>
+<tr>
+<td align="left">AdapterView item</td>
+<td align="left">-</td>
+<td align="left">list_item_archive.xml</td>
+</tr>
+</tbody></table>
+<h3 id="Color-相关"><a href="#Color-相关" class="headerlink" title="Color 相关"></a>Color 相关</h3><p>通常我们不直接使用数字来定义一些属性值，而是先将它定义在所对应的文件里，然后去引用它。</p>
+<ul>
+<li>推荐从 <code>Material Design</code> 中 <code>Color</code> 中选取颜色(后详)</li>
+<li>尽量以 “颜色名称_程度” 来命名</li>
+<li>必要时也可用颜色功能来命名</li>
+</ul>
+<p>在<a target="_blank" rel="noopener" href="https://material.google.com/style/color.html#color-color-palette">Material color palette</a> 的网页中，可以看到官方设计文档的调色板，尽量从文档中选取颜色，来命名和使用。<br>命名采用全小写，下划线分割的形式。</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- color --&gt;</span></span><br><span class="line"> <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;grey_xlight&quot;</span>&gt;</span># F5F5F5<span class="tag">&lt;/<span class="name">color</span>&gt;</span></span><br><span class="line"> <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;grey_light&quot;</span>&gt;</span># E0E0E0<span class="tag">&lt;/<span class="name">color</span>&gt;</span></span><br><span class="line"> <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;grey&quot;</span>&gt;</span># 9E9E9E<span class="tag">&lt;/<span class="name">color</span>&gt;</span></span><br><span class="line"> <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;grey_dark&quot;</span>&gt;</span># 616161<span class="tag">&lt;/<span class="name">color</span>&gt;</span></span><br><span class="line"> <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;grey_xdark&quot;</span>&gt;</span># 424242<span class="tag">&lt;/<span class="name">color</span>&gt;</span></span><br><span class="line"> </span><br><span class="line"> <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;title_normal&quot;</span>&gt;</span># FBE9E7<span class="tag">&lt;/<span class="name">color</span>&gt;</span></span><br><span class="line"> <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;bg_pop&gt;# FF6D00&lt;/color&gt;</span></span></span><br><span class="line"><span class="string"><span class="tag"> </span></span></span><br><span class="line"><span class="string"><span class="tag">&lt;!-- material color --&gt;</span></span></span><br><span class="line"><span class="string"><span class="tag"> &lt;color name=&quot;</span><span class="attr">material_red_500</span>&quot;&gt;</span># F44336<span class="tag">&lt;/<span class="name">color</span>&gt;</span></span><br><span class="line"> <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;material_purple_100&quot;</span>&gt;</span># E1BEE7<span class="tag">&lt;/<span class="name">color</span>&gt;</span></span><br><span class="line"> <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;material_green_800&quot;</span>&gt;</span># 2E7D32<span class="tag">&lt;/<span class="name">color</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>注意 <code>Material color</code> 的命名方式</p>
+<h3 id="Dimen-相关"><a href="#Dimen-相关" class="headerlink" title="Dimen 相关"></a>Dimen 相关</h3><ul>
+<li>尽量以 “逻辑名称_程度” 来命名</li>
+<li>必要时也可用 “逻辑名称_功能” 来命名<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- text size --&gt;</span></span><br><span class="line"> <span class="tag">&lt;<span class="name">dimen</span> <span class="attr">name</span>=<span class="string">&quot;text_size_xxsmall&quot;</span>&gt;</span>12sp<span class="tag">&lt;/<span class="name">dimen</span>&gt;</span></span><br><span class="line"> <span class="tag">&lt;<span class="name">dimen</span> <span class="attr">name</span>=<span class="string">&quot;text_size_xsmall&quot;</span>&gt;</span>14sp<span class="tag">&lt;/<span class="name">dimen</span>&gt;</span></span><br><span class="line"> <span class="tag">&lt;<span class="name">dimen</span> <span class="attr">name</span>=<span class="string">&quot;text_size_small&quot;</span>&gt;</span>16sp<span class="tag">&lt;/<span class="name">dimen</span>&gt;</span></span><br><span class="line"> <span class="tag">&lt;<span class="name">dimen</span> <span class="attr">name</span>=<span class="string">&quot;text_size_medium&quot;</span>&gt;</span>18sp<span class="tag">&lt;/<span class="name">dimen</span>&gt;</span></span><br><span class="line"> <span class="tag">&lt;<span class="name">dimen</span> <span class="attr">name</span>=<span class="string">&quot;text_size_large&quot;</span>&gt;</span>20sp<span class="tag">&lt;/<span class="name">dimen</span>&gt;</span></span><br><span class="line"> <span class="tag">&lt;<span class="name">dimen</span> <span class="attr">name</span>=<span class="string">&quot;text_size_xlarge&quot;</span>&gt;</span>22sp<span class="tag">&lt;/<span class="name">dimen</span>&gt;</span></span><br><span class="line"> </span><br><span class="line"> <span class="tag">&lt;<span class="name">dimen</span> <span class="attr">name</span>=<span class="string">&quot;text_size_title&quot;</span>&gt;</span>18sp<span class="tag">&lt;/<span class="name">dimen</span>&gt;</span></span><br><span class="line"> </span><br><span class="line"><span class="comment">&lt;!-- typical spacing between two views, margin or padding --&gt;</span></span><br><span class="line"> <span class="tag">&lt;<span class="name">dimen</span> <span class="attr">name</span>=<span class="string">&quot;spacing_tiny&quot;</span>&gt;</span>4dp<span class="tag">&lt;/<span class="name">dimen</span>&gt;</span></span><br><span class="line"> <span class="tag">&lt;<span class="name">dimen</span> <span class="attr">name</span>=<span class="string">&quot;spacing_small&quot;</span>&gt;</span>10dp<span class="tag">&lt;/<span class="name">dimen</span>&gt;</span></span><br><span class="line"> <span class="tag">&lt;<span class="name">dimen</span> <span class="attr">name</span>=<span class="string">&quot;spacing_medium&quot;</span>&gt;</span>14dp<span class="tag">&lt;/<span class="name">dimen</span>&gt;</span></span><br><span class="line"> <span class="tag">&lt;<span class="name">dimen</span> <span class="attr">name</span>=<span class="string">&quot;spacing_large&quot;</span>&gt;</span>24dp<span class="tag">&lt;/<span class="name">dimen</span>&gt;</span></span><br><span class="line"> <span class="tag">&lt;<span class="name">dimen</span> <span class="attr">name</span>=<span class="string">&quot;spacing_huge&quot;</span>&gt;</span>40dp<span class="tag">&lt;/<span class="name">dimen</span>&gt;</span> </span><br><span class="line"><span class="comment">&lt;!-- typical sizes of views --&gt;</span></span><br><span class="line"> <span class="tag">&lt;<span class="name">dimen</span> <span class="attr">name</span>=<span class="string">&quot;button_height_small&quot;</span>&gt;</span>32dp<span class="tag">&lt;/<span class="name">dimen</span>&gt;</span></span><br><span class="line"> <span class="tag">&lt;<span class="name">dimen</span> <span class="attr">name</span>=<span class="string">&quot;button_height_medium&quot;</span>&gt;</span>40dp<span class="tag">&lt;/<span class="name">dimen</span>&gt;</span></span><br><span class="line"> <span class="tag">&lt;<span class="name">dimen</span> <span class="attr">name</span>=<span class="string">&quot;button_height_large&quot;</span>&gt;</span>60dp<span class="tag">&lt;/<span class="name">dimen</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h3 id="String-相关"><a href="#String-相关" class="headerlink" title="String 相关"></a>String 相关</h3>String 命名的前缀应该能够清楚地表达它的功能职责，若是某个模块的字符串，可以以这个模块的名字为前缀然后再加上它的含义，如，<code>registratione_mail_hint</code>，<code>registration_name_hint</code>。<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">string</span> <span class="attr">name</span>=<span class="string">&quot;app_name&quot;</span>&gt;</span>app名<span class="tag">&lt;/<span class="name">string</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">string</span> <span class="attr">name</span>=<span class="string">&quot;registration_email_hint&quot;</span>&gt;</span>请输入邮箱地址<span class="tag">&lt;/<span class="name">string</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">string</span> <span class="attr">name</span>=<span class="string">&quot;registration_name_hint&quot;</span>&gt;</span>请输入用户名<span class="tag">&lt;/<span class="name">string</span>&gt;</span></span><br></pre></td></tr></table></figure>
+如果一个Sting不属于任何模块，这也就意味着它是通用的，应该遵循以下规范：</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th align="left">type</th>
+<th align="left">detail</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">error_</td>
+<td align="left">错误提示</td>
+</tr>
+<tr>
+<td align="left">success_</td>
+<td align="left">正确提示</td>
+</tr>
+<tr>
+<td align="left">msg_</td>
+<td align="left">一般信息提示</td>
+</tr>
+<tr>
+<td align="left">title_</td>
+<td align="left">标题提示，如，Dialog 标题</td>
+</tr>
+<tr>
+<td align="left">action_</td>
+<td align="left">动作提示，如，“保存”，“取消”，“创建”</td>
+</tr>
+<tr>
+<td align="left">direct_</td>
+<td align="left">页面跳转提示</td>
+</tr>
+</tbody></table>
+<p>其他通用字符串尽量以：类别_功能 或 含义 来命名</p>
+<h3 id="Drawable-相关"><a href="#Drawable-相关" class="headerlink" title="Drawable 相关"></a>Drawable 相关</h3><p>当没有多种类型的图片时，图片统一放在 drawable-xxhdpi 的文件夹下</p>
+<table>
+<thead>
+<tr>
+<th align="left">Asset Type</th>
+<th align="left">Prefix</th>
+<th align="left">Example</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">Action bar</td>
+<td align="left">ab_</td>
+<td align="left">ab_stacked.9.png</td>
+</tr>
+<tr>
+<td align="left">Button</td>
+<td align="left">btn_</td>
+<td align="left">btn_send_pressed.9.png</td>
+</tr>
+<tr>
+<td align="left">Dialog</td>
+<td align="left">dialog_</td>
+<td align="left">dialog_top.9.png</td>
+</tr>
+<tr>
+<td align="left">Divider</td>
+<td align="left">divider_</td>
+<td align="left">divider_horizontal.9.png</td>
+</tr>
+<tr>
+<td align="left">Icon</td>
+<td align="left">ic_</td>
+<td align="left">ic_star.png</td>
+</tr>
+<tr>
+<td align="left">Menu</td>
+<td align="left">menu_</td>
+<td align="left">menu_submenu_bg.9.png</td>
+</tr>
+<tr>
+<td align="left">Notification</td>
+<td align="left">notification_</td>
+<td align="left">notification_bg.9.png</td>
+</tr>
+<tr>
+<td align="left">Tabs</td>
+<td align="left">tab_</td>
+<td align="left">tab_pressed.9.png</td>
+</tr>
+</tbody></table>
+<h2 id="Android-编码规范"><a href="#Android-编码规范" class="headerlink" title="Android 编码规范"></a>Android 编码规范</h2><h3 id="XML-文件规范"><a href="#XML-文件规范" class="headerlink" title="XML 文件规范"></a>XML 文件规范</h3><p><strong>属性</strong><br>当你写好 layout 文件后，按 <code>Ctrl + alt + L</code> 格式化后，手动排版为下面这样的格式：</p>
+<ul>
+<li>每行两个属性</li>
+<li><code>android:id</code> 作为第一个属性</li>
+<li>如果存在 <code>style</code> 属性，则紧随作为第二行首个属性</li>
+<li>如果不存在 <code>style</code> 属性，则 <code>android:layout_xxx</code> 紧随作为第二行首个属性</li>
+<li>当布局中的一个元素不再包含子元素时，在最后一个属性右边使用自闭合标签<code>/&gt;</code><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">LinearLayout</span></span></span><br><span class="line"><span class="tag"> <span class="attr">xmlns:android</span>=<span class="string">&quot;http://schemas.android.com/apk/res/android&quot;</span></span></span><br><span class="line"><span class="tag"> <span class="attr">android:layout_width</span>=<span class="string">&quot;match_parent&quot;</span> <span class="attr">android:layout_height</span>=<span class="string">&quot;match_parent&quot;</span></span></span><br><span class="line"><span class="tag"> <span class="attr">android:orientation</span>=<span class="string">&quot;vertical&quot;</span>&gt;</span></span><br><span class="line"> </span><br><span class="line"> <span class="tag">&lt;<span class="name">TextView</span> <span class="attr">android:id</span>=<span class="string">&quot;@+id/txt_name&quot;</span></span></span><br><span class="line"><span class="tag"> <span class="attr">style</span>=<span class="string">&quot;@style/FancyText&quot;</span> <span class="attr">android:layout_width</span>=<span class="string">&quot;match_parent&quot;</span></span></span><br><span class="line"><span class="tag"> <span class="attr">android:layout_height</span>=<span class="string">&quot;wrap_content&quot;</span> <span class="attr">android:layout_alignParentRight</span>=<span class="string">&quot;true&quot;</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">LinearLayout</span>&gt;</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+<p> <strong>使用 Tools</strong><br>布局预览应使用 <code>tools:</code>相关属性，避免 <code>android:text</code> 等硬编码的出现</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">TextView</span></span></span><br><span class="line"><span class="tag"> <span class="attr">android:layout_width</span>=<span class="string">&quot;wrap_content&quot;</span> <span class="attr">android:layout_height</span>=<span class="string">&quot;wrap_content&quot;</span></span></span><br><span class="line"><span class="tag"> <span class="attr">tools:text</span>=<span class="string">&quot;Home Link&quot;</span>/&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="Java-代码规范"><a href="#Java-代码规范" class="headerlink" title="Java 代码规范"></a>Java 代码规范</h2><h3 id="Field"><a href="#Field" class="headerlink" title="Field"></a>Field</h3><p>对Field的定义应该放在文件的首位，并且遵守以下规范：</p>
+<ul>
+<li>被 <code>private</code> 修饰的非静态变量，以 <code>m</code> 作为前缀</li>
+<li>被 <code>private</code> 修饰的静态变量，以 <code>s</code> 作为前缀</li>
+<li>被 <code>public</code> 修饰的非静态变量，以小写首字母做前缀</li>
+<li>其他变量，以 <code>m</code> 作为前缀，采用驼峰命名</li>
+<li>静态常量命名字母全部大写，单词之间用下划线分隔<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">MyClass</span> &#123;</span><br><span class="line"> <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">int</span> <span class="variable">SOME_CONSTANT</span> <span class="operator">=</span> <span class="number">42</span>;</span><br><span class="line"> </span><br><span class="line"> <span class="meta">@Bind(R.id.edit_collection_name)</span> EditText mEdtName;</span><br><span class="line"> </span><br><span class="line"> <span class="keyword">public</span> <span class="type">int</span> publicField;</span><br><span class="line"> <span class="keyword">private</span> <span class="keyword">static</span> MyClass sSingleton;</span><br><span class="line"> <span class="type">int</span> mPackagePrivate;</span><br><span class="line"> <span class="keyword">private</span> <span class="type">int</span> mPrivate;</span><br><span class="line"> <span class="keyword">protected</span> <span class="type">int</span> mProtected;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="Entity"><a href="#Entity" class="headerlink" title="Entity"></a>Entity</h3><p>对于继承 <code>Entity</code> 的 <code>Model</code> 类型，按照下图进行编码：</p>
+<img data-src="/images/Android%E5%91%BD%E5%90%8D%E8%A7%84%E8%8C%83%E5%92%8C%E7%BC%96%E7%A0%81%E8%A7%84%E8%8C%83_02.png" class="">
+<p>注意变量修饰符和大小写</p>
+<h3 id="类成员排序"><a href="#类成员排序" class="headerlink" title="类成员排序"></a>类成员排序</h3><p>关于这个并没有硬性要求，不过好的排序方式，能够提高可读性和易学性。这里给出一些排序建议：</p>
+<ol>
+<li>常量</li>
+<li>字段</li>
+<li>构造函数</li>
+<li>被重写的函数（不区分修饰符类型）</li>
+<li>被private修饰的函数</li>
+<li>被public修饰的函数</li>
+<li>被定义的内部类或者接口</li>
+</ol>
+<p><strong>如果继承了<code>Android</code>组件，比如<code>Activity</code>或者<code>Fragment</code>，重写生命周期函数时，应该按照组件的生命周期进行排序</strong><br>示例如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">MainActivity</span> <span class="keyword">extends</span> <span class="title class_">Activity</span> &#123;</span><br><span class="line"> <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">String</span> <span class="variable">TAG</span> <span class="operator">=</span> MainActivity.class.getSimpleName();</span><br><span class="line"> <span class="keyword">private</span> String mTitle;</span><br><span class="line"> <span class="keyword">private</span> TextView mTextViewTitle;</span><br><span class="line"> <span class="meta">@Override</span></span><br><span class="line"> <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">onCreate</span><span class="params">()</span> &#123; &#125;</span><br><span class="line"> </span><br><span class="line"> <span class="keyword">private</span> <span class="keyword">void</span> <span class="title function_">setUpView</span><span class="params">()</span> &#123; &#125;</span><br><span class="line"> </span><br><span class="line"> <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">setTitle</span><span class="params">(String title)</span> &#123;</span><br><span class="line"> mTitle = title;</span><br><span class="line"> &#125;</span><br><span class="line"> </span><br><span class="line"> <span class="keyword">static</span> <span class="keyword">class</span> <span class="title class_">AnInnerClass</span> &#123; &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="字符串常量的命名"><a href="#字符串常量的命名" class="headerlink" title="字符串常量的命名"></a>字符串常量的命名</h3><p><code>Android SDK</code> 中诸如 <code>SharedPreferences</code>，<code>Bundle</code> 和 <code>Intent</code> 等，都采用 <code>key-value</code> 的方式进行赋值，当使用这些组件的时候，key 必须被 <code>static final</code> 所修饰，并且命名应该符合以下规范：</p>
+<table>
+<thead>
+<tr>
+<th align="left">ElementField</th>
+<th align="left">Name Prefix</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">SharedPreferences</td>
+<td align="left">PREF_</td>
+</tr>
+<tr>
+<td align="left">Bundle</td>
+<td align="left">BUNDLE_</td>
+</tr>
+<tr>
+<td align="left">Fragment Arguments</td>
+<td align="left">ARGUMENT_</td>
+</tr>
+<tr>
+<td align="left">Intent Extra</td>
+<td align="left">EXTRA_</td>
+</tr>
+<tr>
+<td align="left">Intent Action</td>
+<td align="left">ACTION_</td>
+</tr>
+</tbody></table>
+<p>示例如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> <span class="keyword">final</span> <span class="type">String</span> <span class="variable">PREF_EMAIL</span> <span class="operator">=</span> <span class="string">&quot;PREF_EMAIL&quot;</span>;</span><br><span class="line"><span class="keyword">static</span> <span class="keyword">final</span> <span class="type">String</span> <span class="variable">BUNDLE_AGE</span> <span class="operator">=</span> <span class="string">&quot;BUNDLE_AGE&quot;</span>;</span><br><span class="line"><span class="keyword">static</span> <span class="keyword">final</span> <span class="type">String</span> <span class="variable">ARGUMENT_USER_ID</span> <span class="operator">=</span> <span class="string">&quot;ARGUMENT_USER_ID&quot;</span>;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">static</span> <span class="keyword">final</span> <span class="type">String</span> <span class="variable">EXTRA_SURNAME</span> <span class="operator">=</span> <span class="string">&quot;com.myapp.extras.EXTRA_SURNAME&quot;</span>;</span><br><span class="line"><span class="keyword">static</span> <span class="keyword">final</span> <span class="type">String</span> <span class="variable">ACTION_OPEN_USER</span> <span class="operator">=</span> <span class="string">&quot;com.myapp.action.ACTION_OPEN_USER&quot;</span>;</span><br></pre></td></tr></table></figure>
+
+<h3 id="Activity-与-Fragment-打开方式"><a href="#Activity-与-Fragment-打开方式" class="headerlink" title="Activity 与 Fragment 打开方式"></a>Activity 与 Fragment 打开方式</h3><p>当通过 <code>Intent</code> 或者<code>Bundle</code>向<code>Activity</code>与<code>Fragment</code>传值时，应该遵循上面提到的<code>key-value</code>规范，公开一个被 <code>public static</code> 修饰的方法，方法的参数应该包含所有打开这个 <code>Activity</code> 或者 <code>Fragment</code> 的信息，示例如下：</p>
+<ul>
+<li>通过 <code>.startActivity()</code> 函数，开启指定 <code>Activity</code>：<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">startActivity</span><span class="params">(AppCompatActivity startingActivity, User user)</span> &#123;</span><br><span class="line"> <span class="type">Intent</span> <span class="variable">intent</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Intent</span>(startingActivity, ThisActivity.class);</span><br><span class="line"> intent.putParcelableExtra(EXTRA_USER, user);</span><br><span class="line"> startingActivity.startActivity(intent);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li>通过 <code>.newInstance()</code> 函数，加载指定 <code>Fragment</code>：<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> UserFragment <span class="title function_">newInstance</span><span class="params">(User user)</span> &#123;</span><br><span class="line"> <span class="type">UserFragment</span> <span class="variable">fragment</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">UserFragment</span>;</span><br><span class="line"> <span class="type">Bundle</span> <span class="variable">args</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Bundle</span>();</span><br><span class="line"> args.putParcelable(ARGUMENT_USER, user);</span><br><span class="line"> fragment.setArguments(args)</span><br><span class="line"> <span class="keyword">return</span> fragment;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h1>如果您所寻找的命名不在上述规范中，可以暂时使用自己的方式来命名，但也要有一定格式并在自己的程序中统一。<br>通常我们会把更大的类别放在前，更细致的放在后。<br>欢迎大家提出问题，互相探讨，共同维护出一份更好的更清晰的开发规范。</li>
+</ul>
+<h1 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h1><ul>
+<li><a target="_blank" rel="noopener" href="http://blog.qiji.tech/archives/10395">[Android]命名规范和编码规范</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/RxSmart/Link-Android-Guideline/blob/master/Android-Guideline.md">Android编码规范</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/nekocode/nekoblog/blob/master/AndroidDevGuideline.md#property-%E5%AE%9A%E4%B9%89%E4%B8%8E%E5%91%BD%E5%90%8D%E8%A7%84%E8%8C%83">Android Development Guideline</a></li>
+<li><a target="_blank" rel="noopener" href="http://blog.csdn.net/vipzjyno1/article/details/23542617">Android 命名规范 （提高代码可以读性）</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+      
+
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>很高兴得到您的赞赏</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="/images/config/wechatpay.jpg" alt="Ahaochan 微信">
+        <span>微信</span>
+      </div>
+      <div>
+        <img src="/images/config/alipay.jpg" alt="Ahaochan 支付宝">
+        <span>支付宝</span>
+      </div>
+
+  </div>
+</div>
+
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>Ahaochan
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://blog.ahao.moe/posts/Android_naming_conventions_and_coding_specifications.html" title="Android命名规范和编码规范">https://blog.ahao.moe/posts/Android_naming_conventions_and_coding_specifications.html</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="followme">
+  <span>欢迎关注我的其它发布渠道</span>
+
+  <div class="social-list">
+
+      <div class="social-item">
+        <a target="_blank" class="social-link" href="/images/config/wechat_channel.jpg">
+          <span class="icon">
+            <i class="fab fa-weixin"></i>
+          </span>
+
+          <span class="label">WeChat</span>
+        </a>
+      </div>
+
+      <div class="social-item">
+        <a target="_blank" class="social-link" href="/rss.xml">
+          <span class="icon">
+            <i class="fa fa-rss"></i>
+          </span>
+
+          <span class="label">RSS</span>
+        </a>
+      </div>
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/%E7%BC%96%E7%A0%81%E8%A7%84%E8%8C%83/" rel="tag"><i class="fa fa-tag"></i> 编码规范</a>
+          </div>
+
+        
+  <div class="post-widgets">
+    <div class="wpac-rating-container">
+      <div id="wpac-rating"></div>
+    </div>
+  </div>
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/posts/Android_common_xml.html" rel="prev" title="常用配置文件">
+                  <i class="fa fa-chevron-left"></i> 常用配置文件
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/posts/onMeasure_method_of_View.html" rel="next" title="View的onMeasure()">
+                  View的onMeasure() <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    
+  <div class="comments disqusjs">
+    <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+  </div>
+  
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2016 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ahaochan</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">172k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">10:25</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+  <div class="addthis_inline_share_toolbox">
+    <script src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-59047aaab9bddb67" async="async"></script>
+  </div><script color="0,0,255" opacity="0.5" zIndex="-1" count="99" src="https://cdn.jsdelivr.net/npm/canvas-nest.js@1/dist/canvas-nest.js"></script>
+
+
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js" integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lozad.js/1.16.0/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script>
+
+  
+  <script src="https://embed.widgetpack.com/widget.js" async></script>
+  <script class="next-config" data-name="rating" type="application/json">{"enable":true,"id":33332,"color":"#fc6423"}</script>
+  <script src="/js/third-party/rating.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.0/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/9.1.7/mermaid.min.js","integrity":"sha256-G58AID1YoX5YaEtWfXSI0VLrZ6N4kvNvwg0BI8zUFxE="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/quicklink/2.3.0/quicklink.umd.js" integrity="sha256-yvJQOINiH9fWemHn0vCA5lsHWJaHs6/ZmO+1Ft04SvM=" crossorigin="anonymous"></script>
+  <script class="next-config" data-name="quicklink" type="application/json">{"enable":true,"home":true,"archive":true,"delay":true,"timeout":3000,"priority":true,"url":"https://blog.ahao.moe/posts/Android_naming_conventions_and_coding_specifications.html"}</script>
+  <script src="/js/third-party/quicklink.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/disqusjs/3.0.2/styles/disqusjs.css" integrity="sha256-71XarXwNr1Td27HmZI9zjY+rMzRdush6/glo6VFXp7o=" crossorigin="anonymous">
+
+<script class="next-config" data-name="disqusjs" type="application/json">{"enable":true,"api":"https://disqus.skk.moe/disqus/","apikey":"OC1zbKiBF5cPo1EJObILJmZftsWl4ZbbAh9YqV0qNxiMq8rQFqBiw8PYcXQCyG9S","shortname":"ahaochan-blog","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/disqusjs/3.0.2/disqusjs.es2015.umd.min.js","integrity":"sha256-okP99ZQKVpIy7+NogAMpGlIQzJa9XKXhIJcFgdju5bU="}}</script>
+<script src="/js/third-party/comments/disqusjs.js"></script>
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"scale":1.2,"jsonPath":"https://cdn.jsdelivr.net/npm/live2d-widget-model-shizuku@1.0.5/assets/shizuku.model.json"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":false},"react":{"opacity":0.7},"log":false});</script></body>
+</html>

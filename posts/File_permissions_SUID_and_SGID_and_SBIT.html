@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/config/favicon-32x32-next.jpg">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/config/favicon-16x16-next.jpg">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="google-site-verification" content="ZmER9fymckNfZ_Zxw6p3fpvqhvR6LitG9pR-cNVflx0">
+  <meta name="msvalidate.01" content="5351f65e5e79bb62584189a5e6906b8b">
+  <meta name="baidu-site-verification" content="jgtczlqzuk">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic%7CConsolas:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" integrity="sha256-AbA177XfpSnFEvgpYu1jMygiLabzPCJCRIBtR5jGc0k=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"blog.ahao.moe","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.13.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"disqusjs","storage":true,"lazyload":true,"nav":null,"activeClass":"disqusjs"},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":true}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="前言特殊权限尽量少修改! 不安全!(很久以前写的一篇学习笔记, 一直没有整理 作用给执行该文件的用户临时赋予另一个用户(组)的权限。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="文件特殊权限SUID和SGID和SBIT">
+<meta property="og:url" content="https://blog.ahao.moe/posts/File_permissions_SUID_and_SGID_and_SBIT.html">
+<meta property="og:site_name" content="Ahaochan&#39;s Blog">
+<meta property="og:description" content="前言特殊权限尽量少修改! 不安全!(很久以前写的一篇学习笔记, 一直没有整理 作用给执行该文件的用户临时赋予另一个用户(组)的权限。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2019-03-27T13:21:46.000Z">
+<meta property="article:modified_time" content="2022-11-21T02:35:06.080Z">
+<meta property="article:author" content="Ahaochan">
+<meta property="article:tag" content="Linux">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://blog.ahao.moe/posts/File_permissions_SUID_and_SGID_and_SBIT.html">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://blog.ahao.moe/posts/File_permissions_SUID_and_SGID_and_SBIT.html","path":"posts/File_permissions_SUID_and_SGID_and_SBIT.html","title":"文件特殊权限SUID和SGID和SBIT"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>文件特殊权限SUID和SGID和SBIT | Ahaochan's Blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-108454440-1"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"UA-108454440-1","only_pageview":false}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+  <script src="/js/third-party/analytics/baidu-analytics.js"></script>
+  <script async src="https://hm.baidu.com/hm.js?32635d85cec06e8822234c4d2aec2b54"></script>
+
+
+
+
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+  (adsbygoogle = window.adsbygoogle || []).push({
+    google_ad_client: "ca-pub-5208025300813046",
+    enable_page_level_ads: true
+  });
+</script>
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/rss.xml" title="Ahaochan's Blog" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Ahaochan's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">你也是程序猿friends呢~</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">91</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">30</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">217</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BD%9C%E7%94%A8"><span class="nav-number">2.</span> <span class="nav-text">作用</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%88%87%E6%8D%A2%E7%94%A8%E6%88%B7-SUID"><span class="nav-number">3.</span> <span class="nav-text">切换用户 SUID</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%88%87%E6%8D%A2%E7%94%A8%E6%88%B7%E7%BB%84-SGID"><span class="nav-number">4.</span> <span class="nav-text">切换用户组 SGID</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%98%B2%E6%AD%A2%E8%A2%AB%E5%88%A0%E9%99%A4-sticky-bit-SBIT"><span class="nav-number">5.</span> <span class="nav-text">防止被删除 sticky bit ( SBIT )</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%A3%80%E6%9F%A5%E7%B3%BB%E7%BB%9F%E6%96%B0%E5%A2%9E%E7%9A%84SUID%E5%92%8CSGID%E6%96%87%E4%BB%B6"><span class="nav-number">6.</span> <span class="nav-text">检查系统新增的SUID和SGID文件</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Ahaochan"
+      src="/images/config/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Ahaochan</p>
+  <div class="site-description" itemprop="description">你也是程序猿friends呢~</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">217</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">30</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">91</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Ahaochan" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Ahaochan" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:844394093@qq.com" title="E-Mail → mailto:844394093@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://greasyfork.org/zh-CN/users/30831" title="Greasyfork → https:&#x2F;&#x2F;greasyfork.org&#x2F;zh-CN&#x2F;users&#x2F;30831" rel="noopener" target="_blank"><i class="fab fa-google fa-fw"></i>Greasyfork</a>
+      </span>
+  </div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/Ahaochan" class="github-corner" title="我的Github" aria-label="我的Github" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blog.ahao.moe/posts/File_permissions_SUID_and_SGID_and_SBIT.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/config/avatar.jpg">
+      <meta itemprop="name" content="Ahaochan">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ahaochan's Blog">
+      <meta itemprop="description" content="你也是程序猿friends呢~">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="文件特殊权限SUID和SGID和SBIT | Ahaochan's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          文件特殊权限SUID和SGID和SBIT<a href="https://github.com/Ahaochan/Ahaochan.github.io/blob/source/source/_posts/linux/Linux-%E6%96%87%E4%BB%B6%E7%89%B9%E6%AE%8A%E6%9D%83%E9%99%90SUID%E5%92%8CSGID%E5%92%8CSBIT.md" class="post-edit-link" title="编辑" rel="noopener" target="_blank"><i class="fa fa-pen-nib"></i></a>
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2019-03-27 21:21:46" itemprop="dateCreated datePublished" datetime="2019-03-27T21:21:46+08:00">2019-03-27</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>1.6k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>6 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>特殊权限尽量少修改! 不安全!<br>(很久以前写的一篇学习笔记, 一直没有整理</p>
+<h1 id="作用"><a href="#作用" class="headerlink" title="作用"></a>作用</h1><p>给执行该文件的用户临时赋予另一个用户(组)的权限。</p>
+<span id="more"></span>
+
+<p>比如<strong>设置密码</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ll /etc/shadow /usr/bin/passwd </span><br><span class="line">----------. 1 root root  1232 10月  6 05:47 /etc/shadow</span><br><span class="line">-rwsr-xr-x. 1 root root 27832 6月  10 2014 /usr/bin/passwd</span><br></pre></td></tr></table></figure>
+<p><code>/etc/shadow</code>文件只能被<code>root</code>用户修改。<br>但是借助<code>passwd</code>命令, 普通用户可以临时变成<code>root</code>来执行这个<code>passwd</code>命令,<br>进而修改<code>/etc/shadow</code>文件。</p>
+<h1 id="切换用户-SUID"><a href="#切换用户-SUID" class="headerlink" title="切换用户 SUID"></a>切换用户 SUID</h1><p>只有可以执行的二进制程序才能设定<code>SUID</code>权限。<br><code>SUID</code>可以看成是<code>Switch User ID</code><del>(一个瞎猜）</del>, 就是切换用户<code>ID</code>.</p>
+<ol>
+<li>创建两个文件<code>file1</code>和<code>file2</code></li>
+<li>添加<code>SUID</code>权限, 或者<code>chmod u+s file</code></li>
+<li>取消<code>SUID</code>权限, 或者<code>chmod u-s file</code></li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 1. 创建两个文件</span></span><br><span class="line"><span class="built_in">touch</span> file1 file2 &amp;&amp; ll</span><br><span class="line"><span class="comment"># -rw-rw-r--. 1 ahao ahao 0 11月 21 21:13 file1</span></span><br><span class="line"><span class="comment"># -rw-rw-r--. 1 ahao ahao 0 11月 21 21:13 file2</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 2. 添加SUID权限, 或者chmod u+s  file</span></span><br><span class="line"><span class="built_in">chmod</span> 4755 file1 &amp;&amp; <span class="built_in">chmod</span> 4655 file2 &amp;&amp; ll</span><br><span class="line"><span class="comment"># -rwsr-xr-x. 1 ahao ahao 0 11月 21 21:13 file1</span></span><br><span class="line"><span class="comment"># -rwSr-xr-x. 1 ahao ahao 0 11月 21 21:13 file2</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 3. 取消SUID权限, 或者chmod u-s  file</span></span><br><span class="line"><span class="built_in">chmod</span> 0755 file1 &amp;&amp; <span class="built_in">chmod</span> 0655 file2 &amp;&amp; ll</span><br><span class="line"><span class="comment"># -rwxr-xr-x. 1 ahao ahao 0 11月 21 21:13 file1</span></span><br><span class="line"><span class="comment"># -rw-r-xr-x. 1 ahao ahao 0 11月 21 21:13 file2</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>可以看到<code>x</code>执行权限的位置被<code>s</code>替换了。<br><code>4755</code>和<code>4655</code>的区别在于文件本身有没有<code>x</code>执行权限。<br>并且可以得知<code>s=S+x</code>, 并且注意!!! 大写<code>S</code>是没有意义的。<br>只有小写<code>s</code>才能被执行, 才能正确设定<code>SUID</code>权限。</p>
+<h1 id="切换用户组-SGID"><a href="#切换用户组-SGID" class="headerlink" title="切换用户组 SGID"></a>切换用户组 SGID</h1><p>和<code>SUID</code>一样, 区别在于用户会临时赋予文件所属用户组<code>group</code>的身份, 而不是用户<code>user</code>身份。<del>Switch Group ID</del></p>
+<p>比如**<code>locate</code>命令**</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ll /usr/bin/locate /var/lib/mlocate/mlocate.db </span><br><span class="line"><span class="comment"># -rwx--s--x. 1 root slocate   40512 11月 21 23:21 /usr/bin/locate</span></span><br><span class="line"><span class="comment"># -rw-r-----. 1 root slocate 3678432 11月 21 23:21 /var/lib/mlocate/mlocate.db</span></span><br></pre></td></tr></table></figure>
+<p><code>/var/lib/mlocate/mlocate.db</code>文件只能被<code>slocate</code>组查看。<br>但是借助<code>locate</code>命令, 普通用户可以临时变成<code>slocate</code>来执行这个<code>locate</code>命令,<br>进而查看<code>/var/lib/mlocate/mlocate.db</code>文件。</p>
+<p>除了和<code>SUID</code>差不多的功能外。<br><code>SGID</code>对目录还有另一个功能。<br>就是<strong>进入该目录后</strong>, 用户的用户组会变成<strong>SGID对应的用户组</strong>。</p>
+<ol>
+<li><code>root</code>用户创建<code>test</code>目录并赋予<code>777</code>权限</li>
+<li><code>ahao</code>用户在<code>test</code>目录下创建<code>file1</code></li>
+<li><code>root</code>用户为<code>test</code>目录赋予<code>SGID</code>权限</li>
+<li><code>ahao</code>用户在赋予<code>SGID</code>的<code>test</code>目录下创建<code>file2</code></li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 1. root用户创建test目录并赋予777权限</span></span><br><span class="line"><span class="built_in">mkdir</span> ~ahao/test &amp;&amp; <span class="built_in">chmod</span> 777 ~ahao/test &amp;&amp; ll -d ~ahao/test</span><br><span class="line"><span class="comment"># drwxrwxrwx. 2 root root 6 11月 21 23:39 /home/ahao/test</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 2. ahao用户在test目录下创建file1</span></span><br><span class="line">su - ahao</span><br><span class="line"><span class="built_in">touch</span> ~ahao/test/file1 &amp;&amp; ll ~ahao/test</span><br><span class="line"><span class="comment"># -rw-rw-r--. 1 ahao ahao 0 11月 21 23:43 file1</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 3. root用户为test目录赋予SGID权限, 或者chmod g+s  file</span></span><br><span class="line">su -</span><br><span class="line"><span class="built_in">chmod</span> 2777 ~ahao/test &amp;&amp; ll -d ~ahao/test/</span><br><span class="line"><span class="comment"># drwxrwsrwx. 2 root root 19 11月 21 23:43 /home/ahao/test/</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 4. ahao用户在赋予SGID的test目录下创建file2</span></span><br><span class="line">su - ahao</span><br><span class="line"><span class="built_in">touch</span> ~ahao/test/file2 &amp;&amp; ll ~ahao/test</span><br><span class="line"><span class="comment"># -rw-rw-r--. 1 ahao ahao 0 11月 21 23:43 file1</span></span><br><span class="line"><span class="comment"># -rw-rw-r--. 1 ahao root 0 11月 21 23:45 file2</span></span><br></pre></td></tr></table></figure>
+<p>可以看到赋予<code>SGID</code>后, <code>ahao</code>用户创建的<code>file2</code>的所属组是<code>root</code>。</p>
+<h1 id="防止被删除-sticky-bit-SBIT"><a href="#防止被删除-sticky-bit-SBIT" class="headerlink" title="防止被删除 sticky bit ( SBIT )"></a>防止被删除 sticky bit ( SBIT )</h1><p>除了<code>user</code>的<code>SUID</code>、<code>group</code>的<code>SGID</code>外, 还有<code>other</code>的<code>sticky bit</code>。</p>
+<p><code>sticky bit</code>有两个要求</p>
+<ol>
+<li>只对目录有效。</li>
+<li>文件权限为<code>rwxrwxrwx</code>, 也就是<code>777</code>的权限。<br>比如<code>/tmp</code>目录。</li>
+</ol>
+<p>那么任何用户都能对目录下的文件进行读写执行操作, 这是很不安全的。<br>比如一个目录, 允许用户(<code>other</code>)创建文件(写权限), 拥有了写权限的用户也同样拥有了删除权限。<br>也就是说在<code>777</code>权限的目录下, <code>A</code>用户创建的文件可能被<code>B</code>用户删除。<br><code>sticky bit</code>就是为了解决这个问题。<br>赋予目录<code>sticky bit</code>后。</p>
+<ol>
+<li>只有<code>root</code>有删除权限。</li>
+<li>其他用户只能删除自己创建的文件。</li>
+<li>其他用户拥有写权限。</li>
+</ol>
+<p>下面举个例子</p>
+<ol>
+<li><code>root</code>用户创建<code>test</code>目录并赋予<code>777</code>权限。</li>
+<li><code>root</code>用户创建<code>file</code>文件。</li>
+<li><code>ahao</code>用户删除<code>file</code>文件成功, 因为<code>ahao</code>用户对<code>test</code>目录有w写权限。</li>
+<li><code>root</code>用户对<code>test</code>目录赋予<code>sticky bit</code>权限。</li>
+<li><code>root</code>用户创建<code>file</code>文件。</li>
+<li><code>ahao</code>用户删除<code>file</code>文件失败, 即使<code>ahao</code>用户对<code>test</code>目录有w写权限。</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 1. root用户创建test目录并赋予777权限</span></span><br><span class="line"><span class="built_in">mkdir</span> ~ahao/test &amp;&amp; <span class="built_in">chmod</span> 777 ~ahao/test/ &amp;&amp; ll -d ~ahao/test/</span><br><span class="line"><span class="comment"># drwxrwxrwx. 2 root root 6 11月 22 23:23 /home/ahao/test/</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 2. root用户创建file文件</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;hello&quot;</span> &gt; ~ahao/test/file &amp;&amp; ll ~ahao/test/</span><br><span class="line"><span class="comment"># -rw-r--r--. 1 root root 6 11月 22 23:26 file</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 3. ahao用户删除file文件成功, 因为ahao用户对test目录有w写权限</span></span><br><span class="line">su - ahao &amp;&amp; <span class="built_in">rm</span> -rf ~ahao/test/file &amp;&amp; ll ~ahao/test/</span><br><span class="line"></span><br><span class="line"><span class="comment"># 4. root用户对test目录赋予sticky bit权限</span></span><br><span class="line">su -</span><br><span class="line"><span class="comment"># chmod 0777 ~ahao/test/ # 取消sticky bit, 或chmod o-t ~ahao/test/</span></span><br><span class="line"><span class="built_in">chmod</span> 1777 ~ahao/test/ <span class="comment"># 赋予sticky bit, 或chmod o+t ~ahao/test/</span></span><br><span class="line">ll -d ~ahao/test/</span><br><span class="line">drwxrwxrwt. 2 root root 6 11月 22 23:27 /home/ahao/test/</span><br><span class="line"></span><br><span class="line"><span class="comment"># 5. root用户创建file文件</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;hello&quot;</span> &gt; ~ahao/test/file &amp;&amp; ll ~ahao/test/</span><br><span class="line"><span class="comment"># -rw-r--r--. 1 root root 6 11月 22 23:32 file</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 6. ahao用户删除file文件失败, 即使ahao用户对test目录有w写权限</span></span><br><span class="line">su - ahao</span><br><span class="line"><span class="built_in">rm</span> -rf ~ahao/test/file</span><br><span class="line"><span class="comment"># rm: 无法删除&quot;/home/ahao/test/file&quot;: 不允许的操作</span></span><br></pre></td></tr></table></figure>
+<p>如果不能删除, 那我能不能覆盖掉呢? <code>echo &#39;&#39; &gt; file</code><br>我在<code>Ubuntu</code>尝试了不能, 但是以前在<code>CentOS</code>试过好像可以.</p>
+<h1 id="检查系统新增的SUID和SGID文件"><a href="#检查系统新增的SUID和SGID文件" class="headerlink" title="检查系统新增的SUID和SGID文件"></a>检查系统新增的SUID和SGID文件</h1><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 1. 先查找所有拥有SUID(4)和SGID(2)的文件</span></span><br><span class="line">find / -perm -4000 -o -perm -2000 &gt; /tmp/suid.list</span><br><span class="line"></span><br><span class="line"><span class="comment"># 2. 编写Shell脚本</span></span><br><span class="line"><span class="comment">#!/bin/bash</span></span><br><span class="line"><span class="comment"># 2.1 查找所有拥有SUID(4)或SGID(2)的文件, 并保存到临时文件suid.check中</span></span><br><span class="line">find / -perm -4000 -o -perm -2000 &gt; /tmp/suid.check</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> line <span class="keyword">in</span> $(<span class="built_in">cat</span> /tmp/suid.check)</span><br><span class="line"><span class="keyword">do</span></span><br><span class="line">    <span class="comment"># 2.3 遍历临时文件suid.check中的记录, 和最初查找到的文件/tmp/suid.list进行比较。</span></span><br><span class="line">    grep <span class="variable">$line</span> /tmp/suid.list &gt; /dev/null</span><br><span class="line">    <span class="comment"># 2.4 不存在则写入log文件中</span></span><br><span class="line">    <span class="keyword">if</span> [ <span class="string">&quot;$?&quot;</span> != <span class="string">&quot;0&quot;</span> ];<span class="keyword">then</span></span><br><span class="line">        <span class="built_in">echo</span> <span class="string">&quot;<span class="variable">$i</span> isn&#x27;t in listfile! &quot;</span> &gt;&gt; /tmp/suid_log_$(<span class="built_in">date</span> +%F)</span><br><span class="line">    <span class="keyword">fi</span></span><br><span class="line"><span class="keyword">done</span></span><br><span class="line"><span class="built_in">rm</span> -rf /tmp/suid.check</span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;/tmp/suid_log_<span class="subst">$(date +%F)</span>&quot;</span></span><br><span class="line"><span class="built_in">cat</span> /tmp/suid_log_$(<span class="built_in">date</span> +%F)</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+      
+
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>很高兴得到您的赞赏</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="/images/config/wechatpay.jpg" alt="Ahaochan 微信">
+        <span>微信</span>
+      </div>
+      <div>
+        <img src="/images/config/alipay.jpg" alt="Ahaochan 支付宝">
+        <span>支付宝</span>
+      </div>
+
+  </div>
+</div>
+
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>Ahaochan
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://blog.ahao.moe/posts/File_permissions_SUID_and_SGID_and_SBIT.html" title="文件特殊权限SUID和SGID和SBIT">https://blog.ahao.moe/posts/File_permissions_SUID_and_SGID_and_SBIT.html</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="followme">
+  <span>欢迎关注我的其它发布渠道</span>
+
+  <div class="social-list">
+
+      <div class="social-item">
+        <a target="_blank" class="social-link" href="/images/config/wechat_channel.jpg">
+          <span class="icon">
+            <i class="fab fa-weixin"></i>
+          </span>
+
+          <span class="label">WeChat</span>
+        </a>
+      </div>
+
+      <div class="social-item">
+        <a target="_blank" class="social-link" href="/rss.xml">
+          <span class="icon">
+            <i class="fa fa-rss"></i>
+          </span>
+
+          <span class="label">RSS</span>
+        </a>
+      </div>
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/Linux/" rel="tag"><i class="fa fa-tag"></i> Linux</a>
+          </div>
+
+        
+  <div class="post-widgets">
+    <div class="wpac-rating-container">
+      <div id="wpac-rating"></div>
+    </div>
+  </div>
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/posts/Add_domain_and_allow_Baidu.html" rel="prev" title="为GitHub博客添加域名并允许百度收录">
+                  <i class="fa fa-chevron-left"></i> 为GitHub博客添加域名并允许百度收录
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/posts/Shiro_not_update_session_id_after_login.html" rel="next" title="Shiro用户登陆后会话标识未更新漏洞">
+                  Shiro用户登陆后会话标识未更新漏洞 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    
+  <div class="comments disqusjs">
+    <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+  </div>
+  
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2016 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ahaochan</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">172k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">10:25</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+  <div class="addthis_inline_share_toolbox">
+    <script src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-59047aaab9bddb67" async="async"></script>
+  </div><script color="0,0,255" opacity="0.5" zIndex="-1" count="99" src="https://cdn.jsdelivr.net/npm/canvas-nest.js@1/dist/canvas-nest.js"></script>
+
+
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js" integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lozad.js/1.16.0/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script>
+
+  
+  <script src="https://embed.widgetpack.com/widget.js" async></script>
+  <script class="next-config" data-name="rating" type="application/json">{"enable":true,"id":33332,"color":"#fc6423"}</script>
+  <script src="/js/third-party/rating.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.0/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/9.1.7/mermaid.min.js","integrity":"sha256-G58AID1YoX5YaEtWfXSI0VLrZ6N4kvNvwg0BI8zUFxE="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/quicklink/2.3.0/quicklink.umd.js" integrity="sha256-yvJQOINiH9fWemHn0vCA5lsHWJaHs6/ZmO+1Ft04SvM=" crossorigin="anonymous"></script>
+  <script class="next-config" data-name="quicklink" type="application/json">{"enable":true,"home":true,"archive":true,"delay":true,"timeout":3000,"priority":true,"url":"https://blog.ahao.moe/posts/File_permissions_SUID_and_SGID_and_SBIT.html"}</script>
+  <script src="/js/third-party/quicklink.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/disqusjs/3.0.2/styles/disqusjs.css" integrity="sha256-71XarXwNr1Td27HmZI9zjY+rMzRdush6/glo6VFXp7o=" crossorigin="anonymous">
+
+<script class="next-config" data-name="disqusjs" type="application/json">{"enable":true,"api":"https://disqus.skk.moe/disqus/","apikey":"OC1zbKiBF5cPo1EJObILJmZftsWl4ZbbAh9YqV0qNxiMq8rQFqBiw8PYcXQCyG9S","shortname":"ahaochan-blog","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/disqusjs/3.0.2/disqusjs.es2015.umd.min.js","integrity":"sha256-okP99ZQKVpIy7+NogAMpGlIQzJa9XKXhIJcFgdju5bU="}}</script>
+<script src="/js/third-party/comments/disqusjs.js"></script>
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"scale":1.2,"jsonPath":"https://cdn.jsdelivr.net/npm/live2d-widget-model-shizuku@1.0.5/assets/shizuku.model.json"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":false},"react":{"opacity":0.7},"log":false});</script></body>
+</html>

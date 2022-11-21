@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/config/favicon-32x32-next.jpg">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/config/favicon-16x16-next.jpg">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="google-site-verification" content="ZmER9fymckNfZ_Zxw6p3fpvqhvR6LitG9pR-cNVflx0">
+  <meta name="msvalidate.01" content="5351f65e5e79bb62584189a5e6906b8b">
+  <meta name="baidu-site-verification" content="jgtczlqzuk">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic%7CConsolas:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" integrity="sha256-AbA177XfpSnFEvgpYu1jMygiLabzPCJCRIBtR5jGc0k=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"blog.ahao.moe","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.13.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"disqusjs","storage":true,"lazyload":true,"nav":null,"activeClass":"disqusjs"},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":true}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="情景还原用Spring Boot简单搭建环境, 建一个Controller以及两个JSP页面。发现&#x2F;test1页面404不能访问, 而&#x2F;test2可以访问。 1234567891011@Controllerpublic class TestController &amp;#123;    @GetMapping(&quot;test1&quot;)    public String test1() &amp;#1">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JSP的编译流程">
+<meta property="og:url" content="https://blog.ahao.moe/posts/JSP_compile_and_load.html">
+<meta property="og:site_name" content="Ahaochan&#39;s Blog">
+<meta property="og:description" content="情景还原用Spring Boot简单搭建环境, 建一个Controller以及两个JSP页面。发现&#x2F;test1页面404不能访问, 而&#x2F;test2可以访问。 1234567891011@Controllerpublic class TestController &amp;#123;    @GetMapping(&quot;test1&quot;)    public String test1() &amp;#1">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2018-11-29T10:05:15.000Z">
+<meta property="article:modified_time" content="2022-11-21T02:35:06.072Z">
+<meta property="article:author" content="Ahaochan">
+<meta property="article:tag" content="源码分析">
+<meta property="article:tag" content="Servlet">
+<meta property="article:tag" content="Tomcat">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://blog.ahao.moe/posts/JSP_compile_and_load.html">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://blog.ahao.moe/posts/JSP_compile_and_load.html","path":"posts/JSP_compile_and_load.html","title":"JSP的编译流程"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>JSP的编译流程 | Ahaochan's Blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-108454440-1"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"UA-108454440-1","only_pageview":false}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+  <script src="/js/third-party/analytics/baidu-analytics.js"></script>
+  <script async src="https://hm.baidu.com/hm.js?32635d85cec06e8822234c4d2aec2b54"></script>
+
+
+
+
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+  (adsbygoogle = window.adsbygoogle || []).push({
+    google_ad_client: "ca-pub-5208025300813046",
+    enable_page_level_ads: true
+  });
+</script>
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/rss.xml" title="Ahaochan's Blog" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Ahaochan's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">你也是程序猿friends呢~</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">91</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">30</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">217</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%83%85%E6%99%AF%E8%BF%98%E5%8E%9F"><span class="nav-number">1.</span> <span class="nav-text">情景还原</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%97%AE%E9%A2%98%E6%89%80%E5%9C%A8"><span class="nav-number">2.</span> <span class="nav-text">问题所在</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#JSP%E7%BC%96%E8%AF%91%E6%B5%81%E7%A8%8B"><span class="nav-number">3.</span> <span class="nav-text">JSP编译流程</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9F%BA%E4%BA%8ETomcat-8-5-35%E7%9A%84%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90"><span class="nav-number">4.</span> <span class="nav-text">基于Tomcat 8.5.35的源码分析</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%87%8D%E5%86%99%E4%BA%86%E7%BB%A7%E6%89%BF%E6%A0%91%E4%B8%8AGenericServlet%E7%9A%84%E6%96%B9%E6%B3%95"><span class="nav-number">4.1.</span> <span class="nav-text">重写了继承树上GenericServlet的方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%87%8D%E5%86%99%E4%BA%86HttpServlet%E7%9A%84service%E6%96%B9%E6%B3%95"><span class="nav-number">4.2.</span> <span class="nav-text">重写了HttpServlet的service方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%94%9F%E6%88%90Java%E6%96%87%E4%BB%B6%E5%B9%B6%E7%BC%96%E8%AF%91"><span class="nav-number">4.3.</span> <span class="nav-text">生成Java文件并编译</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%8E%B7%E5%8F%96-Servlet"><span class="nav-number">4.4.</span> <span class="nav-text">获取 Servlet</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%99%90%E5%88%B6-JSP-%E5%8A%A0%E8%BD%BD%E6%95%B0%E9%87%8F-%E9%80%89%E8%AF%BB"><span class="nav-number">4.5.</span> <span class="nav-text">限制 JSP 加载数量(选读)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#JSP-%E7%94%9F%E6%88%90%E7%9A%84-Servlet-%E8%BF%9B%E8%A1%8C%E5%A4%84%E7%90%86%E8%AF%B7%E6%B1%82"><span class="nav-number">4.6.</span> <span class="nav-text">JSP 生成的 Servlet 进行处理请求</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%80%E4%B8%AA%E7%AE%80%E5%8D%95%E7%9A%84Hello-world"><span class="nav-number">5.</span> <span class="nav-text">一个简单的Hello world</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">6.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Ahaochan"
+      src="/images/config/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Ahaochan</p>
+  <div class="site-description" itemprop="description">你也是程序猿friends呢~</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">217</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">30</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">91</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Ahaochan" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Ahaochan" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:844394093@qq.com" title="E-Mail → mailto:844394093@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://greasyfork.org/zh-CN/users/30831" title="Greasyfork → https:&#x2F;&#x2F;greasyfork.org&#x2F;zh-CN&#x2F;users&#x2F;30831" rel="noopener" target="_blank"><i class="fab fa-google fa-fw"></i>Greasyfork</a>
+      </span>
+  </div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/Ahaochan" class="github-corner" title="我的Github" aria-label="我的Github" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blog.ahao.moe/posts/JSP_compile_and_load.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/config/avatar.jpg">
+      <meta itemprop="name" content="Ahaochan">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ahaochan's Blog">
+      <meta itemprop="description" content="你也是程序猿friends呢~">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="JSP的编译流程 | Ahaochan's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          JSP的编译流程<a href="https://github.com/Ahaochan/Ahaochan.github.io/blob/source/source/_posts/java/Java_Web-JSP%E7%9A%84%E7%BC%96%E8%AF%91%E6%B5%81%E7%A8%8B.md" class="post-edit-link" title="编辑" rel="noopener" target="_blank"><i class="fa fa-pen-nib"></i></a>
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2018-11-29 18:05:15" itemprop="dateCreated datePublished" datetime="2018-11-29T18:05:15+08:00">2018-11-29</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Java-Web/" itemprop="url" rel="index"><span itemprop="name">Java Web</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>2.2k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>8 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="情景还原"><a href="#情景还原" class="headerlink" title="情景还原"></a>情景还原</h1><p>用<code>Spring Boot</code>简单搭建环境, 建一个<code>Controller</code>以及两个<code>JSP</code>页面。<br>发现<code>/test1</code>页面<code>404</code>不能访问, 而<code>/test2</code>可以访问。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Controller</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">TestController</span> &#123;</span><br><span class="line">    <span class="meta">@GetMapping(&quot;test1&quot;)</span></span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">test1</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;/WEB-INF/views/IE10+.jsp&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="meta">@GetMapping(&quot;test2&quot;)</span></span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">test2</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;/WEB-INF/views/IE10.jsp&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<span id="more"></span>
+
+<h1 id="问题所在"><a href="#问题所在" class="headerlink" title="问题所在"></a>问题所在</h1><p><code>JSP</code>是本质一个<code>Java</code>文件, 所以命名也需要遵循<code>Java</code>命名规则, <code>+</code>加号对<code>Java</code>命名规则来说是一个非法字符。<br>所以<code>IE10+.jsp</code>对应的<code>java</code>文件是不存在的, 自然也就<code>404</code>了。<br>我在<code>$CATALINA_BASE/work/Catalina/localhost/web/org/apache/jsp/WEB_002dINF/views/</code>下只看到了<code>IE10_jsp.java</code>和<code>IE10_jsp.class</code>这两个文件。</p>
+<h1 id="JSP编译流程"><a href="#JSP编译流程" class="headerlink" title="JSP编译流程"></a>JSP编译流程</h1><ol>
+<li>客户端请求<code>JSP</code>文件.</li>
+<li><code>Servlet</code>容器将请求交给<code>org.apache.jasper.servlet.JspServlet</code>处理, 具体配置在<code>Tomcat</code>的<code>conf/web.xml</code>中.</li>
+<li><code>JspServlet</code>生成<code>java</code>文件, 编译为<code>class</code>文件, 加载到<code>ClassLoader</code>, 加入缓存中.</li>
+<li>调用生成的<code>Servlet</code>的<code>service</code>方法处理请求.</li>
+</ol>
+<h1 id="基于Tomcat-8-5-35的源码分析"><a href="#基于Tomcat-8-5-35的源码分析" class="headerlink" title="基于Tomcat 8.5.35的源码分析"></a>基于Tomcat 8.5.35的源码分析</h1><p>![继承树](<a target="_blank" rel="noopener" href="https://yuml.me/diagram/nofunky/class/[">https://yuml.me/diagram/nofunky/class/[</a>&lt;<PeriodicEventListener>&gt;;interface]^-[JspServlet], [HttpServlet]^-[JspServlet])<br><code>JspServlet</code>继承了<code>HttpServlet</code>, 并实现了<code>PeriodicEventListener</code>接口, 这个接口暂时不管它, <code>HttpServlet</code>在我<a target="_blank" rel="noopener" href="https://ahaochan.github.io/posts/HttpServlet_source_code.html">另一篇文章</a>中有做源码解析。</p>
+<h2 id="重写了继承树上GenericServlet的方法"><a href="#重写了继承树上GenericServlet的方法" class="headerlink" title="重写了继承树上GenericServlet的方法"></a>重写了继承树上GenericServlet的方法</h2><p><code>JspServlet</code>重写了<code>GenericServlet</code>的两个方法.<br>默认情况下, 只做了一件事, 对<code>JspRuntimeContext</code>的实例进行初始化和销毁.</p>
+<ol>
+<li><code>public void init(ServletConfig config);</code> 初始化方法, 默认只初始化<code>JspRuntimeContext</code>的实例</li>
+<li><code>public void destroy();</code> 销毁方法, 销毁<code>JspRuntimeContext</code>的实例<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// org.apache.jasper.servlet.JspServlet</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">JspServlet</span> <span class="keyword">extends</span> <span class="title class_">HttpServlet</span> <span class="keyword">implements</span> <span class="title class_">PeriodicEventListener</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">transient</span> ServletContext context;</span><br><span class="line">    <span class="keyword">private</span> ServletConfig config;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">transient</span> Options options;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">transient</span> JspRuntimeContext rctxt;</span><br><span class="line">    <span class="keyword">private</span> String jspFile;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">init</span><span class="params">(ServletConfig config)</span> <span class="keyword">throws</span> ServletException &#123;</span><br><span class="line">        <span class="built_in">super</span>.init(config);</span><br><span class="line">        <span class="built_in">this</span>.config = config;</span><br><span class="line">        <span class="built_in">this</span>.context = config.getServletContext();</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 省略部分代码, 默认不执行的代码</span></span><br><span class="line">        options = <span class="keyword">new</span> <span class="title class_">EmbeddedServletOptions</span>(config, context);</span><br><span class="line">        rctxt = <span class="keyword">new</span> <span class="title class_">JspRuntimeContext</span>(context, options);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">destroy</span><span class="params">()</span> &#123;</span><br><span class="line">        rctxt.destroy();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ol>
+<h2 id="重写了HttpServlet的service方法"><a href="#重写了HttpServlet的service方法" class="headerlink" title="重写了HttpServlet的service方法"></a>重写了HttpServlet的service方法</h2><p><code>service</code>方法是实际处理请求的逻辑方法。这里不对<code>include</code>等特殊情况做分析.<br>首先会判断请求参数是否携带<code>jsp_precompile</code>参数, 如果有的话就标记成预编译, 交给后面的核心代码使用.<br>然后再从缓存中获取<code>JspServletWrapper</code>实例, 没有则创建.<br>最后交给<code>JspServletWrapper</code>的<code>service</code>去执行核心代码.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// org.apache.jasper.servlet.JspServlet</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">JspServlet</span> <span class="keyword">extends</span> <span class="title class_">HttpServlet</span> <span class="keyword">implements</span> <span class="title class_">PeriodicEventListener</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">transient</span> ServletContext context;</span><br><span class="line">    <span class="keyword">private</span> ServletConfig config;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">transient</span> Options options;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">transient</span> JspRuntimeContext rctxt;</span><br><span class="line">    <span class="keyword">private</span> String jspFile;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">service</span> <span class="params">(HttpServletRequest request, HttpServletResponse response)</span></span><br><span class="line">            <span class="keyword">throws</span> ServletException, IOException &#123;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// jspFile may be configured as an init-param for this servlet instance</span></span><br><span class="line">        <span class="type">String</span> <span class="variable">jspUri</span> <span class="operator">=</span> request.getServletPath();</span><br><span class="line">        <span class="type">String</span> <span class="variable">pathInfo</span> <span class="operator">=</span> request.getPathInfo();</span><br><span class="line">        <span class="keyword">if</span> (pathInfo != <span class="literal">null</span>) &#123;</span><br><span class="line">            jspUri += pathInfo;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 根据 jsp_precompile 参数是否存在, 判断是否需要进行预编译</span></span><br><span class="line">        <span class="type">boolean</span> <span class="variable">precompile</span> <span class="operator">=</span> preCompile(request);</span><br><span class="line">        <span class="comment">// 处理请求</span></span><br><span class="line">        serviceJspFile(request, response, jspUri, precompile);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">void</span> <span class="title function_">serviceJspFile</span><span class="params">(HttpServletRequest request, HttpServletResponse response, String jspUri, <span class="type">boolean</span> precompile)</span></span><br><span class="line">        <span class="keyword">throws</span> ServletException, IOException &#123;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 1. 从 JspRuntimeContext 缓存中获取 JspServlet包装类, 双重锁避免高并发问题</span></span><br><span class="line">        <span class="type">JspServletWrapper</span> <span class="variable">wrapper</span> <span class="operator">=</span> rctxt.getWrapper(jspUri);</span><br><span class="line">        <span class="keyword">if</span> (wrapper == <span class="literal">null</span>) &#123;</span><br><span class="line">            <span class="keyword">synchronized</span>(<span class="built_in">this</span>) &#123;</span><br><span class="line">                wrapper = rctxt.getWrapper(jspUri);</span><br><span class="line">                <span class="keyword">if</span> (wrapper == <span class="literal">null</span>) &#123;</span><br><span class="line">                    <span class="comment">// 判断请求的JSP是否存在, 避免创建无用的JspServletWwrapper</span></span><br><span class="line">                    <span class="keyword">if</span> (<span class="literal">null</span> == context.getResource(jspUri)) &#123;</span><br><span class="line">                        handleMissingResource(request, response, jspUri);</span><br><span class="line">                        <span class="keyword">return</span>;</span><br><span class="line">                    &#125;</span><br><span class="line">                    wrapper = <span class="keyword">new</span> <span class="title class_">JspServletWrapper</span>(config, options, jspUri, rctxt);</span><br><span class="line">                    <span class="comment">// 加入 JspRuntimeContext 缓存</span></span><br><span class="line">                    rctxt.addWrapper(jspUri,wrapper);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="comment">// 2. 核心处理代码</span></span><br><span class="line">            wrapper.service(request, response, precompile);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (FileNotFoundException fnfe) &#123;</span><br><span class="line">            handleMissingResource(request, response, jspUri);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="生成Java文件并编译"><a href="#生成Java文件并编译" class="headerlink" title="生成Java文件并编译"></a>生成Java文件并编译</h2><p><code>options.getDevelopment()</code>这个变量是写在<code>web.xml</code>的<code>JspServlet</code>里, 通过<code>ServletConfig</code>的<code>getInitParameter(&quot;development&quot;)</code>方法获取. <code>web.xml</code>中没有进行配置, 所以默认为<code>true</code>.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// org.apache.jasper.servlet.JspServletWrapper</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">JspServletWrapper</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> JspCompilationContext ctxt;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">volatile</span> <span class="type">boolean</span> <span class="variable">mustCompile</span> <span class="operator">=</span> <span class="literal">true</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Options options;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">service</span><span class="params">(HttpServletRequest request, HttpServletResponse response, <span class="type">boolean</span> precompile)</span></span><br><span class="line">            <span class="keyword">throws</span> ServletException, IOException, FileNotFoundException &#123;</span><br><span class="line">        <span class="comment">// =========================================</span></span><br><span class="line">        <span class="comment">// (1) 编译, mustCompile默认为true, options.getDevelopment()默认为true</span></span><br><span class="line">        <span class="comment">// =========================================</span></span><br><span class="line">        <span class="keyword">if</span> (options.getDevelopment() || mustCompile) &#123;</span><br><span class="line">            <span class="keyword">synchronized</span> (<span class="built_in">this</span>) &#123;</span><br><span class="line">                <span class="keyword">if</span> (options.getDevelopment() || mustCompile) &#123;</span><br><span class="line">                    <span class="comment">// The following sets reload to true, if necessary</span></span><br><span class="line">                    ctxt.compile();</span><br><span class="line">                    mustCompile = <span class="literal">false</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// ==================省略部分代码==================</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><code>JspServletWrapper</code>的<code>service</code>调用了<code>JspCompilationContext</code>的<code>compile</code>方法.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// org.apache.jasper.JspCompilationContext</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">JspCompilationContext</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">compile</span><span class="params">()</span> <span class="keyword">throws</span> JasperException, FileNotFoundException &#123;</span><br><span class="line">        <span class="comment">// 1. 获取编译器</span></span><br><span class="line">        createCompiler();</span><br><span class="line">        <span class="comment">// 2. 判断是否需要重新将 JSP 转为 java 文件, 并编译为 class 文件</span></span><br><span class="line">        <span class="keyword">if</span> (jspCompiler.isOutDated()) &#123;</span><br><span class="line">            <span class="keyword">if</span> (isRemoved()) &#123;</span><br><span class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">FileNotFoundException</span>(jspUri);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">// 3. 先删除上次生成的 class 文件, 后删除 java 文件</span></span><br><span class="line">            jspCompiler.removeGeneratedFiles();</span><br><span class="line">            jspLoader = <span class="literal">null</span>; <span class="comment">// 清空 ClassLoader, 为了进行 JSP 热部署</span></span><br><span class="line">            <span class="comment">// 4. 重新生成 java 文件, 后编译为 class 文件</span></span><br><span class="line">            jspCompiler.compile();</span><br><span class="line">            jsw.setReload(<span class="literal">true</span>); <span class="comment">// 设置重新加载 Servlet 的标识</span></span><br><span class="line">            jsw.setCompilationException(<span class="literal">null</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 省略部分捕获异常的代码</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>第一步, <code>createCompiler();</code>先获取编译器</p>
+<ol>
+<li>判断<code>web.xml</code>里的<code>JspServlet</code>有没有定义编译器的类名<code>compilerClassName</code>, 有则创建</li>
+<li>判断<code>web.xml</code>里的<code>JspServlet</code>有没有定义<code>compiler</code>, 有则先创建<code>JDTCompiler</code>编译器, 否则先创建<code>AntCompiler</code>. 创建失败则尝试创建两者的另一个编译器.</li>
+<li>都创建失败, 则抛出异常</li>
+</ol>
+<p>第二步, <code>jspCompiler.isOutDated()</code>比较<code>JSP</code>的最后修改时间和对应的<code>class</code>文件<br>最后修改时间, 过时则重新编译.  可以在<code>web.xml</code>里的<code>JspServlet</code>配置<code>modificationTestInterval</code>参数, 指定一定秒数内<code>return false</code>, 不进行重新编译.</p>
+<p>第三步, 先删除上次生成的<code>class</code>文件, 后删除<code>java</code>文件。<br>第四步, 调用之前获取到的编译器的<code>compile</code>方法生成<code>java</code>文件, 并编译为<code>class</code>文件.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// org.apache.jasper.compiler.Compiler</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">class</span> <span class="title class_">Compiler</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">compile</span><span class="params">()</span> <span class="keyword">throws</span> FileNotFoundException, JasperException, Exception &#123;</span><br><span class="line">        compile(<span class="literal">true</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">compile</span><span class="params">(<span class="type">boolean</span> compileClass)</span> <span class="keyword">throws</span> FileNotFoundException, JasperException, Exception &#123;</span><br><span class="line">        compile(compileClass, <span class="literal">false</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">compile</span><span class="params">(<span class="type">boolean</span> compileClass, <span class="type">boolean</span> jspcMode)</span> <span class="keyword">throws</span> FileNotFoundException, JasperException, Exception &#123;</span><br><span class="line">        <span class="comment">// 1. 生成 java 文件</span></span><br><span class="line">        String[] smap = generateJava();</span><br><span class="line">        <span class="type">File</span> <span class="variable">javaFile</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">File</span>(ctxt.getServletJavaFileName());</span><br><span class="line">        <span class="type">Long</span> <span class="variable">jspLastModified</span> <span class="operator">=</span> ctxt.getLastModified(ctxt.getJspFile());</span><br><span class="line">        javaFile.setLastModified(jspLastModified.longValue());</span><br><span class="line">        <span class="keyword">if</span> (compileClass) &#123;</span><br><span class="line">            <span class="comment">// 2. 编译为 class 文件, 交给子类实现, 如 AntCompiler、JDTCompiler</span></span><br><span class="line">            generateClass(smap);</span><br><span class="line">            <span class="comment">// Fix for bugzilla 41606</span></span><br><span class="line">            <span class="comment">// Set JspServletWrapper.servletClassLastModifiedTime after successful compile</span></span><br><span class="line">            <span class="type">File</span> <span class="variable">targetFile</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">File</span>(ctxt.getClassFileName());</span><br><span class="line">            <span class="keyword">if</span> (targetFile.exists()) &#123;</span><br><span class="line">                targetFile.setLastModified(jspLastModified.longValue());</span><br><span class="line">                <span class="keyword">if</span> (jsw != <span class="literal">null</span>) &#123;</span><br><span class="line">                    jsw.setServletClassLastModifiedTime(</span><br><span class="line">                            jspLastModified.longValue());</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="获取-Servlet"><a href="#获取-Servlet" class="headerlink" title="获取 Servlet"></a>获取 Servlet</h2><p>同样是<code>JspServletWrapper</code>的<code>service</code>方法, 在编译出了<code>class</code>文件后, 就应该要将<code>class</code>加载到<code>ClassLoader</code>里了。<br>在之前提到的<code>JspCompilationContext</code>的<code>compile</code>方法里, 将<code>JSP</code>的<code>ClassLoader</code>变量<code>jspLoader</code>设置为了<code>null</code>. 因为一个<code>ClassLoader</code>不能加载两个相同的类, 所以要一个新的<code>ClassLoader</code>进行热部署<code>JSP</code>.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// org.apache.jasper.servlet.JspServletWrapper</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">JspServletWrapper</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> Servlet theServlet;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">service</span><span class="params">(HttpServletRequest request, HttpServletResponse response, <span class="type">boolean</span> precompile)</span></span><br><span class="line">            <span class="keyword">throws</span> ServletException, IOException, FileNotFoundException &#123;</span><br><span class="line">        <span class="comment">// =========================================</span></span><br><span class="line">        <span class="comment">// (2) (重新)加载 servlet class 文件</span></span><br><span class="line">        <span class="comment">// =========================================</span></span><br><span class="line">        <span class="type">Servlet</span> <span class="variable">servlet</span> <span class="operator">=</span> getServlet();</span><br><span class="line">        <span class="comment">// 如果请求参数 jsp_precompile 存在, 则不执行之后的代码</span></span><br><span class="line">        <span class="keyword">if</span> (precompile) &#123;</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// =========================================</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> Servlet <span class="title function_">getServlet</span><span class="params">()</span> <span class="keyword">throws</span> ServletException &#123;</span><br><span class="line">        <span class="keyword">if</span> (getReloadInternal() || theServlet == <span class="literal">null</span>) &#123;</span><br><span class="line">            <span class="keyword">synchronized</span> (<span class="built_in">this</span>) &#123;</span><br><span class="line">                <span class="comment">// Synchronizing on jsw enables simultaneous loading</span></span><br><span class="line">                <span class="comment">// of different pages, but not the same page.</span></span><br><span class="line">                <span class="keyword">if</span> (getReloadInternal() || theServlet == <span class="literal">null</span>) &#123;</span><br><span class="line">                    <span class="comment">// 1. 先销毁旧的 Servlet</span></span><br><span class="line">                    destroy();</span><br><span class="line">                    <span class="comment">// 2. 加载 class 并反射创建 Servlet, 这里的 JspLoader 在之前设置为 null, 所以这里会 new 一个 JspLoader</span></span><br><span class="line">                    <span class="type">InstanceManager</span> <span class="variable">instanceManager</span> <span class="operator">=</span> InstanceManagerFactory.getInstanceManager(config);</span><br><span class="line">                    <span class="comment">// fqcn 是  Full Qualified Class Name 的缩写</span></span><br><span class="line">                    <span class="type">Servlet</span> <span class="variable">servlet</span> <span class="operator">=</span> (Servlet) instanceManager.newInstance(ctxt.getFQCN(), ctxt.getJspLoader());</span><br><span class="line">                    <span class="comment">// 3. 初始化 Servlet</span></span><br><span class="line">                    servlet.init(config);</span><br><span class="line"></span><br><span class="line">                    <span class="comment">// 4. JSP 重载数量+1</span></span><br><span class="line">                    <span class="keyword">if</span> (theServlet != <span class="literal">null</span>) &#123;</span><br><span class="line">                        ctxt.getRuntimeContext().incrementJspReloadCount();</span><br><span class="line">                    &#125;</span><br><span class="line"></span><br><span class="line">                    theServlet = servlet;</span><br><span class="line">                    reload = <span class="literal">false</span>; <span class="comment">// 编译时会重新设置为 true, 用于进入此 if</span></span><br><span class="line">                    <span class="comment">// Volatile &#x27;reload&#x27; forces in order write of &#x27;theServlet&#x27; and new servlet object</span></span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> theServlet;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="限制-JSP-加载数量-选读"><a href="#限制-JSP-加载数量-选读" class="headerlink" title="限制 JSP 加载数量(选读)"></a>限制 JSP 加载数量(选读)</h2><p>默认不执行这段代码, 属于程序优化部分, 比较简单, 就是对一个队列进行先进先出的操作。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// org.apache.jasper.servlet.JspServletWrapper</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">JspServletWrapper</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="type">boolean</span> unloadAllowed; <span class="comment">// web.xml 的 JspServlet 的 maxLoadedJsps  参数配置, 大于0则为true</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="type">boolean</span> unloadByIdle;  <span class="comment">// web.xml 的 JspServlet 的 jspIdleTimeout 参数配置, 大于0则为true</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="type">boolean</span> unloadByCount; <span class="comment">// 值为 unloadAllowed || unloadByIdle</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">service</span><span class="params">(HttpServletRequest request, HttpServletResponse response, <span class="type">boolean</span> precompile)</span></span><br><span class="line">            <span class="keyword">throws</span> ServletException, IOException, FileNotFoundException &#123;</span><br><span class="line">        <span class="comment">// =========================================</span></span><br><span class="line">        <span class="comment">// (3) 限制 JSP 数量, 先进先出的队列</span></span><br><span class="line">        <span class="comment">// =========================================</span></span><br><span class="line">        <span class="keyword">if</span> (unloadAllowed) &#123;</span><br><span class="line">            <span class="keyword">synchronized</span> (<span class="built_in">this</span>) &#123;</span><br><span class="line">                <span class="keyword">if</span> (unloadByCount) &#123;</span><br><span class="line">                    <span class="keyword">if</span> (unloadHandle == <span class="literal">null</span>) &#123;</span><br><span class="line">                        unloadHandle = ctxt.getRuntimeContext().push(<span class="built_in">this</span>);</span><br><span class="line">                    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (lastUsageTime &lt; ctxt.getRuntimeContext().getLastJspQueueUpdate()) &#123;</span><br><span class="line">                        <span class="comment">// 核心代码, 移除队列中的 JSP 缓存</span></span><br><span class="line">                        ctxt.getRuntimeContext().makeYoungest(unloadHandle);</span><br><span class="line">                        lastUsageTime = System.currentTimeMillis();</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                    <span class="keyword">if</span> (lastUsageTime &lt; ctxt.getRuntimeContext().getLastJspQueueUpdate()) &#123;</span><br><span class="line">                        lastUsageTime = System.currentTimeMillis();</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// =========================================</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="JSP-生成的-Servlet-进行处理请求"><a href="#JSP-生成的-Servlet-进行处理请求" class="headerlink" title="JSP 生成的 Servlet 进行处理请求"></a>JSP 生成的 Servlet 进行处理请求</h2><p>终于到了我们熟悉的环节, 调用创建的<code>Servlet</code>的<code>service</code>方法, 处理请求.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// org.apache.jasper.servlet.JspServletWrapper</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">JspServletWrapper</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="type">boolean</span> unloadAllowed; <span class="comment">// web.xml 的 JspServlet 的 maxLoadedJsps  参数配置, 大于0则为true</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="type">boolean</span> unloadByIdle;  <span class="comment">// web.xml 的 JspServlet 的 jspIdleTimeout 参数配置, 大于0则为true</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="type">boolean</span> unloadByCount; <span class="comment">// 值为 unloadAllowed || unloadByIdle</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">service</span><span class="params">(HttpServletRequest request, HttpServletResponse response, <span class="type">boolean</span> precompile)</span></span><br><span class="line">            <span class="keyword">throws</span> ServletException, IOException, FileNotFoundException &#123;</span><br><span class="line">        <span class="comment">// =========================================</span></span><br><span class="line">        <span class="comment">// (4) 执行创建的 Servlet 的 service 方法</span></span><br><span class="line">        <span class="comment">// =========================================</span></span><br><span class="line">        <span class="keyword">if</span> (servlet <span class="keyword">instanceof</span> SingleThreadModel) &#123;</span><br><span class="line">            <span class="comment">// sync on the wrapper so that the freshness</span></span><br><span class="line">            <span class="comment">// of the page is determined right before servicing</span></span><br><span class="line">            <span class="keyword">synchronized</span> (<span class="built_in">this</span>) &#123;</span><br><span class="line">                servlet.service(request, response);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            servlet.service(request, response);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// =========================================</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="一个简单的Hello-world"><a href="#一个简单的Hello-world" class="headerlink" title="一个简单的Hello world"></a>一个简单的Hello world</h1><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&lt;%@ page contentType=&quot;text/html;charset=UTF-8&quot; language=&quot;java&quot; %&gt;</span><br><span class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">        Hello world</span><br><span class="line">    <span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<hr>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> org.apache.jsp.WEB_002dINF.views.upload;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> javax.servlet.*;</span><br><span class="line"><span class="keyword">import</span> javax.servlet.http.*;</span><br><span class="line"><span class="keyword">import</span> javax.servlet.jsp.*;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">class</span> <span class="title class_">IE10_jsp</span> <span class="keyword">extends</span> <span class="title class_">org</span>.apache.jasper.runtime.HttpJspBase</span><br><span class="line">    <span class="keyword">implements</span> <span class="title class_">org</span>.apache.jasper.runtime.JspSourceDependent,</span><br><span class="line">                 org.apache.jasper.runtime.JspSourceImports &#123;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> javax.servlet.jsp.<span class="type">JspFactory</span> <span class="variable">_jspxFactory</span> <span class="operator">=</span></span><br><span class="line">          javax.servlet.jsp.JspFactory.getDefaultFactory();</span><br><span class="line"></span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">static</span> java.util.Map&lt;java.lang.String,java.lang.Long&gt; _jspx_dependants;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> java.util.Set&lt;java.lang.String&gt; _jspx_imports_packages;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> java.util.Set&lt;java.lang.String&gt; _jspx_imports_classes;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">static</span> &#123;</span><br><span class="line">    _jspx_imports_packages = <span class="keyword">new</span> <span class="title class_">java</span>.util.HashSet&lt;&gt;();</span><br><span class="line">    _jspx_imports_packages.add(<span class="string">&quot;javax.servlet&quot;</span>);</span><br><span class="line">    _jspx_imports_packages.add(<span class="string">&quot;javax.servlet.http&quot;</span>);</span><br><span class="line">    _jspx_imports_packages.add(<span class="string">&quot;javax.servlet.jsp&quot;</span>);</span><br><span class="line">    _jspx_imports_classes = <span class="literal">null</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">volatile</span> javax.el.ExpressionFactory _el_expressionfactory;</span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">volatile</span> org.apache.tomcat.InstanceManager _jsp_instancemanager;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">public</span> java.util.Map&lt;java.lang.String,java.lang.Long&gt; getDependants() &#123;</span><br><span class="line">    <span class="keyword">return</span> _jspx_dependants;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">public</span> java.util.Set&lt;java.lang.String&gt; getPackageImports() &#123;</span><br><span class="line">    <span class="keyword">return</span> _jspx_imports_packages;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">public</span> java.util.Set&lt;java.lang.String&gt; getClassImports() &#123;</span><br><span class="line">    <span class="keyword">return</span> _jspx_imports_classes;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">public</span> javax.el.ExpressionFactory <span class="title function_">_jsp_getExpressionFactory</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (_el_expressionfactory == <span class="literal">null</span>) &#123;</span><br><span class="line">      <span class="keyword">synchronized</span> (<span class="built_in">this</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (_el_expressionfactory == <span class="literal">null</span>) &#123;</span><br><span class="line">          _el_expressionfactory = _jspxFactory.getJspApplicationContext(getServletConfig().getServletContext()).getExpressionFactory();</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> _el_expressionfactory;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">public</span> org.apache.tomcat.InstanceManager <span class="title function_">_jsp_getInstanceManager</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (_jsp_instancemanager == <span class="literal">null</span>) &#123;</span><br><span class="line">      <span class="keyword">synchronized</span> (<span class="built_in">this</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (_jsp_instancemanager == <span class="literal">null</span>) &#123;</span><br><span class="line">          _jsp_instancemanager = org.apache.jasper.runtime.InstanceManagerFactory.getInstanceManager(getServletConfig());</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> _jsp_instancemanager;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">_jspInit</span><span class="params">()</span> &#123;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">_jspDestroy</span><span class="params">()</span> &#123;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">_jspService</span><span class="params">(<span class="keyword">final</span> javax.servlet.http.HttpServletRequest request, <span class="keyword">final</span> javax.servlet.http.HttpServletResponse response)</span></span><br><span class="line">      <span class="keyword">throws</span> java.io.IOException, javax.servlet.ServletException &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">final</span> java.lang.<span class="type">String</span> <span class="variable">_jspx_method</span> <span class="operator">=</span> request.getMethod();</span><br><span class="line">    <span class="keyword">if</span> (!<span class="string">&quot;GET&quot;</span>.equals(_jspx_method) &amp;&amp; !<span class="string">&quot;POST&quot;</span>.equals(_jspx_method) &amp;&amp; !<span class="string">&quot;HEAD&quot;</span>.equals(_jspx_method) &amp;&amp; !javax.servlet.DispatcherType.ERROR.equals(request.getDispatcherType())) &#123;</span><br><span class="line">      response.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED, <span class="string">&quot;JSPs only permit GET POST or HEAD&quot;</span>);</span><br><span class="line">      <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">final</span> javax.servlet.jsp.PageContext pageContext;</span><br><span class="line">    javax.servlet.http.<span class="type">HttpSession</span> <span class="variable">session</span> <span class="operator">=</span> <span class="literal">null</span>;</span><br><span class="line">    <span class="keyword">final</span> javax.servlet.ServletContext application;</span><br><span class="line">    <span class="keyword">final</span> javax.servlet.ServletConfig config;</span><br><span class="line">    javax.servlet.jsp.<span class="type">JspWriter</span> <span class="variable">out</span> <span class="operator">=</span> <span class="literal">null</span>;</span><br><span class="line">    <span class="keyword">final</span> java.lang.<span class="type">Object</span> <span class="variable">page</span> <span class="operator">=</span> <span class="built_in">this</span>;</span><br><span class="line">    javax.servlet.jsp.<span class="type">JspWriter</span> <span class="variable">_jspx_out</span> <span class="operator">=</span> <span class="literal">null</span>;</span><br><span class="line">    javax.servlet.jsp.<span class="type">PageContext</span> <span class="variable">_jspx_page_context</span> <span class="operator">=</span> <span class="literal">null</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">      response.setContentType(<span class="string">&quot;text/html;charset=UTF-8&quot;</span>);</span><br><span class="line">      pageContext = _jspxFactory.getPageContext(<span class="built_in">this</span>, request, response,</span><br><span class="line">            <span class="literal">null</span>, <span class="literal">true</span>, <span class="number">8192</span>, <span class="literal">true</span>);</span><br><span class="line">      _jspx_page_context = pageContext;</span><br><span class="line">      application = pageContext.getServletContext();</span><br><span class="line">      config = pageContext.getServletConfig();</span><br><span class="line">      session = pageContext.getSession();</span><br><span class="line">      out = pageContext.getOut();</span><br><span class="line">      _jspx_out = out;</span><br><span class="line"></span><br><span class="line">      <span class="comment">// =========================== 输出代码 =====================================</span></span><br><span class="line">      out.write(<span class="string">&quot;\r\n&quot;</span>);</span><br><span class="line">      out.write(<span class="string">&quot;&lt;html&gt;\r\n&quot;</span>);</span><br><span class="line">      out.write(<span class="string">&quot;&lt;body&gt;\r\n&quot;</span>);</span><br><span class="line">      out.write(<span class="string">&quot;Hello world\r\n&quot;</span>);</span><br><span class="line">      out.write(<span class="string">&quot;&lt;/body&gt;\r\n&quot;</span>);</span><br><span class="line">      out.write(<span class="string">&quot;&lt;/html&gt;\r\n&quot;</span>);</span><br><span class="line">      <span class="comment">// =========================== 输出代码 =====================================</span></span><br><span class="line">    &#125; <span class="keyword">catch</span> (java.lang.Throwable t) &#123;</span><br><span class="line">      <span class="keyword">if</span> (!(t <span class="keyword">instanceof</span> javax.servlet.jsp.SkipPageException))&#123;</span><br><span class="line">        out = _jspx_out;</span><br><span class="line">        <span class="keyword">if</span> (out != <span class="literal">null</span> &amp;&amp; out.getBufferSize() != <span class="number">0</span>)</span><br><span class="line">          <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="keyword">if</span> (response.isCommitted()) &#123;</span><br><span class="line">              out.flush();</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">              out.clearBuffer();</span><br><span class="line">            &#125;</span><br><span class="line">          &#125; <span class="keyword">catch</span> (java.io.IOException e) &#123;&#125;</span><br><span class="line">        <span class="keyword">if</span> (_jspx_page_context != <span class="literal">null</span>) _jspx_page_context.handlePageException(t);</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">ServletException</span>(t);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">      _jspxFactory.releasePageContext(_jspx_page_context);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h1><ul>
+<li><a target="_blank" rel="noopener" href="http://shenzhang.github.io/blog/2013/06/26/recompile-and-redeploy-in-jsp/">Jsp的编译过程和热部署原理</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/01805c2a1036">JSP 热部署 源码解析</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/hwcptbtptp/article/details/78270243">FQCN是什么鬼</a></li>
+<li><a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/53511441">Why Spring Boot cannot parse view with + symbol?</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+      
+
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>很高兴得到您的赞赏</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="/images/config/wechatpay.jpg" alt="Ahaochan 微信">
+        <span>微信</span>
+      </div>
+      <div>
+        <img src="/images/config/alipay.jpg" alt="Ahaochan 支付宝">
+        <span>支付宝</span>
+      </div>
+
+  </div>
+</div>
+
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>Ahaochan
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://blog.ahao.moe/posts/JSP_compile_and_load.html" title="JSP的编译流程">https://blog.ahao.moe/posts/JSP_compile_and_load.html</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="followme">
+  <span>欢迎关注我的其它发布渠道</span>
+
+  <div class="social-list">
+
+      <div class="social-item">
+        <a target="_blank" class="social-link" href="/images/config/wechat_channel.jpg">
+          <span class="icon">
+            <i class="fab fa-weixin"></i>
+          </span>
+
+          <span class="label">WeChat</span>
+        </a>
+      </div>
+
+      <div class="social-item">
+        <a target="_blank" class="social-link" href="/rss.xml">
+          <span class="icon">
+            <i class="fa fa-rss"></i>
+          </span>
+
+          <span class="label">RSS</span>
+        </a>
+      </div>
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/" rel="tag"><i class="fa fa-tag"></i> 源码分析</a>
+              <a href="/tags/Servlet/" rel="tag"><i class="fa fa-tag"></i> Servlet</a>
+              <a href="/tags/Tomcat/" rel="tag"><i class="fa fa-tag"></i> Tomcat</a>
+          </div>
+
+        
+  <div class="post-widgets">
+    <div class="wpac-rating-container">
+      <div id="wpac-rating"></div>
+    </div>
+  </div>
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/posts/ulimit_Command_of_Linux.html" rel="prev" title="Linux的资源限制ulimit命令">
+                  <i class="fa fa-chevron-left"></i> Linux的资源限制ulimit命令
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/posts/Nginx_configures_multiple_server_name.html" rel="next" title="Nginx配置多个域名">
+                  Nginx配置多个域名 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    
+  <div class="comments disqusjs">
+    <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+  </div>
+  
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2016 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ahaochan</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">172k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">10:25</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+  <div class="addthis_inline_share_toolbox">
+    <script src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-59047aaab9bddb67" async="async"></script>
+  </div><script color="0,0,255" opacity="0.5" zIndex="-1" count="99" src="https://cdn.jsdelivr.net/npm/canvas-nest.js@1/dist/canvas-nest.js"></script>
+
+
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js" integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lozad.js/1.16.0/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script>
+
+  
+  <script src="https://embed.widgetpack.com/widget.js" async></script>
+  <script class="next-config" data-name="rating" type="application/json">{"enable":true,"id":33332,"color":"#fc6423"}</script>
+  <script src="/js/third-party/rating.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.0/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/9.1.7/mermaid.min.js","integrity":"sha256-G58AID1YoX5YaEtWfXSI0VLrZ6N4kvNvwg0BI8zUFxE="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/quicklink/2.3.0/quicklink.umd.js" integrity="sha256-yvJQOINiH9fWemHn0vCA5lsHWJaHs6/ZmO+1Ft04SvM=" crossorigin="anonymous"></script>
+  <script class="next-config" data-name="quicklink" type="application/json">{"enable":true,"home":true,"archive":true,"delay":true,"timeout":3000,"priority":true,"url":"https://blog.ahao.moe/posts/JSP_compile_and_load.html"}</script>
+  <script src="/js/third-party/quicklink.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/disqusjs/3.0.2/styles/disqusjs.css" integrity="sha256-71XarXwNr1Td27HmZI9zjY+rMzRdush6/glo6VFXp7o=" crossorigin="anonymous">
+
+<script class="next-config" data-name="disqusjs" type="application/json">{"enable":true,"api":"https://disqus.skk.moe/disqus/","apikey":"OC1zbKiBF5cPo1EJObILJmZftsWl4ZbbAh9YqV0qNxiMq8rQFqBiw8PYcXQCyG9S","shortname":"ahaochan-blog","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/disqusjs/3.0.2/disqusjs.es2015.umd.min.js","integrity":"sha256-okP99ZQKVpIy7+NogAMpGlIQzJa9XKXhIJcFgdju5bU="}}</script>
+<script src="/js/third-party/comments/disqusjs.js"></script>
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"scale":1.2,"jsonPath":"https://cdn.jsdelivr.net/npm/live2d-widget-model-shizuku@1.0.5/assets/shizuku.model.json"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":false},"react":{"opacity":0.7},"log":false});</script></body>
+</html>

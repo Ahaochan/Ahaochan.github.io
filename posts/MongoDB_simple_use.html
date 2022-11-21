@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/config/favicon-32x32-next.jpg">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/config/favicon-16x16-next.jpg">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="google-site-verification" content="ZmER9fymckNfZ_Zxw6p3fpvqhvR6LitG9pR-cNVflx0">
+  <meta name="msvalidate.01" content="5351f65e5e79bb62584189a5e6906b8b">
+  <meta name="baidu-site-verification" content="jgtczlqzuk">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic%7CConsolas:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" integrity="sha256-AbA177XfpSnFEvgpYu1jMygiLabzPCJCRIBtR5jGc0k=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"blog.ahao.moe","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.13.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"disqusjs","storage":true,"lazyload":true,"nav":null,"activeClass":"disqusjs"},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":true}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="前言mongodb是一个NoSQL数据库, 可以分词查询, 可以基于地理位置查询, 记录以JSON形式存储.mongodb的数据表又叫做数据集合, 关键字为collection.mongodb是不存在join这个概念的, 所以一切的关联查询都得通过外部程序来做.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MongoDB学习笔记">
+<meta property="og:url" content="https://blog.ahao.moe/posts/MongoDB_simple_use.html">
+<meta property="og:site_name" content="Ahaochan&#39;s Blog">
+<meta property="og:description" content="前言mongodb是一个NoSQL数据库, 可以分词查询, 可以基于地理位置查询, 记录以JSON形式存储.mongodb的数据表又叫做数据集合, 关键字为collection.mongodb是不存在join这个概念的, 所以一切的关联查询都得通过外部程序来做.">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2018-12-07T07:48:55.000Z">
+<meta property="article:modified_time" content="2022-11-21T02:35:06.056Z">
+<meta property="article:author" content="Ahaochan">
+<meta property="article:tag" content="MongoDB">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://blog.ahao.moe/posts/MongoDB_simple_use.html">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://blog.ahao.moe/posts/MongoDB_simple_use.html","path":"posts/MongoDB_simple_use.html","title":"MongoDB学习笔记"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>MongoDB学习笔记 | Ahaochan's Blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-108454440-1"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"UA-108454440-1","only_pageview":false}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+  <script src="/js/third-party/analytics/baidu-analytics.js"></script>
+  <script async src="https://hm.baidu.com/hm.js?32635d85cec06e8822234c4d2aec2b54"></script>
+
+
+
+
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+  (adsbygoogle = window.adsbygoogle || []).push({
+    google_ad_client: "ca-pub-5208025300813046",
+    enable_page_level_ads: true
+  });
+</script>
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/rss.xml" title="Ahaochan's Blog" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Ahaochan's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">你也是程序猿friends呢~</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">91</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">30</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">217</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%89%E8%A3%85%E9%85%8D%E7%BD%AE-%E5%9F%BA%E4%BA%8Ev3-4-18"><span class="nav-number">2.</span> <span class="nav-text">安装配置(基于v3.4.18)</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%94%A8%E6%88%B7%E6%9D%83%E9%99%90"><span class="nav-number">3.</span> <span class="nav-text">用户权限</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#auth-%E7%94%A8%E6%88%B7%E5%90%8D%E5%AF%86%E7%A0%81%E7%99%BB%E5%BD%95"><span class="nav-number">3.1.</span> <span class="nav-text">auth 用户名密码登录</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%9B%86%E7%BE%A4keyfile"><span class="nav-number">3.2.</span> <span class="nav-text">集群keyfile</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%BA%93"><span class="nav-number">4.</span> <span class="nav-text">数据库</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%A1%A8collection"><span class="nav-number">5.</span> <span class="nav-text">表collection</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%B4%A2%E5%BC%95"><span class="nav-number">6.</span> <span class="nav-text">索引</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B2%A1%E6%9C%89%E5%B1%9E%E6%80%A7%E7%9A%84%E6%99%AE%E9%80%9A%E7%B4%A2%E5%BC%95"><span class="nav-number">6.1.</span> <span class="nav-text">没有属性的普通索引</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BF%87%E6%9C%9F%E7%B4%A2%E5%BC%95TTL"><span class="nav-number">6.2.</span> <span class="nav-text">过期索引TTL</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%87%E6%9C%AC%E7%B4%A2%E5%BC%95"><span class="nav-number">6.3.</span> <span class="nav-text">文本索引</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2d%E5%9C%B0%E7%90%86%E4%BD%8D%E7%BD%AE%E7%B4%A2%E5%BC%95-%E5%B9%B3%E9%9D%A2"><span class="nav-number">6.4.</span> <span class="nav-text">2d地理位置索引(平面)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2dsphere%E5%9C%B0%E7%90%86%E4%BD%8D%E7%BD%AE%E7%B4%A2%E5%BC%95-%E7%90%83%E9%9D%A2"><span class="nav-number">6.5.</span> <span class="nav-text">2dsphere地理位置索引(球面)</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%8F%92%E5%85%A5%E6%9B%B4%E6%96%B0%E5%88%A0%E9%99%A4"><span class="nav-number">7.</span> <span class="nav-text">插入更新删除</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9F%A5%E8%AF%A2"><span class="nav-number">8.</span> <span class="nav-text">查询</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Ahaochan"
+      src="/images/config/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Ahaochan</p>
+  <div class="site-description" itemprop="description">你也是程序猿friends呢~</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">217</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">30</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">91</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Ahaochan" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Ahaochan" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:844394093@qq.com" title="E-Mail → mailto:844394093@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://greasyfork.org/zh-CN/users/30831" title="Greasyfork → https:&#x2F;&#x2F;greasyfork.org&#x2F;zh-CN&#x2F;users&#x2F;30831" rel="noopener" target="_blank"><i class="fab fa-google fa-fw"></i>Greasyfork</a>
+      </span>
+  </div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/Ahaochan" class="github-corner" title="我的Github" aria-label="我的Github" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blog.ahao.moe/posts/MongoDB_simple_use.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/config/avatar.jpg">
+      <meta itemprop="name" content="Ahaochan">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ahaochan's Blog">
+      <meta itemprop="description" content="你也是程序猿friends呢~">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="MongoDB学习笔记 | Ahaochan's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          MongoDB学习笔记<a href="https://github.com/Ahaochan/Ahaochan.github.io/blob/source/source/_posts/database/mongodb/MongoDB-MongoDB%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.md" class="post-edit-link" title="编辑" rel="noopener" target="_blank"><i class="fa fa-pen-nib"></i></a>
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2018-12-07 15:48:55" itemprop="dateCreated datePublished" datetime="2018-12-07T15:48:55+08:00">2018-12-07</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/MongoDB/" itemprop="url" rel="index"><span itemprop="name">MongoDB</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>2k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>7 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p><code>mongodb</code>是一个<code>NoSQL</code>数据库, 可以分词查询, 可以基于地理位置查询, 记录以<code>JSON</code>形式存储.<br><code>mongodb</code>的数据表又叫做数据集合, 关键字为<code>collection</code>.<br><code>mongodb</code>是不存在<code>join</code>这个概念的, 所以一切的关联查询都得通过外部程序来做.</p>
+<span id="more"></span>
+
+<h1 id="安装配置-基于v3-4-18"><a href="#安装配置-基于v3-4-18" class="headerlink" title="安装配置(基于v3.4.18)"></a>安装配置(基于v3.4.18)</h1><p>安装教程: <a target="_blank" rel="noopener" href="https://docs.mongodb.com/manual/tutorial/install-mongodb-on-red-hat/">Install MongoDB Community Edition on Red Hat Enterprise or CentOS Linux</a>(国内可以用阿里云<code>yum</code>镜像).</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 1. 安装</span></span><br><span class="line">yum install -y mongodb-org</span><br><span class="line"><span class="comment"># 2. 初始化</span></span><br><span class="line"><span class="built_in">mkdir</span> -p /opt/mongodb/data/db /opt/mongodb/log</span><br><span class="line"><span class="built_in">cp</span> /etc/mongod.conf /opt/mongodb/mongod.conf</span><br><span class="line"><span class="comment"># 3. 修改配置文件</span></span><br><span class="line">sed -i <span class="string">&#x27;s#/var/log/mongodb/mongod.log#/opt/mongodb/log/mongod.log#g&#x27;</span> /opt/mongodb/mongod.conf</span><br><span class="line">sed -i <span class="string">&#x27;s#/var/lib/mongo#/opt/mongodb/data/db#g&#x27;</span> /opt/mongodb/mongod.conf</span><br><span class="line">sed -i <span class="string">&#x27;s#/var/run/mongodb/mongod.pid#/opt/mongodb/mongod.pid#g&#x27;</span> /opt/mongodb/mongod.conf</span><br><span class="line"><span class="comment"># 4. 查看版本号</span></span><br><span class="line">mongod --version</span><br><span class="line"><span class="comment"># 5. 启动</span></span><br><span class="line">mongod -f /opt/mongodb/mongod.conf</span><br><span class="line"><span class="comment"># 6. 关闭</span></span><br><span class="line">mongo 127.0.0.1:27071/test</span><br><span class="line">use admin <span class="comment"># 使用 admin 数据库</span></span><br><span class="line">db.shutdownServer()</span><br></pre></td></tr></table></figure>
+
+<h1 id="用户权限"><a href="#用户权限" class="headerlink" title="用户权限"></a>用户权限</h1><h2 id="auth-用户名密码登录"><a href="#auth-用户名密码登录" class="headerlink" title="auth 用户名密码登录"></a>auth 用户名密码登录</h2><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 1. 创建用户</span></span><br><span class="line">db.createUser(&#123;</span><br><span class="line">  user: <span class="string">&quot;ahao&quot;</span>,</span><br><span class="line">  <span class="built_in">pwd</span>: <span class="string">&quot;ahao&quot;</span>,</span><br><span class="line">  customData: &#123;msg:<span class="string">&quot;我是一个新用户&quot;</span>&#125;,</span><br><span class="line">  roles:[&#123;role:<span class="string">&quot;dbOwner&quot;</span>, db:<span class="string">&quot;admin&quot;</span>&#125;]</span><br><span class="line">&#125;)</span><br><span class="line">角色类型: <span class="built_in">read</span>、readWrite、dbAdmin、dbOwner、userAdmin</span><br><span class="line">dbOwner = <span class="built_in">read</span> + readWrite + dbAdmin</span><br><span class="line"></span><br><span class="line"><span class="comment"># 2. 开启auth验证, 修改 /opt/mongodb/mongodb.conf</span></span><br><span class="line">system:</span><br><span class="line">  authorization: enabled</span><br><span class="line">  </span><br><span class="line"><span class="comment"># 3. 启动, 查询所有用户</span></span><br><span class="line">mongod -f /opt/mongodb/mongodb.conf</span><br><span class="line">mongo 127.0.0.1:12345 -u ahao -p ahao</span><br><span class="line">use admin</span><br><span class="line">db.system.users.find()</span><br><span class="line"></span><br><span class="line"><span class="comment"># 4. 创建角色</span></span><br><span class="line">db.createRole(&#123;</span><br><span class="line">  _id: <span class="string">&quot;唯一id&quot;</span>,</span><br><span class="line">  role: <span class="string">&quot;角色名&quot;</span>,</span><br><span class="line">  db: <span class="string">&quot;数据库名&quot;</span>,</span><br><span class="line">  privileges: [</span><br><span class="line">    &#123; resource:&#123;db:<span class="string">&quot;数据库名&quot;</span>, collection:<span class="string">&quot;集合名&quot;</span>, actions:[允许执行的操作]&#125;&#125;</span><br><span class="line">  ]</span><br><span class="line">  roles: [继承哪些角色]</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<h2 id="集群keyfile"><a href="#集群keyfile" class="headerlink" title="集群keyfile"></a>集群keyfile</h2><p>keyfile文件认证</p>
+<h1 id="数据库"><a href="#数据库" class="headerlink" title="数据库"></a>数据库</h1><p><code>mongodb</code>数据库不用新建, 直接<code>use</code>, 数据库会在插入记录的时候自动创建数据库及数据集合.</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 1. 新建数据库(插入记录时自动创建数据库及数据集合)</span></span><br><span class="line">use test_db</span><br><span class="line">db.test_collection.insert(&#123;x:1&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 2. 显示数据库</span></span><br><span class="line">show dbs</span><br><span class="line">  admin   0.000GB</span><br><span class="line">  <span class="built_in">local</span>   0.000GB</span><br><span class="line">  test_db 0.000GB</span><br><span class="line"></span><br><span class="line"><span class="comment"># 3. 删除数据库</span></span><br><span class="line">use test_db</span><br><span class="line">db.dropDatabase()</span><br></pre></td></tr></table></figure>
+
+<h1 id="表collection"><a href="#表collection" class="headerlink" title="表collection"></a>表collection</h1><p>同样, 数据表也是在插入时自动创建.<br>和关系型数据库不同, 不需要提前设置字段.</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 1. 切换到 test 数据库</span></span><br><span class="line">use test_db</span><br><span class="line"></span><br><span class="line"><span class="comment"># 2. 创建数据表(插入记录时自动创建)</span></span><br><span class="line">show collections <span class="comment"># 没有表</span></span><br><span class="line">db.test_collection.insert(&#123;x:1&#125;)</span><br><span class="line">show collections</span><br><span class="line">  test_collection</span><br><span class="line"></span><br><span class="line"><span class="comment"># 3. 删除数据表</span></span><br><span class="line">&gt; db.test_collection.drop()</span><br></pre></td></tr></table></figure>
+
+<h1 id="索引"><a href="#索引" class="headerlink" title="索引"></a>索引</h1><p>在<code>v3.0.0</code>后, <a target="_blank" rel="noopener" href="https://docs.mongodb.com/manual/reference/method/db.collection.ensureIndex/">官方文档</a>提到创建索引的函数<code>createIndex()</code>替换掉了<code>ensureIndex()</code>. 当然非要使用<code>ensureIndex()</code>也是可以的.<br>创建索引的格式: <code>db.集合名.createIndex(&#123;索引值&#125;, &#123;索引属性&#125;)</code></p>
+<table>
+<thead>
+<tr>
+<th align="center">索引属性</th>
+<th align="center">语法</th>
+<th align="center">默认</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">名称</td>
+<td align="center"><code>db.集合名.createIndex(&#123;索引值&#125;, &#123;name:&quot;索引名称&quot;&#125;)</code></td>
+<td align="center"><code>字段名_1</code>或<code>字段名_-1</code></td>
+</tr>
+<tr>
+<td align="center">唯一性</td>
+<td align="center"><code>db.集合名.createIndex(&#123;索引值&#125;, &#123;unique:[true or false]&#125;)</code></td>
+<td align="center"><code>false</code></td>
+</tr>
+<tr>
+<td align="center">稀疏性</td>
+<td align="center"><code>db.集合名.createIndex(&#123;索引值&#125;, &#123;sparse:[true or false]&#125;)</code></td>
+<td align="center"><code>true</code>, 避免为插入记录不存在的字段创建索引</td>
+</tr>
+<tr>
+<td align="center">是否定时删除</td>
+<td align="center"><code>db.集合名.createIndex(&#123;索引值&#125;, &#123;expireAfterSeconds:秒数&#125;)</code></td>
+<td align="center">不删除</td>
+</tr>
+</tbody></table>
+<h2 id="没有属性的普通索引"><a href="#没有属性的普通索引" class="headerlink" title="没有属性的普通索引"></a>没有属性的普通索引</h2><table>
+<thead>
+<tr>
+<th align="center">索引类型</th>
+<th align="center">说明</th>
+<th align="center">创建方法(1为正序, -1为逆序)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center"><code>_id</code>索引</td>
+<td align="center">自动创建的索引, 作为记录的唯一主键</td>
+<td align="center"><code>db.test_collection.insert(&#123;name:1&#125;)</code></td>
+</tr>
+<tr>
+<td align="center">单键索引</td>
+<td align="center">为一个字段创建的索引, 字段值为<strong>单个</strong>元素</td>
+<td align="center"><code>db.test_collection.createIndex(&#123;name:1&#125;)</code></td>
+</tr>
+<tr>
+<td align="center">多键索引</td>
+<td align="center">为一个字段创建的索引, 字段值为<strong>数组</strong>元素</td>
+<td align="center"><code>db.test_collection.createIndex(&#123;class:1&#125;)</code></td>
+</tr>
+<tr>
+<td align="center">复合索引</td>
+<td align="center">为<strong>多个</strong>字段创建的索引</td>
+<td align="center"><code>db.test_collection.createIndex(&#123;name:1, age:1&#125;)</code></td>
+</tr>
+</tbody></table>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 使用 test 数据库</span></span><br><span class="line">use test_db</span><br><span class="line"></span><br><span class="line"><span class="comment"># 1. 查看索引, 格式: db.数据集合.getIndexes()</span></span><br><span class="line">db.test_collection.getIndexes()</span><br><span class="line"></span><br><span class="line"><span class="comment"># 2. _id索引自动创建, 每条插入的数据都会自动生成一个`_id`字段, 作为`key`.</span></span><br><span class="line">db.test_collection.insert(&#123;name:<span class="string">&quot;Tom&quot;</span>, age:12, friends:[<span class="string">&quot;Sum&quot;</span>, <span class="string">&quot;Kim&quot;</span>]&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 3. 创建索引, 格式: db.数据表.createIndex(&#123;索引字段: [1|-1]&#125;), 1为正序, -1为逆序</span></span><br><span class="line"><span class="comment">## 单个元素的单键索引</span></span><br><span class="line">db.test_collection.createIndex(&#123;name:1&#125;)</span><br><span class="line"><span class="comment">## 多个元素的多键索引</span></span><br><span class="line">db.test_collection.createIndex(&#123;friends:1&#125;)</span><br><span class="line"><span class="comment">## 多个字段的复合索引</span></span><br><span class="line">db.test_collection.createIndex(&#123;name:1, age:1&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 4. 删除索引</span></span><br><span class="line">db.test_collection.dropIndex(<span class="string">&quot;索引名&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<h2 id="过期索引TTL"><a href="#过期索引TTL" class="headerlink" title="过期索引TTL"></a>过期索引TTL</h2><p>一定时间后会过期的索引, 存储的值必须是时间类型, 如<code>new Date()</code>. 如果是数组, 则取最小的时间.<br>一个字段不能同时有过期索引和复合索引. </p>
+<p>当数据过期时, 对应的数据会自动删除. 但是<code>mongodb</code>删除任务<code>60</code>秒执行一次, 所以过期时间最好不要小于<code>60</code>秒.<br>适用于登录信息、日志信息、缓存等不重要的信息.<br>创建语法: <code>db.数据集合.createIndex(&#123;时间字段:1&#125;, &#123;expireAfterSeconds:秒数&#125;)</code></p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 初始化数据</span></span><br><span class="line">use test_db</span><br><span class="line">db.login_info.insert(&#123;name:<span class="string">&quot;Tom&quot;</span>, login_time:new Date()&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 创建索引, 10秒后过期</span></span><br><span class="line">db.login_info.createIndex(&#123;login_time:1&#125;, &#123;expireAfterSeconds:10&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 等待过期后, 查询不到过期数据</span></span><br><span class="line">db.login_info.find()</span><br></pre></td></tr></table></figure>
+
+<h2 id="文本索引"><a href="#文本索引" class="headerlink" title="文本索引"></a>文本索引</h2><p>说是文本索引, 其实就是对选择的字段进行分词索引. 所选的字段可以一个, 也可以多个.<br>一个数据集只有一个文本索引, 且只能是字符串类型的字段.<br>查询文本索引时, 不允许使用<code>hint()</code>指定索引进行查询.<br>创建语法: <code>db.数据集合.createIndex(&#123;字段:&quot;text&quot;&#125;)</code></p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 单个字段的文本索引</span></span><br><span class="line">db.test_collection.createIndex(&#123;name:<span class="string">&quot;text&quot;</span>&#125;)</span><br><span class="line"><span class="comment"># 多个字段的文本索引</span></span><br><span class="line">db.test_collection.createIndex(&#123;name:<span class="string">&quot;text&quot;</span>, address:<span class="string">&quot;text&quot;</span>&#125;)</span><br><span class="line"><span class="comment"># 所有字段的文本索引</span></span><br><span class="line">db.test_collection.createIndex(&#123;<span class="string">&quot;$**&quot;</span>:<span class="string">&quot;text&quot;</span>&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>查询语法, 多个关键字用空格分隔, 默认为<code>or</code>查询.</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">语法</span><br><span class="line">db.test_collection.find(&#123;</span><br><span class="line">  <span class="variable">$text</span>: &#123;</span><br><span class="line">    <span class="variable">$search</span>: 搜索字符串, </span><br><span class="line">    <span class="variable">$language</span>: 指定语言(社区版不支持中文),</span><br><span class="line">    <span class="variable">$caseSensitive</span>: 是否大小写敏感(默认<span class="literal">false</span>),</span><br><span class="line">    <span class="variable">$diacriticSensitive</span>: 是否区别发音符号(默认<span class="literal">false</span>)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 查询单个关键词, 匹配包含hello或world的文本</span></span><br><span class="line">db.test_collection.find(&#123;<span class="variable">$text</span>:&#123;<span class="variable">$search</span>:<span class="string">&quot;hello world&quot;</span>&#125;&#125;)</span><br><span class="line"><span class="comment"># 查询单个关键词, 匹配包含hello world的文本</span></span><br><span class="line">db.test_collection.find(&#123;<span class="variable">$text</span>:&#123;<span class="variable">$search</span>:<span class="string">&quot;\&quot;hello world\&quot;&quot;</span>&#125;&#125;)</span><br><span class="line"><span class="comment"># 查询多个关键词, 匹配包含hello且不包含world的文本</span></span><br><span class="line">db.test_collection.find(&#123;<span class="variable">$text</span>:&#123;<span class="variable">$search</span>:<span class="string">&quot;hello -world&quot;</span>&#125;&#125;)</span><br><span class="line"><span class="comment"># 查询多个关键词, 查询包含ssl certificate 且 包含authority或key或ssl或certificate中任意一个 的文本</span></span><br><span class="line">db.test_collection.find(&#123;<span class="variable">$text</span>:&#123;<span class="variable">$search</span>:<span class="string">&quot;\&quot;ssl certificate\&quot; authority key&quot;</span>&#125;&#125;)</span><br><span class="line"><span class="comment"># 文本相似度排序</span></span><br><span class="line">db.test_collection.find(&#123;<span class="variable">$text</span>:&#123;<span class="variable">$search</span>:<span class="string">&quot;hello&quot;</span>&#125;&#125;, &#123;score:&#123;<span class="variable">$meta</span>:<span class="string">&quot;textScore&quot;</span>&#125;&#125;).<span class="built_in">sort</span>(&#123;score:&#123;<span class="variable">$meta</span>:<span class="string">&quot;textScore&quot;</span>&#125;&#125;)</span><br></pre></td></tr></table></figure>
+
+<h2 id="2d地理位置索引-平面"><a href="#2d地理位置索引-平面" class="headerlink" title="2d地理位置索引(平面)"></a>2d地理位置索引(平面)</h2><p>插入语法: <code>db.数据集合.insert(&#123;字段名:[经度(-180,180), 纬度(-90,90)]&#125;)</code><br>创建语法: <code>db.数据集合.createIndex(&#123;字段:&quot;2d&quot;&#125;,&#123;min:最小值,max:最大值,bits:精度(默认26) &#125;)</code></p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># $near查询距离(10,20)最近的点</span></span><br><span class="line">db.test_location.find(&#123;loc:&#123;<span class="variable">$near</span>:[10,20]&#125;&#125;)</span><br><span class="line"><span class="comment"># $near查询距离(10,20)最近的10个点</span></span><br><span class="line">db.test_location.find(&#123;loc:&#123;<span class="variable">$near</span>:[10,20]&#125;&#125;).<span class="built_in">limit</span>(10)</span><br><span class="line"><span class="comment"># $near查询距离(10,20)最大距离为10的点</span></span><br><span class="line">db.test_location.find(&#123;loc:&#123;<span class="variable">$near</span>:[10,20], <span class="variable">$maxDistance</span>:10&#125;&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment"># $geoWithin 查询某个形状内的点</span></span><br><span class="line"><span class="comment"># 查询对角坐标为(1,2),(3,4)组成的矩形内的点</span></span><br><span class="line">db.test_location.find(&#123;loc:&#123;<span class="variable">$geoWithin</span>:&#123;<span class="variable">$box</span>:[[1,2],[3,4]]&#125;&#125;&#125;)</span><br><span class="line"><span class="comment"># 查询圆心坐标为(1,2), 半径为3的圆内的点</span></span><br><span class="line">db.test_location.find(&#123;loc:&#123;<span class="variable">$geoWithin</span>:&#123;<span class="variable">$center</span>:[[1,2], 3]&#125;&#125;&#125;)</span><br><span class="line"><span class="comment"># 查询坐标为(1,2),(1,10),(2,10),(1,5)组成的多边形内的点</span></span><br><span class="line">db.test_location.find(&#123;loc:&#123;<span class="variable">$geoWithin</span>:&#123;<span class="variable">$polygon</span>:[[1,2], [1,10], [2,10], [1,5]]&#125;&#125;&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 返回更多数据的查询</span></span><br><span class="line">db.runCommand(&#123;</span><br><span class="line">    geoNear: 集合名,</span><br><span class="line">    near: [x,y],</span><br><span class="line">    minDistance: 最小距离(对2d索引无效, 对2dsphere索引有效),</span><br><span class="line">    maxDistance: 最大距离</span><br><span class="line">    num: 数量</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<h2 id="2dsphere地理位置索引-球面"><a href="#2dsphere地理位置索引-球面" class="headerlink" title="2dsphere地理位置索引(球面)"></a>2dsphere地理位置索引(球面)</h2><p>插入语法: <code>db.数据集合.insert(&#123;字段名:&#123;type:&quot;Point&quot;,coordinates:[经度(-180,180), 纬度(-90,90)]&#125;&#125;)</code><br>创建语法: <code>db.数据集合.createIndex(&#123;字段:&quot;2dsphere&quot;&#125;)</code><br>点用<code>GeoJSON</code>的形式表示, 参考<a target="_blank" rel="noopener" href="https://docs.mongodb.com/manual/reference/geojson/">GeoJSON Objects</a></p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 返回更多数据的查询</span></span><br><span class="line">db.runCommand(&#123;</span><br><span class="line">    geoNear: 集合名,</span><br><span class="line">    near: GeoJSON形式的值,</span><br><span class="line">    minDistance: 最小距离(对2d索引无效, 对2dsphere索引有效),</span><br><span class="line">    maxDistance: 最大距离</span><br><span class="line">    num: 数量</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<h1 id="插入更新删除"><a href="#插入更新删除" class="headerlink" title="插入更新删除"></a>插入更新删除</h1><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 1. 插入数据, 格式: db.数据表.insert(json);</span></span><br><span class="line"><span class="comment"># 插入单条数据</span></span><br><span class="line">&gt; db.test_collection.insert(&#123;name:<span class="string">&quot;小明&quot;</span>, age: 10&#125;)</span><br><span class="line"><span class="comment"># 插入多条数据</span></span><br><span class="line">&gt; <span class="keyword">for</span>(i=1;i&lt;3;i++) db.test_collection.insert(&#123;name:<span class="string">&quot;name&quot;</span>+i, age:i&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 2. 更新数据, 格式: db.数据表.update(查询条件, 修改后的值, 是否不存在则插入, 是否批量更新);</span></span><br><span class="line"><span class="comment">## 会覆盖所有字段, age 字段会删除</span></span><br><span class="line">&gt; db.test_collection.update(&#123;name:<span class="string">&quot;小明&quot;</span>&#125;, &#123;name:<span class="string">&quot;新名字&quot;</span>&#125;)</span><br><span class="line"><span class="comment">## 只更新 name 字段, age 字段不会更新</span></span><br><span class="line">&gt; db.test_collection.update(&#123;name:<span class="string">&quot;小明&quot;</span>&#125;, &#123;<span class="variable">$set</span>&#123;name:<span class="string">&quot;新名字&quot;</span>&#125;&#125;)</span><br><span class="line"><span class="comment">## 不存在则插入数据</span></span><br><span class="line">&gt; db.test_collection.update(&#123;name:<span class="string">&quot;小红&quot;</span>&#125;, &#123;name:<span class="string">&quot;新小红&quot;</span>, age: 11&#125;, <span class="literal">true</span>)</span><br><span class="line"><span class="comment">## 批量更新</span></span><br><span class="line">&gt; db.test_collection.update(&#123;age:10&#125;, &#123;<span class="variable">$set</span>&#123;age: 21&#125;&#125;, <span class="literal">false</span>, <span class="literal">true</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 3. 删除数据</span></span><br><span class="line">&gt; db.test_collection.remove(&#123;age:21&#125;)</span><br></pre></td></tr></table></figure>
+
+<h1 id="查询"><a href="#查询" class="headerlink" title="查询"></a>查询</h1><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 查询所有数据</span></span><br><span class="line">db.test_collection.find()</span><br><span class="line"><span class="comment"># 查询总数</span></span><br><span class="line">db.test_collection.find().count()</span><br><span class="line"><span class="comment"># 查询第4条到第7条数据, 按name倒序排序</span></span><br><span class="line">db.test_collection.find().skip(3).<span class="built_in">limit</span>(4).<span class="built_in">sort</span>(&#123;name: -1&#125;)</span><br><span class="line"><span class="comment"># 查询一条数据</span></span><br><span class="line">db.test_collection.findOne(&#123;name:<span class="string">&quot;小明&quot;</span>&#125;)</span><br><span class="line"><span class="comment"># 查询存在某个字段的记录</span></span><br><span class="line">&gt; db.test_collection.find(&#123;x:&#123;<span class="variable">$exists</span>:<span class="literal">true</span>&#125;&#125;)</span><br><span class="line"><span class="comment"># 按写入顺序逆序10条记录</span></span><br><span class="line">&gt; db.test_collection.find().<span class="built_in">sort</span>(&#123;<span class="variable">$natural</span>:-1&#125;).<span class="built_in">limit</span>(10)</span><br></pre></td></tr></table></figure>
+    </div>
+
+    
+    
+    
+      
+
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>很高兴得到您的赞赏</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="/images/config/wechatpay.jpg" alt="Ahaochan 微信">
+        <span>微信</span>
+      </div>
+      <div>
+        <img src="/images/config/alipay.jpg" alt="Ahaochan 支付宝">
+        <span>支付宝</span>
+      </div>
+
+  </div>
+</div>
+
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>Ahaochan
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://blog.ahao.moe/posts/MongoDB_simple_use.html" title="MongoDB学习笔记">https://blog.ahao.moe/posts/MongoDB_simple_use.html</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="followme">
+  <span>欢迎关注我的其它发布渠道</span>
+
+  <div class="social-list">
+
+      <div class="social-item">
+        <a target="_blank" class="social-link" href="/images/config/wechat_channel.jpg">
+          <span class="icon">
+            <i class="fab fa-weixin"></i>
+          </span>
+
+          <span class="label">WeChat</span>
+        </a>
+      </div>
+
+      <div class="social-item">
+        <a target="_blank" class="social-link" href="/rss.xml">
+          <span class="icon">
+            <i class="fa fa-rss"></i>
+          </span>
+
+          <span class="label">RSS</span>
+        </a>
+      </div>
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/MongoDB/" rel="tag"><i class="fa fa-tag"></i> MongoDB</a>
+          </div>
+
+        
+  <div class="post-widgets">
+    <div class="wpac-rating-container">
+      <div id="wpac-rating"></div>
+    </div>
+  </div>
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/posts/NoSuchMethodError_caused_by_Automatic_Type_Conversion.html" rel="prev" title="自动转型带来的NoSuchMethodError">
+                  <i class="fa fa-chevron-left"></i> 自动转型带来的NoSuchMethodError
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/posts/multi_user_of_shadowsocks_libev.html" rel="next" title="基于shadowsocks-libev+simple-obfs的单机多用户搭建">
+                  基于shadowsocks-libev+simple-obfs的单机多用户搭建 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    
+  <div class="comments disqusjs">
+    <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+  </div>
+  
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2016 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ahaochan</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">172k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">10:25</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+  <div class="addthis_inline_share_toolbox">
+    <script src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-59047aaab9bddb67" async="async"></script>
+  </div><script color="0,0,255" opacity="0.5" zIndex="-1" count="99" src="https://cdn.jsdelivr.net/npm/canvas-nest.js@1/dist/canvas-nest.js"></script>
+
+
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js" integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lozad.js/1.16.0/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script>
+
+  
+  <script src="https://embed.widgetpack.com/widget.js" async></script>
+  <script class="next-config" data-name="rating" type="application/json">{"enable":true,"id":33332,"color":"#fc6423"}</script>
+  <script src="/js/third-party/rating.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.0/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/9.1.7/mermaid.min.js","integrity":"sha256-G58AID1YoX5YaEtWfXSI0VLrZ6N4kvNvwg0BI8zUFxE="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/quicklink/2.3.0/quicklink.umd.js" integrity="sha256-yvJQOINiH9fWemHn0vCA5lsHWJaHs6/ZmO+1Ft04SvM=" crossorigin="anonymous"></script>
+  <script class="next-config" data-name="quicklink" type="application/json">{"enable":true,"home":true,"archive":true,"delay":true,"timeout":3000,"priority":true,"url":"https://blog.ahao.moe/posts/MongoDB_simple_use.html"}</script>
+  <script src="/js/third-party/quicklink.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/disqusjs/3.0.2/styles/disqusjs.css" integrity="sha256-71XarXwNr1Td27HmZI9zjY+rMzRdush6/glo6VFXp7o=" crossorigin="anonymous">
+
+<script class="next-config" data-name="disqusjs" type="application/json">{"enable":true,"api":"https://disqus.skk.moe/disqus/","apikey":"OC1zbKiBF5cPo1EJObILJmZftsWl4ZbbAh9YqV0qNxiMq8rQFqBiw8PYcXQCyG9S","shortname":"ahaochan-blog","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/disqusjs/3.0.2/disqusjs.es2015.umd.min.js","integrity":"sha256-okP99ZQKVpIy7+NogAMpGlIQzJa9XKXhIJcFgdju5bU="}}</script>
+<script src="/js/third-party/comments/disqusjs.js"></script>
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"scale":1.2,"jsonPath":"https://cdn.jsdelivr.net/npm/live2d-widget-model-shizuku@1.0.5/assets/shizuku.model.json"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":false},"react":{"opacity":0.7},"log":false});</script></body>
+</html>

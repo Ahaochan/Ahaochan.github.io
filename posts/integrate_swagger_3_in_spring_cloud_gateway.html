@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/config/favicon-32x32-next.jpg">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/config/favicon-16x16-next.jpg">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="google-site-verification" content="ZmER9fymckNfZ_Zxw6p3fpvqhvR6LitG9pR-cNVflx0">
+  <meta name="msvalidate.01" content="5351f65e5e79bb62584189a5e6906b8b">
+  <meta name="baidu-site-verification" content="jgtczlqzuk">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic%7CConsolas:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" integrity="sha256-AbA177XfpSnFEvgpYu1jMygiLabzPCJCRIBtR5jGc0k=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"blog.ahao.moe","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.13.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"disqusjs","storage":true,"lazyload":true,"nav":null,"activeClass":"disqusjs"},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":true}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="前言网上关于zuul聚合各个微服务的swagger已经有很多文章了, 但是没有一个完整的关于spring cloud gateway的聚合教程.研究了一天, 写了个demo, 然后写篇文章记录一下.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Spring Cloud Gateway 聚合 swagger 3.0.0">
+<meta property="og:url" content="https://blog.ahao.moe/posts/integrate_swagger_3_in_spring_cloud_gateway.html">
+<meta property="og:site_name" content="Ahaochan&#39;s Blog">
+<meta property="og:description" content="前言网上关于zuul聚合各个微服务的swagger已经有很多文章了, 但是没有一个完整的关于spring cloud gateway的聚合教程.研究了一天, 写了个demo, 然后写篇文章记录一下.">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://blog.ahao.moe/images/SpringCloudGateway%E8%81%9A%E5%90%88swagger3_01.png">
+<meta property="article:published_time" content="2021-02-23T03:55:00.000Z">
+<meta property="article:modified_time" content="2022-11-21T02:35:06.080Z">
+<meta property="article:author" content="Ahaochan">
+<meta property="article:tag" content="Spring Cloud">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://blog.ahao.moe/images/SpringCloudGateway%E8%81%9A%E5%90%88swagger3_01.png">
+
+
+<link rel="canonical" href="https://blog.ahao.moe/posts/integrate_swagger_3_in_spring_cloud_gateway.html">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://blog.ahao.moe/posts/integrate_swagger_3_in_spring_cloud_gateway.html","path":"posts/integrate_swagger_3_in_spring_cloud_gateway.html","title":"Spring Cloud Gateway 聚合 swagger 3.0.0"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Spring Cloud Gateway 聚合 swagger 3.0.0 | Ahaochan's Blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-108454440-1"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"UA-108454440-1","only_pageview":false}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+  <script src="/js/third-party/analytics/baidu-analytics.js"></script>
+  <script async src="https://hm.baidu.com/hm.js?32635d85cec06e8822234c4d2aec2b54"></script>
+
+
+
+
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+  (adsbygoogle = window.adsbygoogle || []).push({
+    google_ad_client: "ca-pub-5208025300813046",
+    enable_page_level_ads: true
+  });
+</script>
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/rss.xml" title="Ahaochan's Blog" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Ahaochan's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">你也是程序猿friends呢~</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">91</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">30</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">217</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Swagger%E5%BC%95%E5%85%A5"><span class="nav-number">2.</span> <span class="nav-text">Swagger引入</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%81%9A%E5%90%88Swagger"><span class="nav-number">3.</span> <span class="nav-text">聚合Swagger</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Flux-%E8%BD%AC%E5%8C%96%E4%B8%BA-List-%E5%AF%B9%E8%B1%A1"><span class="nav-number">3.1.</span> <span class="nav-text">Flux 转化为 List 对象</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%8E%B7%E5%8F%96%E8%B7%AF%E7%94%B1%E8%A7%84%E5%88%99"><span class="nav-number">3.2.</span> <span class="nav-text">获取路由规则</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#genkey-0%E6%98%AF%E4%BB%8E%E5%93%AA%E6%9D%A5%E7%9A%84"><span class="nav-number">3.3.</span> <span class="nav-text">_genkey_0是从哪来的?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%8D%E5%8A%A1id%E7%89%B9%E5%88%AB%E9%95%BF%E6%80%8E%E4%B9%88%E5%8A%9E"><span class="nav-number">3.4.</span> <span class="nav-text">服务id特别长怎么办</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">4.</span> <span class="nav-text">总结</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Ahaochan"
+      src="/images/config/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Ahaochan</p>
+  <div class="site-description" itemprop="description">你也是程序猿friends呢~</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">217</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">30</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">91</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Ahaochan" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Ahaochan" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:844394093@qq.com" title="E-Mail → mailto:844394093@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://greasyfork.org/zh-CN/users/30831" title="Greasyfork → https:&#x2F;&#x2F;greasyfork.org&#x2F;zh-CN&#x2F;users&#x2F;30831" rel="noopener" target="_blank"><i class="fab fa-google fa-fw"></i>Greasyfork</a>
+      </span>
+  </div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/Ahaochan" class="github-corner" title="我的Github" aria-label="我的Github" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blog.ahao.moe/posts/integrate_swagger_3_in_spring_cloud_gateway.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/config/avatar.jpg">
+      <meta itemprop="name" content="Ahaochan">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ahaochan's Blog">
+      <meta itemprop="description" content="你也是程序猿friends呢~">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Spring Cloud Gateway 聚合 swagger 3.0.0 | Ahaochan's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Spring Cloud Gateway 聚合 swagger 3.0.0<a href="https://github.com/Ahaochan/Ahaochan.github.io/blob/source/source/_posts/spring/SpringCloud-SpringCloudGateway%E8%81%9A%E5%90%88swagger3.md" class="post-edit-link" title="编辑" rel="noopener" target="_blank"><i class="fa fa-pen-nib"></i></a>
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-02-23 11:55:00" itemprop="dateCreated datePublished" datetime="2021-02-23T11:55:00+08:00">2021-02-23</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Spring-Cloud/" itemprop="url" rel="index"><span itemprop="name">Spring Cloud</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>1.2k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>4 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>网上关于<code>zuul</code>聚合各个微服务的<code>swagger</code>已经有很多文章了, 但是没有一个完整的关于<code>spring cloud gateway</code>的聚合教程.<br>研究了一天, 写了个<code>demo</code>, 然后写篇文章记录一下.</p>
+<span id="more"></span>
+
+<h1 id="Swagger引入"><a href="#Swagger引入" class="headerlink" title="Swagger引入"></a>Swagger引入</h1><p><code>Springfox</code>现在已经更新到<code>3.0.0</code>了, 并且也支持了<code>starter</code>方式.<br>直接<a target="_blank" rel="noopener" href="https://mvnrepository.com/artifact/io.springfox/springfox-boot-starter">引入</a>, 不需要加任何注解.</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>io.springfox<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>springfox-boot-starter<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>3.0.0<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h1 id="聚合Swagger"><a href="#聚合Swagger" class="headerlink" title="聚合Swagger"></a>聚合Swagger</h1><p>和<code>zuul</code>的套路一样, 我们要实现<code>SwaggerResourcesProvider</code>接口, 然后根据各个服务的服务名拼接<code>uri</code>.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Primary</span></span><br><span class="line"><span class="meta">@Configuration(proxyBeanMethods = false)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">SwaggerConfig</span> <span class="keyword">implements</span> <span class="title class_">SwaggerResourcesProvider</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> RouteDefinitionLocator routeDefinitionLocator; <span class="comment">// 获取路由定义</span></span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> List&lt;SwaggerResource&gt; <span class="title function_">get</span><span class="params">()</span> &#123;</span><br><span class="line">        List&lt;SwaggerResource&gt; swaggerResourceList = <span class="keyword">new</span> <span class="title class_">ArrayList</span>&lt;&gt;();</span><br><span class="line">        routeDefinitionLocator.getRouteDefinitions()</span><br><span class="line">            .map(<span class="built_in">this</span>::swaggerResource)           <span class="comment">// 转化为 SwaggerResource 对象</span></span><br><span class="line">            .subscribe(swaggerResourceList::add); <span class="comment">// Flux 转化为 List 对象</span></span><br><span class="line">        <span class="keyword">return</span> swaggerResourceList;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> SwaggerResource <span class="title function_">swaggerResource</span><span class="params">(RouteDefinition definition)</span> &#123;</span><br><span class="line">        <span class="type">String</span> <span class="variable">location</span> <span class="operator">=</span> definition.getPredicates().stream()</span><br><span class="line">            .filter(predicate -&gt; <span class="string">&quot;Path&quot;</span>.equalsIgnoreCase(predicate.getName()))</span><br><span class="line">            .findFirst() <span class="comment">// 获取第一个名为 Path 的 predicate, 里面含有路由规则</span></span><br><span class="line">            .map(PredicateDefinition::getArgs) </span><br><span class="line">            <span class="comment">// 如果是从注册中心的路由规则, key 就是 pattern, 否则就是 _genkey_0</span></span><br><span class="line">            .map(map -&gt; map.getOrDefault(<span class="string">&quot;pattern&quot;</span>, map.get(NameUtils.GENERATED_NAME_PREFIX + <span class="string">&quot;0&quot;</span>)))</span><br><span class="line">            <span class="comment">// 拼接 url</span></span><br><span class="line">            .map(pattern -&gt; StringUtils.substringBefore(pattern, <span class="string">&quot;*&quot;</span>))</span><br><span class="line">            .map(pattern -&gt; pattern + <span class="string">&quot;v2/api-docs&quot;</span>)</span><br><span class="line">            .orElse(<span class="literal">null</span>);</span><br><span class="line"></span><br><span class="line">        <span class="type">SwaggerResource</span> <span class="variable">swaggerResource</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">SwaggerResource</span>();</span><br><span class="line">        swaggerResource.setName(definition.getId());</span><br><span class="line">        swaggerResource.setLocation(location);</span><br><span class="line">        <span class="keyword">return</span> swaggerResource;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>整个执行流程很简单, 就是从<strong>路由定义</strong>里面获取<strong>路由规则</strong>, 拼接成<code>swagger</code>的地址, 丢到<code>SwaggerResource</code>里面.<br>但是中间有一些比较坑的地方.</p>
+<h2 id="Flux-转化为-List-对象"><a href="#Flux-转化为-List-对象" class="headerlink" title="Flux 转化为 List 对象"></a>Flux 转化为 List 对象</h2><p>不懂<code>Mono</code>和<code>Flux</code>的去搜索, 自己实现一个<code>webflux</code>的<code>hello world</code>程序.<br><code>Mono</code>和<code>Flux</code>都是支持泛型的类. 可以简单地认为, <code>Mono</code>是包装了一个对象的对象, <code>Flux</code>是包装了一堆对象的集合.<br>要进行转换有两种方法</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">List&lt;SwaggerResource&gt; swaggerResourceList1 = <span class="keyword">new</span> <span class="title class_">ArrayList</span>&lt;&gt;();</span><br><span class="line">routeDefinitionLocator.getRouteDefinitions()</span><br><span class="line">        .map(<span class="built_in">this</span>::swaggerResource)</span><br><span class="line">        .subscribe(swaggerResourceList1::add);</span><br><span class="line">    </span><br><span class="line">List&lt;SwaggerResource&gt; swaggerResourceList2 = routeDefinitionLocator.getRouteDefinitions()</span><br><span class="line">        .map(<span class="built_in">this</span>::swaggerResource)</span><br><span class="line">        .collectList()</span><br><span class="line">        .block(Duration.ofSeconds(<span class="number">10</span>));</span><br></pre></td></tr></table></figure>
+
+<p>但是我们只能用第一种, 第二种方法会抛出<code>IllegalStateException</code>异常.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// reactor.core.publisher.Mono</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">class</span> <span class="title class_">Mono</span>&lt;T&gt; <span class="keyword">implements</span> <span class="title class_">CorePublisher</span>&lt;T&gt; &#123;</span><br><span class="line">    <span class="keyword">public</span> T <span class="title function_">block</span><span class="params">(Duration timeout)</span> &#123;</span><br><span class="line">        BlockingMonoSubscriber&lt;T&gt; subscriber = <span class="keyword">new</span> <span class="title class_">BlockingMonoSubscriber</span>&lt;&gt;();</span><br><span class="line">        subscribe((Subscriber&lt;T&gt;) subscriber);</span><br><span class="line">        <span class="keyword">return</span> subscriber.blockingGet(timeout.toMillis(), TimeUnit.MILLISECONDS);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// reactor.core.publisher.BlockingSingleSubscriber</span></span><br><span class="line"><span class="keyword">abstract</span> <span class="keyword">class</span> <span class="title class_">BlockingSingleSubscriber</span>&lt;T&gt; <span class="keyword">extends</span> <span class="title class_">CountDownLatch</span> <span class="keyword">implements</span> <span class="title class_">InnerConsumer</span>&lt;T&gt;, Disposable &#123;</span><br><span class="line">    <span class="keyword">final</span> T <span class="title function_">blockingGet</span><span class="params">(<span class="type">long</span> timeout, TimeUnit unit)</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (Schedulers.isInNonBlockingThread()) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">IllegalStateException</span>(<span class="string">&quot;block()/blockFirst()/blockLast() are blocking, which is not supported in thread &quot;</span> + Thread.currentThread().getName());</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// reactor.core.scheduler.Schedulers</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">class</span> <span class="title class_">Schedulers</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="type">boolean</span> <span class="title function_">isInNonBlockingThread</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> Thread.currentThread() <span class="keyword">instanceof</span> NonBlocking;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="获取路由规则"><a href="#获取路由规则" class="headerlink" title="获取路由规则"></a>获取路由规则</h2><p><code>gateway</code>会从注册中心获取服务的相关信息, 初始化路由规则.<br><code>GatewayDiscoveryClientAutoConfiguration</code>会为<code>DiscoveryLocatorProperties</code>属性生成一个初始化的<code>PredicateDefinition</code>集合, 有点像原型模式.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Configuration(proxyBeanMethods = false)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">GatewayDiscoveryClientAutoConfiguration</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> List&lt;PredicateDefinition&gt; <span class="title function_">initPredicates</span><span class="params">()</span> &#123;</span><br><span class="line">        ArrayList&lt;PredicateDefinition&gt; definitions = <span class="keyword">new</span> <span class="title class_">ArrayList</span>&lt;&gt;();</span><br><span class="line">        <span class="comment">// <span class="doctag">TODO:</span> add a predicate that matches the url at /serviceId?</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">// add a predicate that matches the url at /serviceId/**</span></span><br><span class="line">        <span class="type">PredicateDefinition</span> <span class="variable">predicate</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">PredicateDefinition</span>();</span><br><span class="line">        predicate.setName(<span class="string">&quot;Path&quot;</span>); <span class="comment">// 所以上面才要根据 Path 进行过滤</span></span><br><span class="line">        predicate.addArg(<span class="string">&quot;pattern&quot;</span>, <span class="string">&quot;&#x27;/&#x27;+serviceId+&#x27;/**&#x27;&quot;</span>); <span class="comment">// 所以上面才要根据 pattern 进行过滤</span></span><br><span class="line">        definitions.add(predicate);</span><br><span class="line">        <span class="keyword">return</span> definitions;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="keyword">public</span> DiscoveryLocatorProperties <span class="title function_">discoveryLocatorProperties</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="type">DiscoveryLocatorProperties</span> <span class="variable">properties</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">DiscoveryLocatorProperties</span>();</span><br><span class="line">        properties.setPredicates(initPredicates());</span><br><span class="line">        properties.setFilters(initFilters());</span><br><span class="line">        <span class="keyword">return</span> properties;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// org.springframework.cloud.gateway.discovery.DiscoveryClientRouteDefinitionLocator</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">DiscoveryClientRouteDefinitionLocator</span> <span class="keyword">implements</span> <span class="title class_">RouteDefinitionLocator</span> &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> Flux&lt;RouteDefinition&gt; <span class="title function_">getRouteDefinitions</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="comment">// 省略部分代码</span></span><br><span class="line">        <span class="keyword">return</span> serviceInstances.filter(instances -&gt; !instances.isEmpty())</span><br><span class="line">                .map(instances -&gt; instances.get(<span class="number">0</span>)).filter(includePredicate)</span><br><span class="line">                .map(instance -&gt; &#123;</span><br><span class="line">                    <span class="comment">// 1. 获取服务名</span></span><br><span class="line">                    <span class="type">String</span> <span class="variable">serviceId</span> <span class="operator">=</span> instance.getServiceId();</span><br><span class="line"></span><br><span class="line">                    <span class="type">RouteDefinition</span> <span class="variable">routeDefinition</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">RouteDefinition</span>();</span><br><span class="line">                    routeDefinition.setId(<span class="built_in">this</span>.routeIdPrefix + serviceId);</span><br><span class="line">                    <span class="type">String</span> <span class="variable">uri</span> <span class="operator">=</span> urlExpr.getValue(evalCtxt, instance, String.class);</span><br><span class="line">                    routeDefinition.setUri(URI.create(uri));</span><br><span class="line"></span><br><span class="line">                    <span class="keyword">final</span> <span class="type">ServiceInstance</span> <span class="variable">instanceForEval</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">DelegatingServiceInstance</span>(instance, properties);</span><br><span class="line"></span><br><span class="line">                    <span class="comment">// 2. 获取 GatewayDiscoveryClientAutoConfiguration 初始化的默认 Predicate</span></span><br><span class="line">                    <span class="keyword">for</span> (PredicateDefinition original : <span class="built_in">this</span>.properties.getPredicates()) &#123;</span><br><span class="line">                        <span class="comment">// 3. 为服务初始化它自己的 Predicate 定义. 包括路由规则</span></span><br><span class="line">                        <span class="type">PredicateDefinition</span> <span class="variable">predicate</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">PredicateDefinition</span>();</span><br><span class="line">                        predicate.setName(original.getName());</span><br><span class="line">                        <span class="keyword">for</span> (Map.Entry&lt;String, String&gt; entry : original.getArgs().entrySet()) &#123;</span><br><span class="line">                            <span class="comment">// 将 &#x27;/&#x27;+serviceId+&#x27;/**&#x27; 表达式替换成真正的路由规则</span></span><br><span class="line">                            <span class="type">String</span> <span class="variable">value</span> <span class="operator">=</span> parser.parseExpression(entry.getValue()).getValue(evalCtxt, instanceForEval, String.class);</span><br><span class="line">                            predicate.addArg(entry.getKey(), value);</span><br><span class="line">                        &#125;</span><br><span class="line">                        routeDefinition.getPredicates().add(predicate);</span><br><span class="line">                    &#125;</span><br><span class="line"></span><br><span class="line">                    <span class="keyword">return</span> routeDefinition;</span><br><span class="line">                &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="genkey-0是从哪来的"><a href="#genkey-0是从哪来的" class="headerlink" title="_genkey_0是从哪来的?"></a>_genkey_0是从哪来的?</h2><p>在上面的源码分析里已经看到了<code>pattern</code>这个<code>key</code>是从哪里生成的了.<br>但是为什么还有一个<code>_genkey_0</code>呢?</p>
+<p>因为如果是手动在配置文件里面配置服务的话, <code>gateway</code>会自动生成<code>key</code>.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// org.springframework.cloud.gateway.support.NameUtils</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">class</span> <span class="title class_">NameUtils</span> &#123;</span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">String</span> <span class="variable">GENERATED_NAME_PREFIX</span> <span class="operator">=</span> <span class="string">&quot;_genkey_&quot;</span>;</span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">static</span> String <span class="title function_">generateName</span><span class="params">(<span class="type">int</span> i)</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> GENERATED_NAME_PREFIX + i;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// org.springframework.cloud.gateway.handler.predicate.PredicateDefinition</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">PredicateDefinition</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">PredicateDefinition</span><span class="params">(String text)</span> &#123; <span class="comment">// 解析配置文件里的规则, 如 Path=/api/**</span></span><br><span class="line">        <span class="type">int</span> <span class="variable">eqIdx</span> <span class="operator">=</span> text.indexOf(<span class="string">&#x27;=&#x27;</span>);</span><br><span class="line">        <span class="keyword">if</span> (eqIdx &lt;= <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">ValidationException</span>(<span class="string">&quot;Unable to parse PredicateDefinition text &#x27;&quot;</span> + text + <span class="string">&quot;&#x27;&quot;</span> + <span class="string">&quot;, must be of the form name=value&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        setName(text.substring(<span class="number">0</span>, eqIdx));</span><br><span class="line"></span><br><span class="line">        String[] args = tokenizeToStringArray(text.substring(eqIdx + <span class="number">1</span>), <span class="string">&quot;,&quot;</span>);</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; args.length; i++) &#123;</span><br><span class="line">            <span class="comment">// 注意这里</span></span><br><span class="line">            <span class="built_in">this</span>.args.put(NameUtils.generateName(i), args[i]);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>看到这, 你就会发现, 我写的代码其实有一个问题, 如果配置文件里有多个<code>predicate</code>.<br>那么一定要保证<code>Path</code>是第<code>0</code>个, 否则就获取不到路由规则. 目前也没想到什么好办法, 就这样将就用吧.</p>
+<h2 id="服务id特别长怎么办"><a href="#服务id特别长怎么办" class="headerlink" title="服务id特别长怎么办"></a>服务id特别长怎么办</h2><p>有的同学会发现, 注册中心生成的服务<code>id</code>特别长, 不美观.<br><del>我只想安安静静做一个美男子</del><br>我只想要显示服务名, 可以把前缀都去掉吗?</p>
+<img data-src="/images/SpringCloudGateway%E8%81%9A%E5%90%88swagger3_01.png" class="">
+
+<p>答案是不行.<br>在配置文件中加入配置项<code>spring.cloud.gateway.discovery.locator.route-id-prefix: &quot;你想要的前缀&quot;</code>即可.<br>但是不能填空字符串.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// org.springframework.cloud.gateway.discovery.DiscoveryClientRouteDefinitionLocator</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">DiscoveryClientRouteDefinitionLocator</span> <span class="keyword">implements</span> <span class="title class_">RouteDefinitionLocator</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="title function_">DiscoveryClientRouteDefinitionLocator</span><span class="params">(String discoveryClientName, DiscoveryLocatorProperties properties)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.properties = properties;</span><br><span class="line">        <span class="comment">// 如果判断是空字符串, 就用默认的前缀了</span></span><br><span class="line">        <span class="keyword">if</span> (StringUtils.hasText(properties.getRouteIdPrefix())) &#123;</span><br><span class="line">            routeIdPrefix = properties.getRouteIdPrefix();</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="comment">// 默认的 discoveryClientName 是 discoveryClient.getClass().getSimpleName()</span></span><br><span class="line">            routeIdPrefix = discoveryClientName + <span class="string">&quot;_&quot;</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        evalCtxt = SimpleEvaluationContext.forReadOnlyDataBinding().withInstanceMethods().build();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>实际的例子可以看我在<code>github</code>上的项目<a target="_blank" rel="noopener" href="https://github.com/Ahaochan/project/tree/master/ahao-spring-cloud-gateway"><code>ahao-spring-cloud-gateway</code></a></p>
+
+    </div>
+
+    
+    
+    
+      
+
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>很高兴得到您的赞赏</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="/images/config/wechatpay.jpg" alt="Ahaochan 微信">
+        <span>微信</span>
+      </div>
+      <div>
+        <img src="/images/config/alipay.jpg" alt="Ahaochan 支付宝">
+        <span>支付宝</span>
+      </div>
+
+  </div>
+</div>
+
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>Ahaochan
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://blog.ahao.moe/posts/integrate_swagger_3_in_spring_cloud_gateway.html" title="Spring Cloud Gateway 聚合 swagger 3.0.0">https://blog.ahao.moe/posts/integrate_swagger_3_in_spring_cloud_gateway.html</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="followme">
+  <span>欢迎关注我的其它发布渠道</span>
+
+  <div class="social-list">
+
+      <div class="social-item">
+        <a target="_blank" class="social-link" href="/images/config/wechat_channel.jpg">
+          <span class="icon">
+            <i class="fab fa-weixin"></i>
+          </span>
+
+          <span class="label">WeChat</span>
+        </a>
+      </div>
+
+      <div class="social-item">
+        <a target="_blank" class="social-link" href="/rss.xml">
+          <span class="icon">
+            <i class="fa fa-rss"></i>
+          </span>
+
+          <span class="label">RSS</span>
+        </a>
+      </div>
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/Spring-Cloud/" rel="tag"><i class="fa fa-tag"></i> Spring Cloud</a>
+          </div>
+
+        
+  <div class="post-widgets">
+    <div class="wpac-rating-container">
+      <div id="wpac-rating"></div>
+    </div>
+  </div>
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/posts/garbage_collection_of_jvm.html" rel="prev" title="JVM垃圾收集简介">
+                  <i class="fa fa-chevron-left"></i> JVM垃圾收集简介
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/posts/PPT_how_to_replace_font_by_vba.html" rel="next" title="PPT如何使用VBA批量替换字体">
+                  PPT如何使用VBA批量替换字体 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    
+  <div class="comments disqusjs">
+    <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+  </div>
+  
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2016 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ahaochan</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">172k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">10:25</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+  <div class="addthis_inline_share_toolbox">
+    <script src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-59047aaab9bddb67" async="async"></script>
+  </div><script color="0,0,255" opacity="0.5" zIndex="-1" count="99" src="https://cdn.jsdelivr.net/npm/canvas-nest.js@1/dist/canvas-nest.js"></script>
+
+
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js" integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lozad.js/1.16.0/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script>
+
+  
+  <script src="https://embed.widgetpack.com/widget.js" async></script>
+  <script class="next-config" data-name="rating" type="application/json">{"enable":true,"id":33332,"color":"#fc6423"}</script>
+  <script src="/js/third-party/rating.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.0/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/9.1.7/mermaid.min.js","integrity":"sha256-G58AID1YoX5YaEtWfXSI0VLrZ6N4kvNvwg0BI8zUFxE="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/quicklink/2.3.0/quicklink.umd.js" integrity="sha256-yvJQOINiH9fWemHn0vCA5lsHWJaHs6/ZmO+1Ft04SvM=" crossorigin="anonymous"></script>
+  <script class="next-config" data-name="quicklink" type="application/json">{"enable":true,"home":true,"archive":true,"delay":true,"timeout":3000,"priority":true,"url":"https://blog.ahao.moe/posts/integrate_swagger_3_in_spring_cloud_gateway.html"}</script>
+  <script src="/js/third-party/quicklink.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/disqusjs/3.0.2/styles/disqusjs.css" integrity="sha256-71XarXwNr1Td27HmZI9zjY+rMzRdush6/glo6VFXp7o=" crossorigin="anonymous">
+
+<script class="next-config" data-name="disqusjs" type="application/json">{"enable":true,"api":"https://disqus.skk.moe/disqus/","apikey":"OC1zbKiBF5cPo1EJObILJmZftsWl4ZbbAh9YqV0qNxiMq8rQFqBiw8PYcXQCyG9S","shortname":"ahaochan-blog","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/disqusjs/3.0.2/disqusjs.es2015.umd.min.js","integrity":"sha256-okP99ZQKVpIy7+NogAMpGlIQzJa9XKXhIJcFgdju5bU="}}</script>
+<script src="/js/third-party/comments/disqusjs.js"></script>
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"scale":1.2,"jsonPath":"https://cdn.jsdelivr.net/npm/live2d-widget-model-shizuku@1.0.5/assets/shizuku.model.json"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":false},"react":{"opacity":0.7},"log":false});</script></body>
+</html>

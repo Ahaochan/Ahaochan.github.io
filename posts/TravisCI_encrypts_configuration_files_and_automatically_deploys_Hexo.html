@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/config/favicon-32x32-next.jpg">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/config/favicon-16x16-next.jpg">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="google-site-verification" content="ZmER9fymckNfZ_Zxw6p3fpvqhvR6LitG9pR-cNVflx0">
+  <meta name="msvalidate.01" content="5351f65e5e79bb62584189a5e6906b8b">
+  <meta name="baidu-site-verification" content="jgtczlqzuk">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic%7CConsolas:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" integrity="sha256-AbA177XfpSnFEvgpYu1jMygiLabzPCJCRIBtR5jGc0k=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"blog.ahao.moe","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.13.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"disqusjs","storage":true,"lazyload":true,"nav":null,"activeClass":"disqusjs"},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":true}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="前言Travis-CI是一个可以将Github上的代码做持续集成的网站。持续集成和版本控制相关联, Git就是一种版本控制, 可以提交, 也可以下载, 就像网盘一样。持续集成就是你的每一次提交上传, 服务器都会自动对你提交后的代码进行编译, 单元测试等一系列行为, 并告知你是否成功。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="TravisCI加密配置文件并自动部署Hexo">
+<meta property="og:url" content="https://blog.ahao.moe/posts/TravisCI_encrypts_configuration_files_and_automatically_deploys_Hexo.html">
+<meta property="og:site_name" content="Ahaochan&#39;s Blog">
+<meta property="og:description" content="前言Travis-CI是一个可以将Github上的代码做持续集成的网站。持续集成和版本控制相关联, Git就是一种版本控制, 可以提交, 也可以下载, 就像网盘一样。持续集成就是你的每一次提交上传, 服务器都会自动对你提交后的代码进行编译, 单元测试等一系列行为, 并告知你是否成功。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://blog.ahao.moe/images/TravisCI%E5%8A%A0%E5%AF%86%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%B9%B6%E8%87%AA%E5%8A%A8%E9%83%A8%E7%BD%B2Hexo_01.png">
+<meta property="og:image" content="https://blog.ahao.moe/images/TravisCI%E5%8A%A0%E5%AF%86%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%B9%B6%E8%87%AA%E5%8A%A8%E9%83%A8%E7%BD%B2Hexo_02.png">
+<meta property="og:image" content="https://blog.ahao.moe/images/TravisCI%E5%8A%A0%E5%AF%86%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%B9%B6%E8%87%AA%E5%8A%A8%E9%83%A8%E7%BD%B2Hexo_03.png">
+<meta property="og:image" content="https://blog.ahao.moe/images/TravisCI%E5%8A%A0%E5%AF%86%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%B9%B6%E8%87%AA%E5%8A%A8%E9%83%A8%E7%BD%B2Hexo_04.png">
+<meta property="og:image" content="https://blog.ahao.moe/images/TravisCI%E5%8A%A0%E5%AF%86%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%B9%B6%E8%87%AA%E5%8A%A8%E9%83%A8%E7%BD%B2Hexo_05.png">
+<meta property="og:image" content="https://blog.ahao.moe/images/TravisCI%E5%8A%A0%E5%AF%86%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%B9%B6%E8%87%AA%E5%8A%A8%E9%83%A8%E7%BD%B2Hexo_06.png">
+<meta property="og:image" content="https://blog.ahao.moe/images/TravisCI%E5%8A%A0%E5%AF%86%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%B9%B6%E8%87%AA%E5%8A%A8%E9%83%A8%E7%BD%B2Hexo_07.png">
+<meta property="article:published_time" content="2018-05-05T07:03:00.000Z">
+<meta property="article:modified_time" content="2022-11-21T02:35:06.072Z">
+<meta property="article:author" content="Ahaochan">
+<meta property="article:tag" content="Travis-CI">
+<meta property="article:tag" content="Hexo">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://blog.ahao.moe/images/TravisCI%E5%8A%A0%E5%AF%86%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%B9%B6%E8%87%AA%E5%8A%A8%E9%83%A8%E7%BD%B2Hexo_01.png">
+
+
+<link rel="canonical" href="https://blog.ahao.moe/posts/TravisCI_encrypts_configuration_files_and_automatically_deploys_Hexo.html">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://blog.ahao.moe/posts/TravisCI_encrypts_configuration_files_and_automatically_deploys_Hexo.html","path":"posts/TravisCI_encrypts_configuration_files_and_automatically_deploys_Hexo.html","title":"TravisCI加密配置文件并自动部署Hexo"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>TravisCI加密配置文件并自动部署Hexo | Ahaochan's Blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-108454440-1"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"UA-108454440-1","only_pageview":false}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+  <script src="/js/third-party/analytics/baidu-analytics.js"></script>
+  <script async src="https://hm.baidu.com/hm.js?32635d85cec06e8822234c4d2aec2b54"></script>
+
+
+
+
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+  (adsbygoogle = window.adsbygoogle || []).push({
+    google_ad_client: "ca-pub-5208025300813046",
+    enable_page_level_ads: true
+  });
+</script>
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/rss.xml" title="Ahaochan's Blog" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Ahaochan's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">你也是程序猿friends呢~</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">91</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">30</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">217</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%98%85%E8%AF%BB%E6%9D%A1%E4%BB%B6"><span class="nav-number">2.</span> <span class="nav-text">阅读条件</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%87%86%E5%A4%87%E7%8E%AF%E5%A2%83"><span class="nav-number">3.</span> <span class="nav-text">准备环境</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%87%86%E5%A4%87%E8%99%9A%E6%8B%9F%E6%9C%BA"><span class="nav-number">3.1.</span> <span class="nav-text">准备虚拟机</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%87%86%E5%A4%87Travis-CI%E5%B8%90%E5%8F%B7"><span class="nav-number">3.2.</span> <span class="nav-text">准备Travis-CI帐号</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%87%86%E5%A4%87Git%E5%B9%B6clone"><span class="nav-number">3.3.</span> <span class="nav-text">准备Git并clone</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%87%86%E5%A4%87Travis-CI-%E5%AE%A2%E6%88%B7%E7%AB%AF"><span class="nav-number">3.4.</span> <span class="nav-text">准备Travis-CI 客户端</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B0%86%E6%9C%AC%E5%9C%B0%E7%9A%84hexo%E7%A7%BB%E5%8A%A8%E5%88%B0%E6%9C%8D%E5%8A%A1%E5%99%A8"><span class="nav-number">3.5.</span> <span class="nav-text">将本地的hexo移动到服务器</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8A%A0%E5%AF%86next-yml"><span class="nav-number">4.</span> <span class="nav-text">加密next.yml</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%BB%99%E4%BA%88Travis%E6%8E%A8%E9%80%81GitHub%E7%9A%84%E6%9D%83%E9%99%90"><span class="nav-number">5.</span> <span class="nav-text">给予Travis推送GitHub的权限</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BB%8EGitHub%E4%B8%8B%E8%BD%BD%E6%9C%80%E6%96%B0%E6%A8%A1%E5%9D%97%E5%92%8C%E4%B8%BB%E9%A2%98"><span class="nav-number">6.</span> <span class="nav-text">从GitHub下载最新模块和主题</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9C%80%E5%90%8E"><span class="nav-number">7.</span> <span class="nav-text">最后</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">8.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Ahaochan"
+      src="/images/config/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Ahaochan</p>
+  <div class="site-description" itemprop="description">你也是程序猿friends呢~</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">217</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">30</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">91</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Ahaochan" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Ahaochan" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:844394093@qq.com" title="E-Mail → mailto:844394093@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://greasyfork.org/zh-CN/users/30831" title="Greasyfork → https:&#x2F;&#x2F;greasyfork.org&#x2F;zh-CN&#x2F;users&#x2F;30831" rel="noopener" target="_blank"><i class="fab fa-google fa-fw"></i>Greasyfork</a>
+      </span>
+  </div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/Ahaochan" class="github-corner" title="我的Github" aria-label="我的Github" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blog.ahao.moe/posts/TravisCI_encrypts_configuration_files_and_automatically_deploys_Hexo.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/config/avatar.jpg">
+      <meta itemprop="name" content="Ahaochan">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ahaochan's Blog">
+      <meta itemprop="description" content="你也是程序猿friends呢~">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="TravisCI加密配置文件并自动部署Hexo | Ahaochan's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          TravisCI加密配置文件并自动部署Hexo<a href="https://github.com/Ahaochan/Ahaochan.github.io/blob/source/source/_posts/hexo/Hexo-TravisCI%E5%8A%A0%E5%AF%86%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%B9%B6%E8%87%AA%E5%8A%A8%E9%83%A8%E7%BD%B2Hexo.md" class="post-edit-link" title="编辑" rel="noopener" target="_blank"><i class="fa fa-pen-nib"></i></a>
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2018-05-05 15:03:00" itemprop="dateCreated datePublished" datetime="2018-05-05T15:03:00+08:00">2018-05-05</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Hexo/" itemprop="url" rel="index"><span itemprop="name">Hexo</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>1.6k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>6 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p><a target="_blank" rel="noopener" href="https://travis-ci.org/">Travis-CI</a>是一个可以将<code>Github</code>上的代码做持续集成的网站。<br>持续集成和版本控制相关联, <code>Git</code>就是一种版本控制, 可以提交, 也可以下载, 就像网盘一样。<br>持续集成就是你的每一次提交上传, 服务器都会自动对你提交后的代码进行编译, 单元测试等一系列行为, 并告知你是否成功。</p>
+<span id="more"></span>
+
+<h1 id="阅读条件"><a href="#阅读条件" class="headerlink" title="阅读条件"></a>阅读条件</h1><ol>
+<li>至少一次手动<code>hexo d</code>部署过<code>GitHub Page</code>博客</li>
+<li>熟悉Linux基本命令</li>
+<li>熟练Git基本命令</li>
+</ol>
+<h1 id="准备环境"><a href="#准备环境" class="headerlink" title="准备环境"></a>准备环境</h1><h2 id="准备虚拟机"><a href="#准备虚拟机" class="headerlink" title="准备虚拟机"></a>准备虚拟机</h2><ol>
+<li><p>使用的是<code>CentOS7</code>虚拟机, 用户名<code>root</code>, 密码<code>root</code></p>
+</li>
+<li><p>网络连接选择<strong>桥接</strong>模式, 关于桥接模式可以看我的另一篇文章。</p>
+<img data-src="/images/TravisCI%E5%8A%A0%E5%AF%86%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%B9%B6%E8%87%AA%E5%8A%A8%E9%83%A8%E7%BD%B2Hexo_01.png" class=""></li>
+<li><p><code>Windows</code>网络环境选择专用网络</p>
+<img data-src="/images/TravisCI%E5%8A%A0%E5%AF%86%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%B9%B6%E8%87%AA%E5%8A%A8%E9%83%A8%E7%BD%B2Hexo_02.png" class=""></li>
+<li><p><code>Windows10</code>需要在网络适配器属性界面, 添加<code>VMware Bridge Protocol</code>协议。</p>
+<img data-src="/images/TravisCI%E5%8A%A0%E5%AF%86%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%B9%B6%E8%87%AA%E5%8A%A8%E9%83%A8%E7%BD%B2Hexo_03.png" class=""></li>
+<li><p>使用<a target="_blank" rel="noopener" href="https://www.netsarang.com/products/xsh_overview.html">Xshell</a>(发送命令)和<a target="_blank" rel="noopener" href="https://filezilla-project.org/">FileZilla</a>(传输文件)在<code>Windows</code>上连接虚拟机. 两者都是通过<code>ssh</code>连接的, 在软件中配置好虚拟机的<code>IP</code>地址和账号密码<code>root</code>即可。</p>
+<img data-src="/images/TravisCI%E5%8A%A0%E5%AF%86%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%B9%B6%E8%87%AA%E5%8A%A8%E9%83%A8%E7%BD%B2Hexo_04.png" class="">
+<img data-src="/images/TravisCI%E5%8A%A0%E5%AF%86%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%B9%B6%E8%87%AA%E5%8A%A8%E9%83%A8%E7%BD%B2Hexo_05.png" class="">
+<img data-src="/images/TravisCI%E5%8A%A0%E5%AF%86%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%B9%B6%E8%87%AA%E5%8A%A8%E9%83%A8%E7%BD%B2Hexo_06.png" class=""></li>
+</ol>
+<h2 id="准备Travis-CI帐号"><a href="#准备Travis-CI帐号" class="headerlink" title="准备Travis-CI帐号"></a>准备Travis-CI帐号</h2><p><a target="_blank" rel="noopener" href="https://travis-ci.org/">Travis-CI</a>支持<code>GitHub</code>帐号登录。<br>配置教程参考<a target="_blank" rel="noopener" href="https://segmentfault.com/a/1190000009054888#articleHeader1">使用 Travis 自动部署 Hexo 到 Github 与 自己的服务器</a></p>
+<h2 id="准备Git并clone"><a href="#准备Git并clone" class="headerlink" title="准备Git并clone"></a>准备Git并clone</h2><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 1. 修改yum源 为 网易源</span></span><br><span class="line">yum install -y wget</span><br><span class="line">wget -O /etc/yum.repos.d/CentOS-Base.repo http://mirrors.163.com/.help/CentOS7-Base-163.repo</span><br><span class="line">yum clean all</span><br><span class="line">yum makecache</span><br><span class="line"><span class="comment"># 2. 安装git</span></span><br><span class="line">yum install -y git</span><br><span class="line"><span class="comment"># 3. 配置git</span></span><br><span class="line">git config --global user.name <span class="string">&quot;Ahaochan&quot;</span></span><br><span class="line">git config --global user.email <span class="string">&quot;844394093@qq.com&quot;</span></span><br><span class="line"><span class="comment"># 3. clone项目到/opt文件夹下</span></span><br><span class="line"><span class="built_in">cd</span> /opt</span><br><span class="line">git <span class="built_in">clone</span> https://github.com/Ahaochan/Ahaochan.github.io.git</span><br><span class="line"><span class="built_in">cd</span> Ahaochan.github.io/</span><br><span class="line"><span class="comment"># 4. 新建并切换到source分支</span></span><br><span class="line">git branch <span class="built_in">source</span></span><br><span class="line">git checkout <span class="built_in">source</span></span><br><span class="line"><span class="comment"># 5. 删除所有文件, 为hexo源文件腾出位置</span></span><br><span class="line"><span class="built_in">rm</span> -rf *</span><br></pre></td></tr></table></figure>
+
+<h2 id="准备Travis-CI-客户端"><a href="#准备Travis-CI-客户端" class="headerlink" title="准备Travis-CI 客户端"></a>准备Travis-CI 客户端</h2><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 1. 安装gcc和ruby环境</span></span><br><span class="line">yum install -y gcc ruby ruby-devel</span><br><span class="line"><span class="comment"># 2. 改为国内gem源</span></span><br><span class="line">gem sources --add https://gems.ruby-china.com/ --remove https://rubygems.org/ </span><br><span class="line"><span class="comment"># 3. 安装Travis</span></span><br><span class="line">gem install travis</span><br><span class="line"><span class="comment"># 4. 登录Travis, 并输入账号密码, 注意使用的是 travis-ci.org 或 travis-ci.com</span></span><br><span class="line"><span class="comment">#    org 现在已迁移到 com, 发送标题 Open Source Migration Beta Testing 邮件到 support@travis-ci.com 即可开通 Beta 迁移功能.</span></span><br><span class="line"><span class="comment">#    https://docs.travis-ci.com/user/migrate/open-source-on-travis-ci-com/#existing-open-source-repositories-on-travis-ciorg</span></span><br><span class="line">travis login --com</span><br></pre></td></tr></table></figure>
+
+<h2 id="将本地的hexo移动到服务器"><a href="#将本地的hexo移动到服务器" class="headerlink" title="将本地的hexo移动到服务器"></a>将本地的hexo移动到服务器</h2><p><strong>请确保服务器的项目分支已经切换到<code>source</code></strong><br>通过<a target="_blank" rel="noopener" href="https://filezilla-project.org/">FileZilla</a>将本地的<code>hexo</code>文件夹部署到服务器。<br>为了节省<code>GitHub</code>空间, 我只将以下文件加入仓库中。</p>
+<img data-src="/images/TravisCI%E5%8A%A0%E5%AF%86%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%B9%B6%E8%87%AA%E5%8A%A8%E9%83%A8%E7%BD%B2Hexo_07.png" class="">
+
+<h1 id="加密next-yml"><a href="#加密next-yml" class="headerlink" title="加密next.yml"></a>加密next.yml</h1><p>我将<code>hexo/_config.yml</code>和<code>theme/next/_config.yml</code>的内容统一复制到<code>source/_data/next.yml</code>中。<br>配置文件包含太多敏感信息, 所以我进行了加密.<br><code>Travis-CI</code>提供了加密策略, 只要加密后, 就只有<code>Travis-CI</code>能解密, 就算是加密的人也不能解密。具体可以看我翻译的<code>Travis-CI</code>文档。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 1. 确保在source分支下操作</span></span><br><span class="line">git checkout <span class="built_in">source</span></span><br><span class="line"><span class="comment"># 2. 进入next.yml所在文件夹</span></span><br><span class="line"><span class="built_in">cd</span> <span class="built_in">source</span>/_data</span><br><span class="line"><span class="comment"># 3. 进行加密(如果想要加密多个文件, 需要将多个文件打包, 再在Travis-CI解压)</span></span><br><span class="line">travis encrypt-file next.yml</span><br><span class="line"><span class="comment"># 4. 在.travis.yml中加入配置, 注意要指定source/_data/next.yml路径. (这里不要复制我的key, 每个人都不一样)</span></span><br><span class="line">vim /opt/Ahaochan.github.io/.travis.yml</span><br><span class="line">before_install:</span><br><span class="line">- openssl aes-256-cbc -K <span class="variable">$encrypted_3873d9e40d23_key</span> -iv <span class="variable">$encrypted_3873d9e40d23_iv</span> -<span class="keyword">in</span> <span class="built_in">source</span>/_data/next.yml.enc -out <span class="built_in">source</span>/_data/next.yml -d</span><br><span class="line"><span class="comment"># 5. 在.gitignore添加一行, 不提交next.yml</span></span><br><span class="line">vim /opt/Ahaochan.github.io/.gitignore</span><br><span class="line"><span class="built_in">source</span>/_data/next.yml</span><br></pre></td></tr></table></figure>
+
+<h1 id="给予Travis推送GitHub的权限"><a href="#给予Travis推送GitHub的权限" class="headerlink" title="给予Travis推送GitHub的权限"></a>给予Travis推送GitHub的权限</h1><p>网上很多都是生成<code>ssh</code>公钥, 或者直接使用<code>git push -u origin master</code>的方式部署。<br>我参考的<a target="_blank" rel="noopener" href="https://segmentfault.com/a/1190000009054888#articleHeader1">使用 Travis 自动部署 Hexo 到 Github 与 自己的服务器</a>配置了<code>REPO_TOKEN</code>, 但是没有物尽其用。<br>这里将<code>REPO_TOKEN</code>做了替换。</p>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># next.yml</span></span><br><span class="line"><span class="attr">deploy:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">type:</span> <span class="string">git</span></span><br><span class="line">    <span class="attr">repo:</span> <span class="string">https://REPO_TOKEN@github.com/Ahaochan/Ahaochan.github.io.git</span></span><br><span class="line">    <span class="attr">branch:</span> <span class="string">master</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># .travis.yml</span></span><br><span class="line"><span class="attr">before_install:</span></span><br><span class="line"><span class="comment"># 注意要放在解密next.yml文件命令之后</span></span><br><span class="line"><span class="bullet">-</span> <span class="string">sed</span> <span class="string">-i</span> <span class="string">&quot;s/REPO_TOKEN/$&#123;REPO_TOKEN&#125;/&quot;</span> <span class="string">source/_data/next.yml</span></span><br></pre></td></tr></table></figure>
+
+<h1 id="从GitHub下载最新模块和主题"><a href="#从GitHub下载最新模块和主题" class="headerlink" title="从GitHub下载最新模块和主题"></a>从GitHub下载最新模块和主题</h1><p>为了节省<code>Github</code>空间, 我在<code>.travis.yml</code>配置了很多的下载命令.<br>详细可以看我的GitHub</p>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 使用语言</span></span><br><span class="line"><span class="attr">language:</span> <span class="string">node_js</span></span><br><span class="line"><span class="comment"># node版本</span></span><br><span class="line"><span class="attr">node_js:</span> <span class="string">lts/*</span></span><br><span class="line"><span class="comment"># 设置只监听哪个分支</span></span><br><span class="line"><span class="attr">branches:</span></span><br><span class="line">  <span class="attr">only:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">source</span></span><br><span class="line"><span class="comment"># 缓存，可以节省集成的时间，这里我用了yarn，如果不用可以删除</span></span><br><span class="line"><span class="attr">cache:</span></span><br><span class="line">  <span class="attr">apt:</span> <span class="literal">true</span></span><br><span class="line">  <span class="attr">yarn:</span> <span class="literal">true</span></span><br><span class="line">  <span class="attr">directories:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">node_modules</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">theme</span></span><br><span class="line"><span class="attr">before_install:</span></span><br><span class="line"><span class="comment">#  配置git</span></span><br><span class="line"><span class="bullet">-</span> <span class="string">git</span> <span class="string">config</span> <span class="string">--global</span> <span class="string">user.name</span> <span class="string">&quot;Ahaochan&quot;</span></span><br><span class="line"><span class="bullet">-</span> <span class="string">git</span> <span class="string">config</span> <span class="string">--global</span> <span class="string">user.email</span> <span class="string">&quot;844394093@qq.com&quot;</span></span><br><span class="line"><span class="comment"># 由于使用了yarn，所以需要下载，如不用yarn这两行可以删除</span></span><br><span class="line"><span class="bullet">-</span> <span class="string">curl</span> <span class="string">-o-</span> <span class="string">-L</span> <span class="string">https://yarnpkg.com/install.sh</span> <span class="string">|</span> <span class="string">bash</span></span><br><span class="line"><span class="bullet">-</span> <span class="string">export</span> <span class="string">PATH=$HOME/.yarn/bin:$PATH</span></span><br><span class="line"><span class="comment"># npm模块安装</span></span><br><span class="line"><span class="bullet">-</span> <span class="string">yarn</span> <span class="string">global</span> <span class="string">add</span> <span class="string">hexo-cli</span></span><br><span class="line"><span class="bullet">-</span> <span class="string">yarn</span> <span class="string">add</span> <span class="string">hexo-asset-image</span> <span class="string">--save</span></span><br><span class="line"><span class="bullet">-</span> <span class="string">yarn</span> <span class="string">add</span> <span class="string">hexo-generator-searchdb</span> <span class="string">--save</span></span><br><span class="line"><span class="bullet">-</span> <span class="string">yarn</span> <span class="string">add</span> <span class="string">hexo-generator-feed</span> <span class="string">--save</span></span><br><span class="line"><span class="bullet">-</span> <span class="string">yarn</span> <span class="string">add</span> <span class="string">hexo-related-popular-posts</span> <span class="string">--save</span></span><br><span class="line"><span class="bullet">-</span> <span class="string">yarn</span> <span class="string">add</span> <span class="string">hexo-symbols-count-time</span> <span class="string">--save</span></span><br><span class="line"><span class="bullet">-</span> <span class="string">yarn</span> <span class="string">add</span> <span class="string">hexo-generator-sitemap</span> <span class="string">--save</span></span><br><span class="line"><span class="bullet">-</span> <span class="string">yarn</span> <span class="string">add</span> <span class="string">hexo-generator-baidu-sitemap</span> <span class="string">--save</span></span><br><span class="line"><span class="bullet">-</span> <span class="string">yarn</span> <span class="string">add</span> <span class="string">hexo-deployer-git</span> <span class="string">--save</span></span><br><span class="line"><span class="bullet">-</span> <span class="string">yarn</span> <span class="string">add</span> <span class="string">hexo-leancloud-counter-security</span> <span class="string">--save</span></span><br><span class="line"><span class="bullet">-</span> <span class="string">yarn</span> <span class="string">add</span> <span class="string">hexo-helper-live2d</span> <span class="string">--save</span></span><br><span class="line"><span class="comment"># next.yml配置文件解密</span></span><br><span class="line"><span class="bullet">-</span> <span class="string">openssl</span> <span class="string">aes-256-cbc</span> <span class="string">-K</span> <span class="string">$encrypted_3873d9e40d23_key</span> <span class="string">-iv</span> <span class="string">$encrypted_3873d9e40d23_iv</span> <span class="string">-in</span> <span class="string">source/_data/next.yml.enc</span> <span class="string">-out</span> <span class="string">source/_data/next.yml</span> <span class="string">-d</span></span><br><span class="line"><span class="comment"># 将 GitHub Token 替换到 next.yml 中</span></span><br><span class="line"><span class="bullet">-</span> <span class="string">sed</span> <span class="string">-i</span> <span class="string">&quot;s/REPO_TOKEN/$&#123;REPO_TOKEN&#125;/&quot;</span> <span class="string">source/_data/next.yml</span></span><br><span class="line"><span class="comment"># next主题下载</span></span><br><span class="line"><span class="bullet">-</span> <span class="string">git</span> <span class="string">clone</span> <span class="string">https://github.com/theme-next/hexo-theme-next</span> <span class="string">themes/next</span></span><br><span class="line"><span class="comment"># next主题依赖下载</span></span><br><span class="line"><span class="bullet">-</span> <span class="string">git</span> <span class="string">clone</span> <span class="string">https://github.com/theme-next/theme-next-pangu.git</span> <span class="string">themes/next/source/lib/pangu</span></span><br><span class="line"><span class="bullet">-</span> <span class="string">git</span> <span class="string">clone</span> <span class="string">https://github.com/theme-next/theme-next-reading-progress</span> <span class="string">themes/next/source/lib/reading_progress</span></span><br><span class="line"><span class="bullet">-</span> <span class="string">git</span> <span class="string">clone</span> <span class="string">https://github.com/theme-next/theme-next-fastclick</span> <span class="string">themes/next/source/lib/fastclick</span></span><br><span class="line"><span class="bullet">-</span> <span class="string">git</span> <span class="string">clone</span> <span class="string">https://github.com/theme-next/theme-next-jquery-lazyload</span> <span class="string">themes/next/source/lib/jquery_lazyload</span></span><br><span class="line"><span class="bullet">-</span> <span class="string">git</span> <span class="string">clone</span> <span class="string">https://github.com/theme-next/theme-next-pace</span> <span class="string">themes/next/source/lib/pace</span></span><br><span class="line"><span class="bullet">-</span> <span class="string">git</span> <span class="string">clone</span> <span class="string">https://github.com/theme-next/theme-next-canvas-nest</span> <span class="string">themes/next/source/lib/canvas-nest</span></span><br><span class="line"><span class="bullet">-</span> <span class="string">git</span> <span class="string">clone</span> <span class="string">https://github.com/theme-next/theme-next-fancybox3</span> <span class="string">themes/next/source/lib/fancybox</span></span><br><span class="line"><span class="attr">install:</span></span><br><span class="line"><span class="comment"># 不用yarn的话这里改成 npm i 即可</span></span><br><span class="line"><span class="bullet">-</span> <span class="string">yarn</span></span><br><span class="line"><span class="attr">script:</span></span><br><span class="line"><span class="comment"># 配置 LeanCloud</span></span><br><span class="line"><span class="bullet">-</span> <span class="string">hexo</span> <span class="string">lc-counter</span> <span class="string">register</span> <span class="string">$leancloud_username</span> <span class="string">$leancloud_password</span> <span class="string">--config</span> <span class="string">source/_data/next.yml</span></span><br><span class="line"><span class="bullet">-</span> <span class="string">hexo</span> <span class="string">clean</span> <span class="string">--config</span> <span class="string">source/_data/next.yml</span></span><br><span class="line"><span class="bullet">-</span> <span class="string">hexo</span> <span class="string">g</span> <span class="string">--config</span> <span class="string">source/_data/next.yml</span></span><br><span class="line"><span class="bullet">-</span> <span class="string">hexo</span> <span class="string">d</span> <span class="string">--config</span> <span class="string">source/_data/next.yml</span></span><br></pre></td></tr></table></figure>
+<h1 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h1><p>最后将所有文件<code>git push -u origin source</code>推送到远程的<code>source</code>分支上即可。<br>如果失败, 可以在 <a target="_blank" rel="noopener" href="https://travis-ci.org/Ahaochan/Ahaochan.github.io/requests">https://travis-ci.org/Ahaochan/Ahaochan.github.io/requests</a> 查看错误信息。</p>
+<h1 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h1><ul>
+<li><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/d8573f9d1f96">CentOS yum 源的配置与使用</a></li>
+<li><a target="_blank" rel="noopener" href="https://segmentfault.com/a/1190000009054888">使用 Travis 自动部署 Hexo 到 Github 与 自己的服务器</a></li>
+<li><a target="_blank" rel="noopener" href="http://kflu.github.io/2017/01/03/2017-01-03-hexo-travis/">Auto Deploy Hexo.io to Github Pages With Travis CI</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+      
+
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>很高兴得到您的赞赏</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="/images/config/wechatpay.jpg" alt="Ahaochan 微信">
+        <span>微信</span>
+      </div>
+      <div>
+        <img src="/images/config/alipay.jpg" alt="Ahaochan 支付宝">
+        <span>支付宝</span>
+      </div>
+
+  </div>
+</div>
+
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>Ahaochan
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://blog.ahao.moe/posts/TravisCI_encrypts_configuration_files_and_automatically_deploys_Hexo.html" title="TravisCI加密配置文件并自动部署Hexo">https://blog.ahao.moe/posts/TravisCI_encrypts_configuration_files_and_automatically_deploys_Hexo.html</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="followme">
+  <span>欢迎关注我的其它发布渠道</span>
+
+  <div class="social-list">
+
+      <div class="social-item">
+        <a target="_blank" class="social-link" href="/images/config/wechat_channel.jpg">
+          <span class="icon">
+            <i class="fab fa-weixin"></i>
+          </span>
+
+          <span class="label">WeChat</span>
+        </a>
+      </div>
+
+      <div class="social-item">
+        <a target="_blank" class="social-link" href="/rss.xml">
+          <span class="icon">
+            <i class="fa fa-rss"></i>
+          </span>
+
+          <span class="label">RSS</span>
+        </a>
+      </div>
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/Travis-CI/" rel="tag"><i class="fa fa-tag"></i> Travis-CI</a>
+              <a href="/tags/Hexo/" rel="tag"><i class="fa fa-tag"></i> Hexo</a>
+          </div>
+
+        
+  <div class="post-widgets">
+    <div class="wpac-rating-container">
+      <div id="wpac-rating"></div>
+    </div>
+  </div>
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/posts/use_currentRequestAttributes()_and_getRequestAttributes()_to_get_HttpServletRequest_object.html" rel="prev" title="currentRequestAttributes和getRequestAttributes获取HttpServletRequest对象">
+                  <i class="fa fa-chevron-left"></i> currentRequestAttributes和getRequestAttributes获取HttpServletRequest对象
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/posts/Text_single_line_overflow_display_ellipses.html" rel="next" title="文字单行溢出显示省略号">
+                  文字单行溢出显示省略号 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    
+  <div class="comments disqusjs">
+    <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+  </div>
+  
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2016 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ahaochan</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">172k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">10:25</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+  <div class="addthis_inline_share_toolbox">
+    <script src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-59047aaab9bddb67" async="async"></script>
+  </div><script color="0,0,255" opacity="0.5" zIndex="-1" count="99" src="https://cdn.jsdelivr.net/npm/canvas-nest.js@1/dist/canvas-nest.js"></script>
+
+
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js" integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lozad.js/1.16.0/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script>
+
+  
+  <script src="https://embed.widgetpack.com/widget.js" async></script>
+  <script class="next-config" data-name="rating" type="application/json">{"enable":true,"id":33332,"color":"#fc6423"}</script>
+  <script src="/js/third-party/rating.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.0/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/9.1.7/mermaid.min.js","integrity":"sha256-G58AID1YoX5YaEtWfXSI0VLrZ6N4kvNvwg0BI8zUFxE="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/quicklink/2.3.0/quicklink.umd.js" integrity="sha256-yvJQOINiH9fWemHn0vCA5lsHWJaHs6/ZmO+1Ft04SvM=" crossorigin="anonymous"></script>
+  <script class="next-config" data-name="quicklink" type="application/json">{"enable":true,"home":true,"archive":true,"delay":true,"timeout":3000,"priority":true,"url":"https://blog.ahao.moe/posts/TravisCI_encrypts_configuration_files_and_automatically_deploys_Hexo.html"}</script>
+  <script src="/js/third-party/quicklink.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/disqusjs/3.0.2/styles/disqusjs.css" integrity="sha256-71XarXwNr1Td27HmZI9zjY+rMzRdush6/glo6VFXp7o=" crossorigin="anonymous">
+
+<script class="next-config" data-name="disqusjs" type="application/json">{"enable":true,"api":"https://disqus.skk.moe/disqus/","apikey":"OC1zbKiBF5cPo1EJObILJmZftsWl4ZbbAh9YqV0qNxiMq8rQFqBiw8PYcXQCyG9S","shortname":"ahaochan-blog","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/disqusjs/3.0.2/disqusjs.es2015.umd.min.js","integrity":"sha256-okP99ZQKVpIy7+NogAMpGlIQzJa9XKXhIJcFgdju5bU="}}</script>
+<script src="/js/third-party/comments/disqusjs.js"></script>
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"scale":1.2,"jsonPath":"https://cdn.jsdelivr.net/npm/live2d-widget-model-shizuku@1.0.5/assets/shizuku.model.json"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":false},"react":{"opacity":0.7},"log":false});</script></body>
+</html>

@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/config/favicon-32x32-next.jpg">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/config/favicon-16x16-next.jpg">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="google-site-verification" content="ZmER9fymckNfZ_Zxw6p3fpvqhvR6LitG9pR-cNVflx0">
+  <meta name="msvalidate.01" content="5351f65e5e79bb62584189a5e6906b8b">
+  <meta name="baidu-site-verification" content="jgtczlqzuk">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic%7CConsolas:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" integrity="sha256-AbA177XfpSnFEvgpYu1jMygiLabzPCJCRIBtR5jGc0k=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"blog.ahao.moe","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.13.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"disqusjs","storage":true,"lazyload":true,"nav":null,"activeClass":"disqusjs"},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":true}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="前言消息中间件MQ主要的工作流程如下  生产端Producer发送消息给消息中间件MQ 消息中间件MQ接收到消息, 告诉生产者Producer消息已经收到 消息中间件MQ将消息路由Routing后, 投递给消费者Consumer 消费者告诉MQ消息是否消费成功">
+<meta property="og:type" content="article">
+<meta property="og:title" content="RabbitMQ消息的可靠性投递">
+<meta property="og:url" content="https://blog.ahao.moe/posts/How_to_ensure_the_reliable_delivery_of_RabbitMQ.html">
+<meta property="og:site_name" content="Ahaochan&#39;s Blog">
+<meta property="og:description" content="前言消息中间件MQ主要的工作流程如下  生产端Producer发送消息给消息中间件MQ 消息中间件MQ接收到消息, 告诉生产者Producer消息已经收到 消息中间件MQ将消息路由Routing后, 投递给消费者Consumer 消费者告诉MQ消息是否消费成功">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://blog.ahao.moe/images/RabbitMQ%E6%B6%88%E6%81%AF%E7%9A%84%E5%8F%AF%E9%9D%A0%E6%80%A7%E6%8A%95%E9%80%92_01.png">
+<meta property="og:image" content="https://blog.ahao.moe/images/RabbitMQ%E6%B6%88%E6%81%AF%E7%9A%84%E5%8F%AF%E9%9D%A0%E6%80%A7%E6%8A%95%E9%80%92_02.png">
+<meta property="og:image" content="https://yuml.me/diagram/nofunky/class/[%E7%94%9F%E4%BA%A7%E8%80%85]-1.%E6%B6%88%E6%81%AF%3E[%E6%B6%88%E6%81%AF%E4%B8%AD%E9%97%B4%E4%BB%B6],[%E6%B6%88%E6%81%AF%E4%B8%AD%E9%97%B4%E4%BB%B6]-2.Confirm%3E[%E7%94%9F%E4%BA%A7%E8%80%85]">
+<meta property="og:image" content="https://yuml.me/diagram/nofunky/class/[%E7%94%9F%E4%BA%A7%E8%80%85]-1.%E6%B6%88%E6%81%AF%3E[%E6%B6%88%E6%81%AF%E4%B8%AD%E9%97%B4%E4%BB%B6],[%E6%B6%88%E6%81%AF%E4%B8%AD%E9%97%B4%E4%BB%B6]-2.%E6%B2%A1%E6%89%BE%E5%88%B0%3E[%E7%94%9F%E4%BA%A7%E8%80%85]">
+<meta property="og:image" content="https://blog.ahao.moe/images/RabbitMQ%E6%B6%88%E6%81%AF%E7%9A%84%E5%8F%AF%E9%9D%A0%E6%80%A7%E6%8A%95%E9%80%92_03.png">
+<meta property="article:published_time" content="2020-06-19T11:29:00.000Z">
+<meta property="article:modified_time" content="2022-11-21T02:35:06.080Z">
+<meta property="article:author" content="Ahaochan">
+<meta property="article:tag" content="RabbitMQ">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://blog.ahao.moe/images/RabbitMQ%E6%B6%88%E6%81%AF%E7%9A%84%E5%8F%AF%E9%9D%A0%E6%80%A7%E6%8A%95%E9%80%92_01.png">
+
+
+<link rel="canonical" href="https://blog.ahao.moe/posts/How_to_ensure_the_reliable_delivery_of_RabbitMQ.html">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://blog.ahao.moe/posts/How_to_ensure_the_reliable_delivery_of_RabbitMQ.html","path":"posts/How_to_ensure_the_reliable_delivery_of_RabbitMQ.html","title":"RabbitMQ消息的可靠性投递"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>RabbitMQ消息的可靠性投递 | Ahaochan's Blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-108454440-1"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"UA-108454440-1","only_pageview":false}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+  <script src="/js/third-party/analytics/baidu-analytics.js"></script>
+  <script async src="https://hm.baidu.com/hm.js?32635d85cec06e8822234c4d2aec2b54"></script>
+
+
+
+
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+  (adsbygoogle = window.adsbygoogle || []).push({
+    google_ad_client: "ca-pub-5208025300813046",
+    enable_page_level_ads: true
+  });
+</script>
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/rss.xml" title="Ahaochan's Blog" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Ahaochan's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">你也是程序猿friends呢~</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">91</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">30</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">217</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%96%B9%E6%A1%88%E4%B8%80-%E6%B6%88%E6%81%AF%E8%90%BD%E5%BA%93-%E5%AF%B9%E7%8A%B6%E6%80%81%E6%89%93%E6%A0%87"><span class="nav-number">2.</span> <span class="nav-text">方案一: 消息落库, 对状态打标</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BF%9D%E8%AF%81%E7%94%9F%E4%BA%A7%E8%80%85%E5%92%8C%E6%B6%88%E6%81%AF%E4%B8%AD%E9%97%B4%E4%BB%B6%E7%9A%84%E4%B9%8B%E9%97%B4%E7%9A%84%E5%8F%AF%E9%9D%A0%E6%80%A7%E6%8A%95%E9%80%92"><span class="nav-number">2.1.</span> <span class="nav-text">保证生产者和消息中间件的之间的可靠性投递</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Confirm-%E7%A1%AE%E8%AE%A4%E6%B6%88%E6%81%AF"><span class="nav-number">2.1.1.</span> <span class="nav-text">Confirm 确认消息</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%99%AE%E9%80%9Aconfirm"><span class="nav-number">2.1.1.1.</span> <span class="nav-text">普通confirm</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%BC%82%E6%AD%A5confirm"><span class="nav-number">2.1.1.2.</span> <span class="nav-text">异步confirm</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Spring-Boot-%E5%AE%9E%E7%8E%B0-confirm"><span class="nav-number">2.1.1.3.</span> <span class="nav-text">Spring Boot 实现 confirm</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Return-%E4%B8%8D%E5%8F%AF%E8%BE%BE%E6%B6%88%E6%81%AF"><span class="nav-number">2.1.2.</span> <span class="nav-text">Return 不可达消息</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8E%9F%E7%94%9F-API-%E6%96%B9%E5%BC%8F"><span class="nav-number">2.1.2.1.</span> <span class="nav-text">原生 API 方式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Spring-Boot-%E5%AE%9E%E7%8E%B0-return"><span class="nav-number">2.1.2.2.</span> <span class="nav-text">Spring Boot 实现 return</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%88%91%E4%BB%AC%E9%9C%80%E8%A6%81%E5%88%A4%E6%96%AD%E6%B6%88%E6%81%AF%E5%8F%91%E9%80%81%E6%88%90%E5%8A%9F%E5%90%97"><span class="nav-number">2.1.3.</span> <span class="nav-text">我们需要判断消息发送成功吗?</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BF%9D%E8%AF%81%E6%B6%88%E6%81%AF%E4%B8%AD%E9%97%B4%E4%BB%B6%E7%9A%84%E6%8C%81%E4%B9%85%E5%8C%96%E5%AD%98%E5%82%A8-%E9%81%BF%E5%85%8D%E6%B6%88%E6%81%AF%E4%B8%A2%E5%A4%B1"><span class="nav-number">2.2.</span> <span class="nav-text">保证消息中间件的持久化存储, 避免消息丢失</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8E%9F%E7%94%9F-API-%E6%96%B9%E5%BC%8F-1"><span class="nav-number">2.2.1.</span> <span class="nav-text">原生 API 方式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Spring-Boot-%E5%AE%9E%E7%8E%B0"><span class="nav-number">2.2.2.</span> <span class="nav-text">Spring Boot 实现</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BF%9D%E8%AF%81%E6%B6%88%E6%81%AF%E4%B8%AD%E9%97%B4%E4%BB%B6%E7%9A%84%E6%B6%88%E8%B4%B9%E5%8F%AF%E9%9D%A0%E6%80%A7"><span class="nav-number">2.3.</span> <span class="nav-text">保证消息中间件的消费可靠性</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8E%9F%E7%94%9F-API-%E6%89%8B%E5%8A%A8-ACK"><span class="nav-number">2.3.1.</span> <span class="nav-text">原生 API 手动 ACK</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Spring-Boot-%E6%89%8B%E5%8A%A8-ACK"><span class="nav-number">2.3.2.</span> <span class="nav-text">Spring Boot 手动 ACK</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9A%E6%97%B6%E4%BB%BB%E5%8A%A1%E5%A4%84%E7%90%86%E6%9E%81%E7%AB%AF%E6%83%85%E5%86%B5%E4%B8%8B%E7%9A%84%E6%B6%88%E6%81%AF%E5%A4%84%E7%90%86%E5%BC%82%E5%B8%B8"><span class="nav-number">2.4.</span> <span class="nav-text">定时任务处理极端情况下的消息处理异常</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%96%B9%E6%A1%88%E4%BA%8C-%E6%B6%88%E6%81%AF%E5%BB%B6%E8%BF%9F%E6%8A%95%E9%80%92-%E5%81%9A%E4%BA%8C%E6%AC%A1%E7%A1%AE%E8%AE%A4-%E5%9B%9E%E8%B0%83%E6%A3%80%E6%9F%A5"><span class="nav-number">3.</span> <span class="nav-text">方案二: 消息延迟投递, 做二次确认, 回调检查</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">4.</span> <span class="nav-text">总结</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Ahaochan"
+      src="/images/config/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Ahaochan</p>
+  <div class="site-description" itemprop="description">你也是程序猿friends呢~</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">217</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">30</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">91</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Ahaochan" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Ahaochan" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:844394093@qq.com" title="E-Mail → mailto:844394093@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://greasyfork.org/zh-CN/users/30831" title="Greasyfork → https:&#x2F;&#x2F;greasyfork.org&#x2F;zh-CN&#x2F;users&#x2F;30831" rel="noopener" target="_blank"><i class="fab fa-google fa-fw"></i>Greasyfork</a>
+      </span>
+  </div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/Ahaochan" class="github-corner" title="我的Github" aria-label="我的Github" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blog.ahao.moe/posts/How_to_ensure_the_reliable_delivery_of_RabbitMQ.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/config/avatar.jpg">
+      <meta itemprop="name" content="Ahaochan">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ahaochan's Blog">
+      <meta itemprop="description" content="你也是程序猿friends呢~">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="RabbitMQ消息的可靠性投递 | Ahaochan's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          RabbitMQ消息的可靠性投递<a href="https://github.com/Ahaochan/Ahaochan.github.io/blob/source/source/_posts/mq/RabbitMQ-RabbitMQ%E6%B6%88%E6%81%AF%E7%9A%84%E5%8F%AF%E9%9D%A0%E6%80%A7%E6%8A%95%E9%80%92.md" class="post-edit-link" title="编辑" rel="noopener" target="_blank"><i class="fa fa-pen-nib"></i></a>
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2020-06-19 19:29:00" itemprop="dateCreated datePublished" datetime="2020-06-19T19:29:00+08:00">2020-06-19</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/" itemprop="url" rel="index"><span itemprop="name">消息队列</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>4.3k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>16 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>消息中间件<code>MQ</code>主要的工作流程如下</p>
+<ol>
+<li>生产端<code>Producer</code>发送消息给消息中间件<code>MQ</code></li>
+<li>消息中间件<code>MQ</code>接收到消息, 告诉生产者<code>Producer</code>消息已经收到</li>
+<li>消息中间件<code>MQ</code>将消息路由<code>Routing</code>后, 投递给消费者<code>Consumer</code></li>
+<li>消费者告诉<code>MQ</code>消息是否消费成功</li>
+</ol>
+<img data-src="/images/RabbitMQ%E6%B6%88%E6%81%AF%E7%9A%84%E5%8F%AF%E9%9D%A0%E6%80%A7%E6%8A%95%E9%80%92_01.png" class="">
+
+<span id="more"></span>
+
+<p>但是, 现实世界是不可能如此理想的. 如果在某个阶段发生了异常.</p>
+<p>比如消息中间件<code>MQ</code>接收到消息后, 所在的服务器重启了, 没能告诉生产者<code>Producer</code>消息接收成功, 也没能将消息投递给消费者<code>Consumer</code>, 这时候就应该让生产者<code>Producer</code>重新投递.<br>比如发生了重放攻击, 生产者<code>Producer</code>连续发送了两条相同的消息, 那么消费者<code>Consumer</code>应该判断此消息是否消费过, 不应该重复消费.</p>
+<p>业界有两种方案保证消息的可靠性投递</p>
+<ol>
+<li>消息落库, 对消息状态进行打标</li>
+<li>消息延迟投递, 做二次确认, 回调检查</li>
+</ol>
+<p>两种方案都需要做消息的落库处理, 这里提供一个简单的消息表</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> rabbitmq (</span><br><span class="line">`id`          <span class="type">bigint</span>(<span class="number">20</span>) unsigned <span class="keyword">not</span> <span class="keyword">null</span> auto_increment comment <span class="string">&#x27;消息ID&#x27;</span>,</span><br><span class="line">`msg`         <span class="type">varchar</span>(<span class="number">4096</span>) <span class="keyword">not</span> <span class="keyword">null</span> comment <span class="string">&#x27;消息&#x27;</span>,</span><br><span class="line">`status`      tinyint unsigned <span class="keyword">not</span> <span class="keyword">null</span> comment <span class="string">&#x27;状态, 0:未投递, 1:已投递, 2:已确认, 3:已消费, 4: 失败&#x27;</span>,</span><br><span class="line">`retry_count` tinyint unsigned <span class="keyword">not</span> <span class="keyword">null</span> <span class="keyword">default</span> <span class="number">0</span> comment <span class="string">&#x27;重试次数&#x27;</span>,</span><br><span class="line">`create_time` datetime <span class="keyword">not</span> <span class="keyword">null</span> comment <span class="string">&#x27;创建时间&#x27;</span>,</span><br><span class="line">`update_time` datetime <span class="keyword">not</span> <span class="keyword">null</span> comment <span class="string">&#x27;更新时间&#x27;</span>,</span><br><span class="line"><span class="keyword">primary</span> key (`id`)</span><br><span class="line">) engine <span class="operator">=</span> InnoDB <span class="keyword">default</span> charset <span class="operator">=</span> utf8mb4 comment<span class="operator">=</span><span class="string">&#x27;消息表&#x27;</span>;</span><br></pre></td></tr></table></figure>
+
+<h1 id="方案一-消息落库-对状态打标"><a href="#方案一-消息落库-对状态打标" class="headerlink" title="方案一: 消息落库, 对状态打标"></a>方案一: 消息落库, 对状态打标</h1><p>以电商下单为场景</p>
+<img data-src="/images/RabbitMQ%E6%B6%88%E6%81%AF%E7%9A%84%E5%8F%AF%E9%9D%A0%E6%80%A7%E6%8A%95%E9%80%92_02.png" class="">
+<p>主要的步骤如图</p>
+<ol>
+<li>下单请求<code>Request</code>发送到订单系统<code>Order Center</code></li>
+<li>将订单数据落库<code>DB</code>, 将消息落库<code>DB</code>, 状态为<code>1 已投递</code></li>
+<li>发送消息给消息中间件<code>MQ</code></li>
+<li>消息中间件<code>MQ</code>告诉订单系统<code>Order Center</code>消息接收到了</li>
+<li>订单系统<code>Order Center</code>接收到消息中间件<code>MQ</code>的确认信息<code>confirm</code>, 更新<code>DB</code>中的消息状态为<code>2 已确认</code></li>
+<li>消息中间件<code>MQ</code>将消息投递给结算系统<code>Settlement-Center</code></li>
+<li>结算系统<code>Settlement-Center</code>收到消息, 更新<code>DB</code>中的消息状态为<code>3 已消费</code></li>
+<li>分布式定时任务扫描那些超过一天还没消费的消息, 重新投递</li>
+</ol>
+<p>这算是一个比较完整的解决方案, 不管哪个步骤出问题, 只要状态没有流转到<code>3 已消费</code>, 那么分布式定时任务就会抓取消息, 重新投递, 超过特定次数就不再自动投递.<br>这里就会带来几个问题.</p>
+<ol>
+<li>订单落库和消息落库, 是否要加事务?</li>
+<li>定时任务必须要是分布式的.</li>
+</ol>
+<h2 id="保证生产者和消息中间件的之间的可靠性投递"><a href="#保证生产者和消息中间件的之间的可靠性投递" class="headerlink" title="保证生产者和消息中间件的之间的可靠性投递"></a>保证生产者和消息中间件的之间的可靠性投递</h2><p>订单落库和消息落库, 我们可以看成是两次<code>insert</code>写库操作, 如果订单库和消息库在同一个<code>DB</code>实例下, 直接开启本地事务保存即可.<br>但是如果订单库和消息库在不同的<code>DB</code>实例下, 我们要使用分布式事务吗? 业务是否能接受分布式事务带来的性能损耗吗?</p>
+<p>如果体量小的项目, 用分布式事务是可以的, 但如果碰到了海量请求的情况下. 我们也可以通过快速失败的方式, 来保证两个消息落库成功.<br>但是如果遇到更大的流量请求, 就要通过方案二来解决了.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> String <span class="title function_">order</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="comment">// 1. 生成订单号</span></span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="comment">// 1. 订单落库</span></span><br><span class="line">        <span class="comment">// 2. 消息落库</span></span><br><span class="line">        <span class="comment">// 3. 发送MQ</span></span><br><span class="line">    &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">        <span class="comment">// 4. 根据订单号做回滚操作 或者 根据定时任务扫描失败的记录</span></span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;下单失败&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如果订单落库失败, 或着消息落库失败, 那么就直接返回客户端下单失败的提醒. 后续定时任务轮询, 根据业务做回滚操作.<br>如果订单落库成功, 消息落库成功, 但是发送消息失败, 此时消息库应该有一条消息记录, 状态是<code>1:已投递</code>, 后续定时任务轮询重新投递.<br>如果订单落库成功, 消息落库成功, 消息发送成功, 但是**<code>MQ</code>想要告诉生产者发送成功**的这个动作失败了, 消息记录的状态是<code>1:已投递</code>, 后续定时任务轮询重新投递.<br>如果上述的操作都成功了, 那么消息的状态变更为<code>2:已确认</code>, 生产者和消费者之间的可靠性投递就算保证了.</p>
+<p>那么怎么判断消息发送成功呢?<br><code>RabbitMQ</code>有两套机制保证, <code>Confirm</code>机制和<code>Return</code>机制.</p>
+<h3 id="Confirm-确认消息"><a href="#Confirm-确认消息" class="headerlink" title="Confirm 确认消息"></a>Confirm 确认消息</h3><p><img data-src="https://yuml.me/diagram/nofunky/class/[%E7%94%9F%E4%BA%A7%E8%80%85]-1.%E6%B6%88%E6%81%AF%3E[%E6%B6%88%E6%81%AF%E4%B8%AD%E9%97%B4%E4%BB%B6],[%E6%B6%88%E6%81%AF%E4%B8%AD%E9%97%B4%E4%BB%B6]-2.Confirm%3E[%E7%94%9F%E4%BA%A7%E8%80%85]" alt="Confirm消息确认机制"></p>
+<ol>
+<li>生产者发送消息给消息中间件</li>
+<li>消息中间件应答, 发送<code>Confirm</code>消息给生产者, 告诉生产者发送成功与否.</li>
+</ol>
+<p><code>RabbitMQ</code>通过调用<code>channel.confirmSelect()</code>开启<code>Confirm</code>消息确认机制.</p>
+<h4 id="普通confirm"><a href="#普通confirm" class="headerlink" title="普通confirm"></a>普通confirm</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">simpleConfirm</span><span class="params">(Channel channel)</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">    <span class="comment">// 1. 开启确认模式</span></span><br><span class="line">    <span class="type">int</span> <span class="variable">size</span> <span class="operator">=</span> <span class="number">10</span>;</span><br><span class="line">    channel.confirmSelect();</span><br><span class="line">    <span class="comment">// 2. 发送消息</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; size; i++) &#123;</span><br><span class="line">        <span class="type">String</span> <span class="variable">msg</span> <span class="operator">=</span> <span class="string">&quot;deliveryTag: &quot;</span> + deliveryTag + <span class="string">&quot;, 现在时间&quot;</span> + LocalDateTime.now().format(DateTimeFormatter.ofPattern(<span class="string">&quot;yyyy-MM-dd hh:mm:ss&quot;</span>));</span><br><span class="line">        channel.basicPublish(EXCHANGE_NAME, ROUTING_KEY, MessageProperties.PERSISTENT_TEXT_PLAIN, msg.getBytes(StandardCharsets.UTF_8));</span><br><span class="line">        <span class="comment">// 3. 同步 confirm</span></span><br><span class="line">        <span class="keyword">if</span> (!channel.waitForConfirms()) &#123;</span><br><span class="line">            System.out.println(<span class="string">&quot;消息[&quot;</span> + msg + <span class="string">&quot;]发送失败&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 4. 批量同步 confirm</span></span><br><span class="line">    <span class="comment">// if (!channel.waitForConfirms()) &#123;</span></span><br><span class="line">    <span class="comment">//     System.out.println(&quot;消息[&quot; + msg + &quot;]发送失败&quot;);</span></span><br><span class="line">    <span class="comment">// &#125;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><code>Channel</code>提供了一个<code>waitForConfirms</code>方法. 会阻塞等待服务器端<code>confirm</code>.</p>
+<blockquote>
+<p>Wait until all messages published since the last call have been either ack’d or nack’d by the broker</p>
+</blockquote>
+<p><code>waitForConfirms</code>还支持批量<code>confirm</code>, 放在<code>for</code>循环外面即可.<br>当超时或返回<code>false</code>时, 需要自己编写业务代码重发消息.</p>
+<h4 id="异步confirm"><a href="#异步confirm" class="headerlink" title="异步confirm"></a>异步confirm</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">asyncConfirm</span><span class="params">(Channel channel)</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">    <span class="comment">// 1. 开启确认模式</span></span><br><span class="line">    <span class="type">int</span> <span class="variable">size</span> <span class="operator">=</span> <span class="number">10</span>;</span><br><span class="line">    <span class="type">CountDownLatch</span> <span class="variable">latch</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">CountDownLatch</span>(size);</span><br><span class="line">    TreeSet&lt;Long&gt; confirmSet = <span class="keyword">new</span> <span class="title class_">TreeSet</span>&lt;&gt;(); <span class="comment">// 记录未确认的 deliveryTag</span></span><br><span class="line"></span><br><span class="line">    channel.confirmSelect();</span><br><span class="line">    <span class="comment">// 添加异步监听器</span></span><br><span class="line">    channel.addConfirmListener(<span class="keyword">new</span> <span class="title class_">ConfirmListener</span>() &#123;</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">handleAck</span><span class="params">(<span class="type">long</span> deliveryTag, <span class="type">boolean</span> multiple)</span> <span class="keyword">throws</span> IOException &#123;</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                <span class="keyword">if</span>(multiple) &#123;</span><br><span class="line">                    System.out.println(<span class="string">&quot;消息唯一标识:&quot;</span> + deliveryTag + <span class="string">&quot; 之前的消息都 ACK&quot;</span>);</span><br><span class="line">                    confirmSet.headSet(deliveryTag-<span class="number">1</span>).clear();</span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                    System.out.println(<span class="string">&quot;消息唯一标识:&quot;</span> + deliveryTag + <span class="string">&quot; 消息 ACK&quot;</span>);</span><br><span class="line">                    confirmSet.remove(deliveryTag);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">                latch.countDown();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">handleNack</span><span class="params">(<span class="type">long</span> deliveryTag, <span class="type">boolean</span> multiple)</span> <span class="keyword">throws</span> IOException &#123;</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                <span class="keyword">if</span>(multiple) &#123;</span><br><span class="line">                    System.out.println(<span class="string">&quot;消息唯一标识:&quot;</span> + deliveryTag + <span class="string">&quot; 之前的消息都 NACK&quot;</span>);</span><br><span class="line">                    confirmSet.headSet(deliveryTag-<span class="number">1</span>).clear();</span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                    System.out.println(<span class="string">&quot;消息唯一标识:&quot;</span> + deliveryTag + <span class="string">&quot; 消息 NACK&quot;</span>);</span><br><span class="line">                    confirmSet.remove(deliveryTag);</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                <span class="keyword">if</span>(confirmSet.contains(deliveryTag)) &#123;</span><br><span class="line">                    <span class="comment">// 从数据库捞记录重发消息</span></span><br><span class="line">                &#125;</span><br><span class="line">            &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">                latch.countDown();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 2. 发送消息</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; size; i++) &#123;</span><br><span class="line">        <span class="type">long</span> <span class="variable">deliveryTag</span> <span class="operator">=</span> channel.getNextPublishSeqNo();</span><br><span class="line">        <span class="type">String</span> <span class="variable">msg</span> <span class="operator">=</span> <span class="string">&quot;deliveryTag: &quot;</span>+deliveryTag+<span class="string">&quot;, 现在时间&quot;</span> + LocalDateTime.now().format(DateTimeFormatter.ofPattern(<span class="string">&quot;yyyy-MM-dd hh:mm:ss&quot;</span>));</span><br><span class="line">        channel.basicPublish(EXCHANGE_NAME, ROUTING_KEY, MessageProperties.PERSISTENT_TEXT_PLAIN, msg.getBytes(StandardCharsets.UTF_8));</span><br><span class="line">        confirmSet.add(deliveryTag);</span><br><span class="line">        Thread.sleep(<span class="number">1000</span>); <span class="comment">// 延迟, 保证 multiple 为 false</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    latch.await();</span><br><span class="line">    Assertions.assertTrue(confirmSet.isEmpty());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>当生产者接受到<code>confirm</code>通知时, 会回调监听器的两个方法, <code>handleAck</code>和<code>handleNack</code>.</p>
+<ol>
+<li><code>handleAck</code>表示成功处理的消息</li>
+<li><code>handleNack</code>表示<code>Broker</code>丢失了消息. <strong>但是</strong>, 即使返回<code>Nack</code>, 也有可能已经将消息投递给了消费者.</li>
+</ol>
+<p><code>handleAck</code>和<code>handleNack</code>有两个参数, 消息标识<code>deliveryTag</code>和批量标识<code>multiple</code>.</p>
+<ol>
+<li><code>deliveryTag</code>用于表示一个<code>Channel</code>下的消息的唯一<code>Id</code>, 可以通过<code>channel.getNextPublishSeqNo()</code>来获取接下来要发送的消息的<code>deliveryTag</code>.</li>
+<li><code>multiple</code>用于表示当前的<code>ACK</code>或<code>NACK</code>是否批量操作, 如果是批量操作, 那么小于<code>deliveryTag</code>的消息都要处理.</li>
+</ol>
+<h4 id="Spring-Boot-实现-confirm"><a href="#Spring-Boot-实现-confirm" class="headerlink" title="Spring Boot 实现 confirm"></a>Spring Boot 实现 confirm</h4><p>首先要在配置文件里面开启<code>confirm</code>模式</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">spring:</span></span><br><span class="line">  <span class="attr">rabbitmq:</span></span><br><span class="line">    <span class="attr">publisher-confirm-type:</span> <span class="string">correlated</span> <span class="comment"># confirm模式</span></span><br></pre></td></tr></table></figure>
+<p>然后设置<code>ConfirmCallback</code>, 多线程跑一下.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">confirm</span><span class="params">()</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">    <span class="type">String</span> <span class="variable">msg</span> <span class="operator">=</span> <span class="string">&quot;sendString()&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="type">int</span> <span class="variable">size</span> <span class="operator">=</span> <span class="number">10</span>;</span><br><span class="line">    <span class="type">CountDownLatch</span> <span class="variable">latch</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">CountDownLatch</span>(size);</span><br><span class="line">    rabbitTemplate.setConfirmCallback((correlationData, ack, cause) -&gt; &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;接收: &quot;</span> + correlationData + <span class="string">&quot;, ack:[&quot;</span> + ack + <span class="string">&quot;], cause:[&quot;</span> + cause + <span class="string">&quot;]&quot;</span>);</span><br><span class="line">        latch.countDown();</span><br><span class="line">    &#125;);</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; size; i++) &#123;</span><br><span class="line">        <span class="keyword">new</span> <span class="title class_">Thread</span>(() -&gt; &#123;</span><br><span class="line">            <span class="comment">// 不能在这里设置 ConfirmCallback</span></span><br><span class="line">            <span class="type">CorrelationData</span> <span class="variable">correlationId</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">CorrelationData</span>(UUID.randomUUID().toString());</span><br><span class="line">            System.out.println(<span class="string">&quot;发送:&quot;</span> + msg + <span class="string">&quot;, correlationId: &quot;</span> + correlationId);</span><br><span class="line">            rabbitTemplate.convertAndSend(DirectConsumer.QUEUE_NAME, (Object) msg, correlationId);</span><br><span class="line">        &#125;).start();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="type">boolean</span> <span class="variable">success</span> <span class="operator">=</span> latch.await(<span class="number">10</span>, TimeUnit.SECONDS);</span><br><span class="line">    Assertions.assertTrue(success);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>有一点需要注意下, 一个<code>RabbitTemplate</code>只能有一个<code>ConfirmCallback</code>. 这里看下源码.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// org.springframework.amqp.rabbit.core.RabbitTemplate#setConfirmCallback</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">setConfirmCallback</span><span class="params">(ConfirmCallback confirmCallback)</span> &#123;</span><br><span class="line">    Assert.state(<span class="built_in">this</span>.confirmCallback == <span class="literal">null</span> || <span class="built_in">this</span>.confirmCallback == confirmCallback, <span class="string">&quot;Only one ConfirmCallback is supported by each RabbitTemplate&quot;</span>);</span><br><span class="line">    <span class="built_in">this</span>.confirmCallback = confirmCallback;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如果业务要求需要对不同的生产者执行不同的<code>ConfirmCallback</code>逻辑, 那么再应该<code>new</code>一个<code>RabbitTemplate</code>.</p>
+<h3 id="Return-不可达消息"><a href="#Return-不可达消息" class="headerlink" title="Return 不可达消息"></a>Return 不可达消息</h3><p><img data-src="https://yuml.me/diagram/nofunky/class/[%E7%94%9F%E4%BA%A7%E8%80%85]-1.%E6%B6%88%E6%81%AF%3E[%E6%B6%88%E6%81%AF%E4%B8%AD%E9%97%B4%E4%BB%B6],[%E6%B6%88%E6%81%AF%E4%B8%AD%E9%97%B4%E4%BB%B6]-2.%E6%B2%A1%E6%89%BE%E5%88%B0%3E[%E7%94%9F%E4%BA%A7%E8%80%85]" alt="Return不可达消息"></p>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="https://www.rabbitmq.com/confirms.html">https://www.rabbitmq.com/confirms.html</a><br>For unroutable messages, the broker will issue a confirm once the exchange verifies a message won’t route to any queue (returns an empty list of queues).<br>If the message is also published as mandatory, the basic.return is sent to the client before basic.ack.<br>The same is true for negative acknowledgements (basic.nack).</p>
+</blockquote>
+<p>当生产者生产一条消息, 投递到<code>MQ</code>消息中间件中, 但是<code>MQ</code>消息中间件判定投递失败<code>unroutable</code>, 比如没有对应的路由<code>Key</code>, 就会触发<code>return</code>机制.<br>在生产消息时, 如果指定<code>Mandatory</code>是<code>true</code>, 则监听器会接收到路由不可达的消息, 交由<code>ReturnListener</code>进行后续处理. 如果为false, 那么<code>MQ</code>消息中间件会自动删除这条消息.</p>
+<h4 id="原生-API-方式"><a href="#原生-API-方式" class="headerlink" title="原生 API 方式"></a>原生 API 方式</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">_return</span><span class="params">()</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">    <span class="comment">// 1. 开启 return</span></span><br><span class="line">    <span class="type">CountDownLatch</span> <span class="variable">latch</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">CountDownLatch</span>(<span class="number">1</span>);</span><br><span class="line">    <span class="type">boolean</span> <span class="variable">mandatory</span> <span class="operator">=</span> <span class="literal">true</span>; <span class="comment">// true监听不可达消息, false则自动删除消息</span></span><br><span class="line"></span><br><span class="line">    channel.addReturnListener((replyCode, replyText, exchange, routingKey, properties, body) -&gt; &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;replyCode:[&quot;</span> + replyCode + <span class="string">&quot;], replyText:[&quot;</span> + replyText + <span class="string">&quot;], exchange:[&quot;</span> + exchange + <span class="string">&quot;], routingKey:[&quot;</span> + routingKey + <span class="string">&quot;], BasicProperties:[&quot;</span> + properties + <span class="string">&quot;], body:[&quot;</span> + <span class="keyword">new</span> <span class="title class_">String</span>(body, StandardCharsets.UTF_8) + <span class="string">&quot;]&quot;</span>);</span><br><span class="line">        latch.countDown();</span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 2. 发送消息</span></span><br><span class="line">    <span class="type">long</span> <span class="variable">deliveryTag</span> <span class="operator">=</span> channel.getNextPublishSeqNo();</span><br><span class="line">    <span class="type">String</span> <span class="variable">msg</span> <span class="operator">=</span> <span class="string">&quot;deliveryTag: &quot;</span> + deliveryTag + <span class="string">&quot;, 现在时间&quot;</span> + LocalDateTime.now().format(DateTimeFormatter.ofPattern(<span class="string">&quot;yyyy-MM-dd hh:mm:ss&quot;</span>));</span><br><span class="line">    channel.basicPublish(EXCHANGE_NAME, <span class="string">&quot;NULL_KEY&quot;</span>, mandatory, MessageProperties.PERSISTENT_TEXT_PLAIN, msg.getBytes(StandardCharsets.UTF_8));</span><br><span class="line">    <span class="comment">// channel.basicPublish(&quot;NULL_EXCHANGE&quot;, ROUTING_KEY, mandatory, MessageProperties.PERSISTENT_TEXT_PLAIN, msg.getBytes(StandardCharsets.UTF_8));</span></span><br><span class="line"></span><br><span class="line">    <span class="type">boolean</span> <span class="variable">success</span> <span class="operator">=</span> latch.await(<span class="number">10</span>, TimeUnit.SECONDS);</span><br><span class="line">    Assertions.assertTrue(success);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>实际上, 如果传递一个未声明的<code>Exchange</code>过去, 不会触发<code>return</code>. 而传递不可路由的<code>RoutingKey</code>, 则可以触发<code>return</code>.</p>
+<h4 id="Spring-Boot-实现-return"><a href="#Spring-Boot-实现-return" class="headerlink" title="Spring Boot 实现 return"></a>Spring Boot 实现 return</h4><p>首先要在配置文件里面开启<code>return</code>模式</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">spring:</span></span><br><span class="line">  <span class="attr">rabbitmq:</span></span><br><span class="line">    <span class="attr">publisher-returns:</span> <span class="literal">true</span> <span class="comment"># return机制</span></span><br><span class="line">    <span class="attr">template:</span></span><br><span class="line">      <span class="attr">mandatory:</span> <span class="literal">true</span> <span class="comment"># 与 return 机制结合配置次属性</span></span><br></pre></td></tr></table></figure>
+<p>然后设置<code>ReturnCallback</code>, 多线程跑一下.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">_return</span><span class="params">()</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">    <span class="type">String</span> <span class="variable">msg</span> <span class="operator">=</span> <span class="string">&quot;sendString()&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="type">int</span> <span class="variable">size</span> <span class="operator">=</span> <span class="number">10</span>;</span><br><span class="line">    <span class="type">CountDownLatch</span> <span class="variable">latch</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">CountDownLatch</span>(size);</span><br><span class="line">    rabbitTemplate.setReturnCallback((message, replyCode, replyText, exchange, routingKey) -&gt; &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;接收: &quot;</span> + message + <span class="string">&quot;, replyCode:[&quot;</span> + replyCode + <span class="string">&quot;], replyText:[&quot;</span> + replyText + <span class="string">&quot;], exchange:[&quot;</span> + exchange + <span class="string">&quot;], routingKey:[&quot;</span> + routingKey + <span class="string">&quot;]&quot;</span>);</span><br><span class="line">        latch.countDown();</span><br><span class="line">    &#125;);</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; size; i++) &#123;</span><br><span class="line">        <span class="keyword">new</span> <span class="title class_">Thread</span>(() -&gt; &#123;</span><br><span class="line">            <span class="comment">// 不能在这里设置 ReturnCallback</span></span><br><span class="line">            <span class="type">CorrelationData</span> <span class="variable">correlationId</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">CorrelationData</span>(UUID.randomUUID().toString());</span><br><span class="line">            System.out.println(<span class="string">&quot;发送:&quot;</span> + msg + <span class="string">&quot;, correlationId: &quot;</span> + correlationId);</span><br><span class="line">            rabbitTemplate.convertAndSend(<span class="string">&quot;UNKNOWN&quot;</span>, (Object) msg, correlationId);</span><br><span class="line">        &#125;).start();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="type">boolean</span> <span class="variable">success</span> <span class="operator">=</span> latch.await(<span class="number">10</span>, TimeUnit.SECONDS);</span><br><span class="line">    Assertions.assertTrue(success);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>有一点需要注意下, 和<code>Callback</code>一样, 一个<code>RabbitTemplate</code>只能有一个<code>ReturnCallback</code>. 这里看下源码.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// org.springframework.amqp.rabbit.core.RabbitTemplate#setReturnCallback</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">setReturnCallback</span><span class="params">(ReturnCallback returnCallback)</span> &#123;</span><br><span class="line">    Assert.state(<span class="built_in">this</span>.returnCallback == <span class="literal">null</span> || <span class="built_in">this</span>.returnCallback == returnCallback, <span class="string">&quot;Only one ReturnCallback is supported by each RabbitTemplate&quot;</span>);</span><br><span class="line">    <span class="built_in">this</span>.returnCallback = returnCallback;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如果业务要求需要对不同的生产者执行不同的<code>ReturnCallback</code>逻辑, 那么再应该<code>new</code>一个<code>RabbitTemplate</code>.</p>
+<h3 id="我们需要判断消息发送成功吗"><a href="#我们需要判断消息发送成功吗" class="headerlink" title="我们需要判断消息发送成功吗?"></a>我们需要判断消息发送成功吗?</h3><p>如果我们只管投递消息, 不管是否投递成功, 会有什么情况?<br>投递成功当然是最好的, 投递失败的话, 订单状态会一直处于<code>1:已投递</code>, 而不会变成<code>2:已确认</code>.<br>这样的话, 定时任务扫描到这条处于<code>1:已投递</code>的消息, 就会重新发送.</p>
+<p>看起来似乎用不用<code>confirm</code>和<code>return</code>都可以保证消息投递成功了.<br>我能想象到使用<code>confirm</code>和<code>return</code>的业务场景有两种情况</p>
+<ol>
+<li>投递失败时, 尽快重新投递, 不等定时任务扫描.</li>
+<li>监控投递流程, 单位时间内投递失败消息超过一定数量就报警.</li>
+</ol>
+<h2 id="保证消息中间件的持久化存储-避免消息丢失"><a href="#保证消息中间件的持久化存储-避免消息丢失" class="headerlink" title="保证消息中间件的持久化存储, 避免消息丢失"></a>保证消息中间件的持久化存储, 避免消息丢失</h2><p>经过上面的操作, 消息已经存储到消息中间件了. 为了保证消息不丢失, 消息中间件应该将消息做持久化处理.<br>否则当消息中间件宕机的时候, 在内存中的消息就会丢失.</p>
+<p><code>RabbitMQ</code>可持久化的东西有三样, <code>Exchange</code>、<code>Queue</code>、消息.<br>持久化也很简单, 只要调用<code>API</code>传参即可.</p>
+<h3 id="原生-API-方式-1"><a href="#原生-API-方式-1" class="headerlink" title="原生 API 方式"></a>原生 API 方式</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">create</span><span class="params">(Channel channel)</span> &#123;</span><br><span class="line">    <span class="comment">// Exchange.DeclareOk exchangeDeclare(String exchange, BuiltinExchangeType type, boolean durable, boolean autoDelete, boolean internal, Map&lt;String, Object&gt; arguments);</span></span><br><span class="line">    channel.exchangeDeclare(EXCHANGE_NAME, BuiltinExchangeType.DIRECT, <span class="literal">true</span>, <span class="literal">false</span>, <span class="literal">false</span>, <span class="literal">null</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Queue.DeclareOk queueDeclare(String queue, boolean durable, boolean exclusive, boolean autoDelete, Map&lt;String, Object&gt; arguments) throws IOException;</span></span><br><span class="line">    channel.queueDeclare(QUEUE_NAME, <span class="literal">true</span>, <span class="literal">false</span>, <span class="literal">false</span>, <span class="literal">null</span>);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// public BasicProperties(String contentType, String contentEncoding, Map&lt;String,Object&gt; headers, Integer deliveryMode, </span></span><br><span class="line">    <span class="comment">//                          Integer priority, String correlationId, String replyTo, String expiration, String messageId,</span></span><br><span class="line">    <span class="comment">//                          Date timestamp, String type, String userId, String appId, String clusterId)</span></span><br><span class="line">    <span class="comment">// new BasicProperties(&quot;text/plain&quot;, null, null, 2, 0, null, null, null, null, null, null, null, null, null)</span></span><br><span class="line">    channel.basicPublish(EXCHANGE_NAME, ROUTING_KEY, MessageProperties.PERSISTENT_TEXT_PLAIN, msg.getBytes(StandardCharsets.UTF_8));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><code>Exchange</code>和<code>Queue</code>的持久化只要在声明的时候, 指定<code>durable</code>为<code>true</code>即可.<br>而消息的持久化, 需要在发送消息的时候, 指定<code>BasicProperties</code>属性, 将<code>deliveryMode</code>设置为<code>2</code>持久化.</p>
+<h3 id="Spring-Boot-实现"><a href="#Spring-Boot-实现" class="headerlink" title="Spring Boot 实现"></a>Spring Boot 实现</h3><p><code>Spring Boot</code>可以通过使用<code>Bean</code>声明<code>Exchange</code>和<code>Queue</code>来实现持久化.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">MyConfig</span> &#123;</span><br><span class="line">    <span class="type">boolean</span> <span class="variable">durable</span> <span class="operator">=</span> <span class="literal">true</span>; <span class="comment">// 持久化</span></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="keyword">public</span> Exchange <span class="title function_">exchange</span><span class="params">()</span> &#123; <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">TopicExchange</span>(EXCHANGE_NAME, durable, <span class="literal">false</span>, <span class="literal">null</span>); &#125;</span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="keyword">public</span> Queue <span class="title function_">queue</span><span class="params">()</span> &#123; <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">Queue</span>(QUEUE_NAME, durable, <span class="literal">false</span>, <span class="literal">false</span>, <span class="literal">null</span>); &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>也可以使用注解的形式声明<code>Exchange</code>和<code>Queue</code>实现持久化.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Consumer</span> &#123;</span><br><span class="line">    <span class="meta">@RabbitListener(bindings = @QueueBinding(key = &quot;#&quot;,</span></span><br><span class="line"><span class="meta">            exchange = @Exchange(type = ExchangeTypes.TOPIC, name = EXCHANGE_NAME, durable = &quot;true&quot;),</span></span><br><span class="line"><span class="meta">            value = @Queue(name = QUEUE_NAME, durable = &quot;true&quot;)))</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">consumer</span><span class="params">(<span class="meta">@Payload</span> String msg, Channel channel, <span class="meta">@Header(AmqpHeaders.DELIVERY_TAG)</span> <span class="type">long</span> tag,</span></span><br><span class="line"><span class="params">                         <span class="meta">@Headers</span> Map&lt;String, Object&gt; header)</span> &#123;</span><br><span class="line">        <span class="comment">// 消费消息</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>消息的持久化也是在发消息时通过指定<code>MessageProperties</code>实现</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">send</span><span class="params">(String exchange, String routingKey, String msg)</span> &#123;</span><br><span class="line">    <span class="type">MessageProperties</span> <span class="variable">properties</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">MessageProperties</span>();</span><br><span class="line">    properties.setDeliveryMode(MessageDeliveryMode.PERSISTENT); <span class="comment">// 指定持久化消息</span></span><br><span class="line">    </span><br><span class="line">    <span class="type">Message</span> <span class="variable">message</span> <span class="operator">=</span> MessageBuilder.withBody(msg.getBytes(StandardCharsets.UTF_8)).andProperties(properties).build();</span><br><span class="line">    rabbitTemplate.send(exchange, routingKey, message);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="保证消息中间件的消费可靠性"><a href="#保证消息中间件的消费可靠性" class="headerlink" title="保证消息中间件的消费可靠性"></a>保证消息中间件的消费可靠性</h2><p><code>RabbitMQ</code>要保证消息消费的可靠性, 就必须开启手动<code>ACK</code>.<br>默认情况下, 消费者是开启自动<code>ACK</code>的. 也就是说一条消息过来, 不管有没有执行成功, 都会告诉<code>RabbitMQ</code>消费成功. 如果出现异常, 也告诉<code>RabbitMQ</code>消费成功. 这明显是不合理的.</p>
+<h3 id="原生-API-手动-ACK"><a href="#原生-API-手动-ACK" class="headerlink" title="原生 API 手动 ACK"></a>原生 API 手动 ACK</h3><p>可以看到, 自动<code>ACK</code>的配置, 是在创建消费者的时候就声明的.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">consumer</span><span class="params">(Channel channel)</span> &#123;</span><br><span class="line">    <span class="type">boolean</span> <span class="variable">autoAck</span> <span class="operator">=</span> <span class="literal">false</span>; <span class="comment">// 声明自动 ACK</span></span><br><span class="line">    channel.basicConsume(QUEUE_NAME, autoAck, <span class="keyword">new</span> <span class="title class_">DefaultConsumer</span>(channel) &#123;</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">handleDelivery</span><span class="params">(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, <span class="type">byte</span>[] body)</span> <span class="keyword">throws</span> IOException &#123;</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                System.out.println(<span class="string">&quot;接受到:&quot;</span> + <span class="keyword">new</span> <span class="title class_">String</span>(body));</span><br><span class="line">                <span class="comment">// channel.basicAck(envelope.getDeliveryTag(), false);</span></span><br><span class="line">            &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">                e.printStackTrace();</span><br><span class="line">                <span class="comment">// channel.basicNack(envelope.getDeliveryTag(), false, false);</span></span><br><span class="line">                <span class="comment">// channel.basicReject(envelope.getDeliveryTag(), false);</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如果设置成手动<code>ACK</code>, 那么就要手动调用几个方法来通知<code>MQ</code>消息的消费情况.</p>
+<ol>
+<li><code>channel.basicAck(long deliveryTag, boolean multiple)</code>, 表示正确处理这条消息.</li>
+<li><code>channel.basicNack(long deliveryTag, boolean multiple, boolean requeue)</code>, 表示消息处理失败, 决定是否重回队列.</li>
+<li><code>channel.basicReject(long deliveryTag, boolean requeue)</code>, 表示消息处理失败, 决定是否重回队列.</li>
+</ol>
+<p><code>basicNack</code>和<code>basicReject</code>有点像, 看了下文档, 区别就是能否支持<code>multiple</code>.</p>
+<h3 id="Spring-Boot-手动-ACK"><a href="#Spring-Boot-手动-ACK" class="headerlink" title="Spring Boot 手动 ACK"></a>Spring Boot 手动 ACK</h3><p>首先在配置文件里设置</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">spring:</span></span><br><span class="line">  <span class="attr">rabbitmq:</span></span><br><span class="line">    <span class="attr">listener:</span></span><br><span class="line">      <span class="attr">simple:</span></span><br><span class="line">        <span class="attr">acknowledge-mode:</span> <span class="string">manual</span> <span class="comment"># 手动ack</span></span><br></pre></td></tr></table></figure>
+<p>然后在消费者那里手动调用原生<code>API</code>.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RabbitListener(queuesToDeclare = @Queue(queueName))</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Consumer</span> &#123;</span><br><span class="line">    <span class="meta">@RabbitHandler</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">directQueue</span><span class="params">(<span class="meta">@Payload</span> String msg, Channel channel, <span class="meta">@Header(AmqpHeaders.DELIVERY_TAG)</span> <span class="type">long</span> tag)</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            System.out.println(<span class="string">&quot;接收到的消息:&quot;</span> + msg);</span><br><span class="line">            channel.basicAck(tag, <span class="literal">false</span>);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">            channel.basicNack(tag, <span class="literal">false</span>, <span class="literal">false</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="定时任务处理极端情况下的消息处理异常"><a href="#定时任务处理极端情况下的消息处理异常" class="headerlink" title="定时任务处理极端情况下的消息处理异常"></a>定时任务处理极端情况下的消息处理异常</h2><p>保证了消息发送、中间件存储、消息消费的可靠性.<br>但还是防止不了极端情况, 这些无法预料的情况, 必须有个兜底策略来处理.</p>
+<p>比如用分布式定时任务扫描那些超过一天还没有流转到<code>3 已消费</code>的消息, 重新投递.</p>
+<p>至于为什么要用<strong>分布式的</strong>定时任务, 是避免同一条消息, 在同一时刻重复投递.<br>从源头避免并发消息的产生.<br>当然, 消息的幂等性处理要由消费者来保证.</p>
+<h1 id="方案二-消息延迟投递-做二次确认-回调检查"><a href="#方案二-消息延迟投递-做二次确认-回调检查" class="headerlink" title="方案二: 消息延迟投递, 做二次确认, 回调检查"></a>方案二: 消息延迟投递, 做二次确认, 回调检查</h1><p>方案一有一个问题, 消息发送之前, 需要落库两次, 业务库和消息库.<br>在海量高并发下, 每次磁盘<code>IO</code>的耗时, 都是不可忽视的. 在这种情况下, 要保证高性能, 将一致性降级为最终一致性.</p>
+<p>和方案一相比, 方案二多了一个回调系统, 少了一步落库的操作.<br>要注意的是, 这里没有使用<code>RabbitMQ</code>的<code>Confirm</code>和<code>Return</code>机制.</p>
+<img data-src="/images/RabbitMQ%E6%B6%88%E6%81%AF%E7%9A%84%E5%8F%AF%E9%9D%A0%E6%80%A7%E6%8A%95%E9%80%92_03.png" class="">
+
+<ol>
+<li>下单请求<code>Request</code>发送到订单系统<code>Order Center</code></li>
+<li>将订单数据落库<code>DB</code>, 发送一条业务消息, 发送一条延时消息(用于检查第一条消息是否处理成功)</li>
+<li>结算系统<code>Settlement-Center</code>收到消息, 处理成功后, 发送一条确认消息</li>
+<li>回调系统消费这条确认消息, 这个时候再进行消息落库</li>
+<li>过了几分钟, 回调系统消费了订单系统发送的延迟消息, 去消息库里检查是否存在这条信息.</li>
+<li>如果没有, 就调用订单系统的接口, 重投消息.</li>
+<li>分布式定时任务扫描那些超过一天还没消费的消息, 重新投递.</li>
+</ol>
+<p>以上都是流程正常的情况.<br>那万一中间哪一步出现异常, 要怎么保证消息再次重发呢? 关键点就在于这个用于<strong>检查</strong>的延迟消息.</p>
+<p>这个用于检查的延迟消息, 消息体带上订单号等业务信息, 会在一段时间, 比如十分钟后投递到<code>MQ</code>消息中间件, 然后回调系统消费这条消息, 去检查消息库.<br>如果看到这条订单消息没有被处理, 那么就调用订单系统的接口, 让订单系统重新投递这条消息.</p>
+<p>这里有个大问题, 如果这条延迟消息丢失了怎么办?<br>只能通过定时任务来补偿了.</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><ul>
+<li><a target="_blank" rel="noopener" href="https://coding.imooc.com/class/262.html">RabbitMQ消息中间件技术精讲</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.javazhiyin.com/47715.html">消息中间件——RabbitMQ（七）高级特性全在这里!（上）</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+      
+
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>很高兴得到您的赞赏</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="/images/config/wechatpay.jpg" alt="Ahaochan 微信">
+        <span>微信</span>
+      </div>
+      <div>
+        <img src="/images/config/alipay.jpg" alt="Ahaochan 支付宝">
+        <span>支付宝</span>
+      </div>
+
+  </div>
+</div>
+
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>Ahaochan
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://blog.ahao.moe/posts/How_to_ensure_the_reliable_delivery_of_RabbitMQ.html" title="RabbitMQ消息的可靠性投递">https://blog.ahao.moe/posts/How_to_ensure_the_reliable_delivery_of_RabbitMQ.html</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="followme">
+  <span>欢迎关注我的其它发布渠道</span>
+
+  <div class="social-list">
+
+      <div class="social-item">
+        <a target="_blank" class="social-link" href="/images/config/wechat_channel.jpg">
+          <span class="icon">
+            <i class="fab fa-weixin"></i>
+          </span>
+
+          <span class="label">WeChat</span>
+        </a>
+      </div>
+
+      <div class="social-item">
+        <a target="_blank" class="social-link" href="/rss.xml">
+          <span class="icon">
+            <i class="fa fa-rss"></i>
+          </span>
+
+          <span class="label">RSS</span>
+        </a>
+      </div>
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/RabbitMQ/" rel="tag"><i class="fa fa-tag"></i> RabbitMQ</a>
+          </div>
+
+        
+  <div class="post-widgets">
+    <div class="wpac-rating-container">
+      <div id="wpac-rating"></div>
+    </div>
+  </div>
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/posts/DockerFile.html" rel="prev" title="DockerFile详解">
+                  <i class="fa fa-chevron-left"></i> DockerFile详解
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/posts/docker_multi_stage_build.html" rel="next" title="Docker多阶段构建">
+                  Docker多阶段构建 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    
+  <div class="comments disqusjs">
+    <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+  </div>
+  
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2016 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ahaochan</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">172k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">10:25</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+  <div class="addthis_inline_share_toolbox">
+    <script src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-59047aaab9bddb67" async="async"></script>
+  </div><script color="0,0,255" opacity="0.5" zIndex="-1" count="99" src="https://cdn.jsdelivr.net/npm/canvas-nest.js@1/dist/canvas-nest.js"></script>
+
+
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js" integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lozad.js/1.16.0/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script>
+
+  
+  <script src="https://embed.widgetpack.com/widget.js" async></script>
+  <script class="next-config" data-name="rating" type="application/json">{"enable":true,"id":33332,"color":"#fc6423"}</script>
+  <script src="/js/third-party/rating.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.0/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/9.1.7/mermaid.min.js","integrity":"sha256-G58AID1YoX5YaEtWfXSI0VLrZ6N4kvNvwg0BI8zUFxE="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/quicklink/2.3.0/quicklink.umd.js" integrity="sha256-yvJQOINiH9fWemHn0vCA5lsHWJaHs6/ZmO+1Ft04SvM=" crossorigin="anonymous"></script>
+  <script class="next-config" data-name="quicklink" type="application/json">{"enable":true,"home":true,"archive":true,"delay":true,"timeout":3000,"priority":true,"url":"https://blog.ahao.moe/posts/How_to_ensure_the_reliable_delivery_of_RabbitMQ.html"}</script>
+  <script src="/js/third-party/quicklink.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/disqusjs/3.0.2/styles/disqusjs.css" integrity="sha256-71XarXwNr1Td27HmZI9zjY+rMzRdush6/glo6VFXp7o=" crossorigin="anonymous">
+
+<script class="next-config" data-name="disqusjs" type="application/json">{"enable":true,"api":"https://disqus.skk.moe/disqus/","apikey":"OC1zbKiBF5cPo1EJObILJmZftsWl4ZbbAh9YqV0qNxiMq8rQFqBiw8PYcXQCyG9S","shortname":"ahaochan-blog","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/disqusjs/3.0.2/disqusjs.es2015.umd.min.js","integrity":"sha256-okP99ZQKVpIy7+NogAMpGlIQzJa9XKXhIJcFgdju5bU="}}</script>
+<script src="/js/third-party/comments/disqusjs.js"></script>
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"scale":1.2,"jsonPath":"https://cdn.jsdelivr.net/npm/live2d-widget-model-shizuku@1.0.5/assets/shizuku.model.json"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":false},"react":{"opacity":0.7},"log":false});</script></body>
+</html>

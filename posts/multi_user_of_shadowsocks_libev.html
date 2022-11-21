@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/config/favicon-32x32-next.jpg">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/config/favicon-16x16-next.jpg">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="google-site-verification" content="ZmER9fymckNfZ_Zxw6p3fpvqhvR6LitG9pR-cNVflx0">
+  <meta name="msvalidate.01" content="5351f65e5e79bb62584189a5e6906b8b">
+  <meta name="baidu-site-verification" content="jgtczlqzuk">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic%7CConsolas:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" integrity="sha256-AbA177XfpSnFEvgpYu1jMygiLabzPCJCRIBtR5jGc0k=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"blog.ahao.moe","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.13.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"disqusjs","storage":true,"lazyload":true,"nav":null,"activeClass":"disqusjs"},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":true}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="前言你好啊，感谢你阅读本文。18年的时候，我发布了这篇文章，介绍了如何部署一套我当时以为安全的流量混淆和多用户限流工具。 转眼到了22年，现在我遇到了几个问题  我的Linux虚拟机迫切需要使用科学上网，但是当时这篇文章里没有介绍关于Linux Client的使用。 我的shadowsocks-libev版本过于老旧，不知道是否会有安全漏洞，需要更新。 simple-obfs混淆插件已经停止维护，">
+<meta property="og:type" content="article">
+<meta property="og:title" content="基于shadowsocks-libev+simple-obfs的单机多用户搭建">
+<meta property="og:url" content="https://blog.ahao.moe/posts/multi_user_of_shadowsocks_libev.html">
+<meta property="og:site_name" content="Ahaochan&#39;s Blog">
+<meta property="og:description" content="前言你好啊，感谢你阅读本文。18年的时候，我发布了这篇文章，介绍了如何部署一套我当时以为安全的流量混淆和多用户限流工具。 转眼到了22年，现在我遇到了几个问题  我的Linux虚拟机迫切需要使用科学上网，但是当时这篇文章里没有介绍关于Linux Client的使用。 我的shadowsocks-libev版本过于老旧，不知道是否会有安全漏洞，需要更新。 simple-obfs混淆插件已经停止维护，">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2018-12-11T12:11:33.000Z">
+<meta property="article:modified_time" content="2022-11-21T02:35:06.080Z">
+<meta property="article:author" content="Ahaochan">
+<meta property="article:tag" content="Linux">
+<meta property="article:tag" content="shadowsocks">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://blog.ahao.moe/posts/multi_user_of_shadowsocks_libev.html">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://blog.ahao.moe/posts/multi_user_of_shadowsocks_libev.html","path":"posts/multi_user_of_shadowsocks_libev.html","title":"基于shadowsocks-libev+simple-obfs的单机多用户搭建"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>基于shadowsocks-libev+simple-obfs的单机多用户搭建 | Ahaochan's Blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-108454440-1"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"UA-108454440-1","only_pageview":false}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+  <script src="/js/third-party/analytics/baidu-analytics.js"></script>
+  <script async src="https://hm.baidu.com/hm.js?32635d85cec06e8822234c4d2aec2b54"></script>
+
+
+
+
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+  (adsbygoogle = window.adsbygoogle || []).push({
+    google_ad_client: "ca-pub-5208025300813046",
+    enable_page_level_ads: true
+  });
+</script>
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/rss.xml" title="Ahaochan's Blog" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Ahaochan's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">你也是程序猿friends呢~</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">91</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">30</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">217</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%85%81%E8%AE%B8root%E8%BF%9C%E7%A8%8B%E7%99%BB%E5%BD%95%EF%BC%88%E4%BB%85%E9%99%90%E8%99%9A%E6%8B%9F%E6%9C%BA%EF%BC%8C%E8%AF%B7%E5%8B%BF%E7%94%A8%E4%BA%8E%E7%94%9F%E4%BA%A7%E7%8E%AF%E5%A2%83%EF%BC%89"><span class="nav-number">2.</span> <span class="nav-text">允许root远程登录（仅限虚拟机，请勿用于生产环境）</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#shadowsocks-libev-%E6%9C%8D%E5%8A%A1%E7%AB%AF%E5%AE%89%E8%A3%85%E9%85%8D%E7%BD%AE"><span class="nav-number">3.</span> <span class="nav-text">shadowsocks-libev 服务端安装配置</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8D%95%E7%94%A8%E6%88%B7%E9%85%8D%E7%BD%AE"><span class="nav-number">3.1.</span> <span class="nav-text">单用户配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%9A%E7%94%A8%E6%88%B7%E9%85%8D%E7%BD%AE"><span class="nav-number">3.2.</span> <span class="nav-text">多用户配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95%E4%BD%BF%E7%94%A8"><span class="nav-number">3.3.</span> <span class="nav-text">测试使用</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE-simple-obfs-%E6%B7%B7%E6%B7%86%E6%8F%92%E4%BB%B6"><span class="nav-number">4.</span> <span class="nav-text">配置 simple-obfs 混淆插件</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%8D%E5%8A%A1%E7%AB%AF%E9%85%8D%E7%BD%AE"><span class="nav-number">4.1.</span> <span class="nav-text">服务端配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AF%E9%85%8D%E7%BD%AE"><span class="nav-number">4.2.</span> <span class="nav-text">客户端配置</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE-v2ray-%E6%B7%B7%E6%B7%86%E6%8F%92%E4%BB%B6%EF%BC%88%E6%9A%82%E6%9C%AA%E8%90%BD%E5%9C%B0%EF%BC%89"><span class="nav-number">5.</span> <span class="nav-text">配置 v2ray 混淆插件（暂未落地）</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%B5%81%E9%87%8F%E7%BB%9F%E8%AE%A1%EF%BC%88%E6%9A%82%E6%9C%AA%E8%90%BD%E5%9C%B0%EF%BC%89"><span class="nav-number">6.</span> <span class="nav-text">流量统计（暂未落地）</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BC%98%E5%8C%96"><span class="nav-number">7.</span> <span class="nav-text">优化</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BC%80%E5%90%AFBBR"><span class="nav-number">7.1.</span> <span class="nav-text">开启BBR</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%83%A8%E7%BD%B2%E4%B8%80%E4%B8%AA%E6%AD%A3%E5%B8%B8%E7%9A%84%E7%BD%91%E7%AB%99%E5%88%B080%E7%AB%AF%E5%8F%A3"><span class="nav-number">7.2.</span> <span class="nav-text">部署一个正常的网站到80端口</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%87%E7%94%A8%E7%AB%AF%E5%8F%A3"><span class="nav-number">7.3.</span> <span class="nav-text">备用端口</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BC%80%E5%90%AF%E9%98%B2%E7%81%AB%E5%A2%99"><span class="nav-number">7.4.</span> <span class="nav-text">开启防火墙</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B0%81%E7%A6%81%E6%81%B6%E6%84%8F%E8%AE%BF%E9%97%AEIP"><span class="nav-number">7.5.</span> <span class="nav-text">封禁恶意访问IP</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%BB%93%E8%AF%AD"><span class="nav-number">8.</span> <span class="nav-text">结语</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Ahaochan"
+      src="/images/config/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Ahaochan</p>
+  <div class="site-description" itemprop="description">你也是程序猿friends呢~</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">217</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">30</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">91</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Ahaochan" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Ahaochan" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:844394093@qq.com" title="E-Mail → mailto:844394093@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://greasyfork.org/zh-CN/users/30831" title="Greasyfork → https:&#x2F;&#x2F;greasyfork.org&#x2F;zh-CN&#x2F;users&#x2F;30831" rel="noopener" target="_blank"><i class="fab fa-google fa-fw"></i>Greasyfork</a>
+      </span>
+  </div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/Ahaochan" class="github-corner" title="我的Github" aria-label="我的Github" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blog.ahao.moe/posts/multi_user_of_shadowsocks_libev.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/config/avatar.jpg">
+      <meta itemprop="name" content="Ahaochan">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ahaochan's Blog">
+      <meta itemprop="description" content="你也是程序猿friends呢~">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="基于shadowsocks-libev+simple-obfs的单机多用户搭建 | Ahaochan's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          基于shadowsocks-libev+simple-obfs的单机多用户搭建<a href="https://github.com/Ahaochan/Ahaochan.github.io/blob/source/source/_posts/linux/Linux-%E5%9F%BA%E4%BA%8Eshadowsocks-libev+simple-obfs%E7%9A%84%E5%8D%95%E6%9C%BA%E5%A4%9A%E7%94%A8%E6%88%B7%E6%90%AD%E5%BB%BA.md" class="post-edit-link" title="编辑" rel="noopener" target="_blank"><i class="fa fa-pen-nib"></i></a>
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2018-12-11 20:11:33" itemprop="dateCreated datePublished" datetime="2018-12-11T20:11:33+08:00">2018-12-11</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>1.3k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>5 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>你好啊，感谢你阅读本文。<br><code>18</code>年的时候，我发布了这篇文章，介绍了如何部署一套我当时以为安全的流量混淆和多用户限流工具。</p>
+<p>转眼到了<code>22</code>年，现在我遇到了几个问题</p>
+<ol>
+<li>我的<code>Linux</code>虚拟机迫切需要使用科学上网，但是当时这篇文章里没有介绍关于<code>Linux Client</code>的使用。</li>
+<li>我的<code>shadowsocks-libev</code>版本过于老旧，不知道是否会有安全漏洞，需要更新。</li>
+<li><code>simple-obfs</code>混淆插件已经停止维护，拙劣的混淆可能会暴露自己。</li>
+</ol>
+<p>随后我在搜索引擎上找到了一篇文章，<a target="_blank" rel="noopener" href="https://gfw.report/blog/ss_tutorial/zh/">如何部署一台抗封锁的<code>Shadowsocks-libev</code>服务器</a> 。<br><strong>PS：在写这篇文章的时候，根据上文进行配置，第二天就被封<code>IP</code>了，建议大家还是开上<code>simple obfs</code>等混淆插件，不要裸奔。</strong></p>
+<p>本文基于<code>Ubuntu 18.04</code>在虚拟机中进行操作, 并于<code>VPS</code>上测试成功。</p>
+<span id="more"></span>
+
+<h1 id="允许root远程登录（仅限虚拟机，请勿用于生产环境）"><a href="#允许root远程登录（仅限虚拟机，请勿用于生产环境）" class="headerlink" title="允许root远程登录（仅限虚拟机，请勿用于生产环境）"></a>允许root远程登录（仅限虚拟机，请勿用于生产环境）</h1><p>建议使用<code>root</code>避免各种权限问题。<br>实际使用时应该登录普通用户后<code>sudo -s</code>切换到<code>root</code>用户。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 设置root用户的密码为root，并允许root用户远程登录</span></span><br><span class="line">sudo passwd root</span><br><span class="line">sudo sed -i <span class="string">&#x27;s/#PermitRootLogin prohibit-password/PermitRootLogin yes/&#x27;</span> /etc/ssh/sshd_config</span><br><span class="line">sudo service sshd restart</span><br></pre></td></tr></table></figure>
+
+<h1 id="shadowsocks-libev-服务端安装配置"><a href="#shadowsocks-libev-服务端安装配置" class="headerlink" title="shadowsocks-libev 服务端安装配置"></a>shadowsocks-libev 服务端安装配置</h1><p>服务端使用<a target="_blank" rel="noopener" href="https://github.com/shadowsocks/shadowsocks-libev"><code>shadowsocks-libev</code></a><br><a target="_blank" rel="noopener" href="https://github.com/shadowsocks/shadowsocks-libev/blob/master/doc/shadowsocks-libev.asciidoc#config-file">配置文件官方文档</a></p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 1. 安装 shadowsocks-libev</span></span><br><span class="line">apt update -y</span><br><span class="line">apt install shadowsocks-libev -y <span class="comment"># 安装或升级</span></span><br><span class="line">dpkg -l | grep shadowsocks       <span class="comment"># 查看版本号</span></span><br></pre></td></tr></table></figure>
+<p><strong>建议使用<code>openssl rand -base64 16</code>来生成强密码</strong></p>
+<h2 id="单用户配置"><a href="#单用户配置" class="headerlink" title="单用户配置"></a>单用户配置</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 1. 添加单用户配置文件</span></span><br><span class="line">vim /etc/shadowsocks-libev/config.json</span><br><span class="line">&#123;</span><br><span class="line">    <span class="string">&quot;server&quot;</span>:[<span class="string">&quot;::0&quot;</span>,<span class="string">&quot;0.0.0.0&quot;</span>],</span><br><span class="line">    <span class="string">&quot;server_port&quot;</span>: 8452,</span><br><span class="line">    <span class="string">&quot;method&quot;</span>: <span class="string">&quot;chacha20-ietf-poly1305&quot;</span>,</span><br><span class="line">    <span class="string">&quot;password&quot;</span>: <span class="string">&quot;Zqx465gr5snppXlYWMEKZQ==&quot;</span>,</span><br><span class="line">    <span class="string">&quot;mode&quot;</span>: <span class="string">&quot;tcp_and_udp&quot;</span>,</span><br><span class="line">    <span class="string">&quot;fast_open&quot;</span>: <span class="literal">false</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 2. 启动服务端</span></span><br><span class="line">ss-server</span><br><span class="line">systemctl start   shadowsocks-libev.service <span class="comment"># 启动</span></span><br><span class="line">systemctl <span class="built_in">enable</span>  shadowsocks-libev.service <span class="comment"># 开机自启</span></span><br><span class="line">systemctl status  shadowsocks-libev.service <span class="comment"># 查看状态</span></span><br><span class="line">systemctl restart shadowsocks-libev.service <span class="comment"># 重启</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="多用户配置"><a href="#多用户配置" class="headerlink" title="多用户配置"></a>多用户配置</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 1. 添加多用户配置文件</span></span><br><span class="line">vim /etc/shadowsocks-libev/config.json</span><br><span class="line">&#123;</span><br><span class="line">  <span class="string">&quot;server&quot;</span>:[<span class="string">&quot;::0&quot;</span>,<span class="string">&quot;0.0.0.0&quot;</span>],</span><br><span class="line">  <span class="string">&quot;port_password&quot;</span>: &#123;</span><br><span class="line">    <span class="string">&quot;8452&quot;</span>: <span class="string">&quot;Zqx465gr5snppXlYWMEKZQ==&quot;</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="string">&quot;method&quot;</span>: <span class="string">&quot;chacha20-ietf-poly1305&quot;</span>,</span><br><span class="line">  <span class="string">&quot;mode&quot;</span>: <span class="string">&quot;tcp_and_udp&quot;</span>,</span><br><span class="line">  <span class="string">&quot;fast_open&quot;</span>: <span class="literal">false</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment"># 2. 启动服务端</span></span><br><span class="line">ss-manager -c /etc/shadowsocks-libev/config.json</span><br></pre></td></tr></table></figure>
+
+<h2 id="测试使用"><a href="#测试使用" class="headerlink" title="测试使用"></a>测试使用</h2><p>客户端连接上, 然后开启全局模式, 执行如下操作</p>
+<ol>
+<li>访问<code>www.baidu.com</code>, 访问成功</li>
+<li>关闭服务端, 访问<code>www.baidu.com</code>, 访问失败</li>
+</ol>
+<p>则说明<code>shadowsocks-libev</code>已经成功配置。</p>
+<h1 id="配置-simple-obfs-混淆插件"><a href="#配置-simple-obfs-混淆插件" class="headerlink" title="配置 simple-obfs 混淆插件"></a>配置 simple-obfs 混淆插件</h1><p><a target="_blank" rel="noopener" href="https://github.com/shadowsocks/simple-obfs"><code>simple-obfs</code></a> 是一个简单的混淆插件, 可以伪装成 <code>http</code> 流量。</p>
+<h2 id="服务端配置"><a href="#服务端配置" class="headerlink" title="服务端配置"></a>服务端配置</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 1. 从 Github 下载源码进行编译</span></span><br><span class="line"><span class="built_in">cd</span> /opt</span><br><span class="line">apt-get install --no-install-recommends build-essential autoconf libtool libssl-dev libpcre3-dev libev-dev asciidoc xmlto automake -y</span><br><span class="line">git <span class="built_in">clone</span> https://github.com/shadowsocks/simple-obfs.git</span><br><span class="line"><span class="built_in">cd</span> simple-obfs</span><br><span class="line">git submodule update --init --recursive</span><br><span class="line">./autogen.sh &amp;&amp; ./configure &amp;&amp; make &amp;&amp; make install</span><br><span class="line"></span><br><span class="line"><span class="comment"># 2. 添加配置文件, 添加 plugin 和 plugin_opts 参数</span></span><br><span class="line">vim /etc/shadowsocks-libev/config.json</span><br><span class="line">&#123;</span><br><span class="line">  ...省略其他配置</span><br><span class="line">  <span class="string">&quot;plugin&quot;</span>:<span class="string">&quot;obfs-server&quot;</span>,</span><br><span class="line">  <span class="string">&quot;plugin_opts&quot;</span>:<span class="string">&quot;obfs=http;failover=apps.bdimg.com&quot;</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 3. 重启 shadowsocks-libev</span></span><br><span class="line">systemctl restart shadowsocks-libev.service <span class="comment"># 重启</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="客户端配置"><a href="#客户端配置" class="headerlink" title="客户端配置"></a>客户端配置</h2><p><code>win</code>: <a target="_blank" rel="noopener" href="https://github.com/shadowsocks/simple-obfs/releases">https://github.com/shadowsocks/simple-obfs/releases</a><br>复制到客户端同一目录下, 并配置以下参数<br>插件程序: <code>obfs-local</code><br>插件选项: <code>obfs=http;obfs-host=apps.bdimg.com</code></p>
+<p><code>android</code>: <a target="_blank" rel="noopener" href="https://github.com/shadowsocks/simple-obfs-android/releases">https://github.com/shadowsocks/simple-obfs-android/releases</a></p>
+<p>没有苹果设备, 不做研究。</p>
+<h1 id="配置-v2ray-混淆插件（暂未落地）"><a href="#配置-v2ray-混淆插件（暂未落地）" class="headerlink" title="配置 v2ray 混淆插件（暂未落地）"></a>配置 v2ray 混淆插件（暂未落地）</h1><p>地址：<a target="_blank" rel="noopener" href="https://github.com/shadowsocks/v2ray-plugin">https://github.com/shadowsocks/v2ray-plugin</a></p>
+<h1 id="流量统计（暂未落地）"><a href="#流量统计（暂未落地）" class="headerlink" title="流量统计（暂未落地）"></a>流量统计（暂未落地）</h1><p><del><a target="_blank" rel="noopener" href="https://github.com/shadowsocks/shadowsocks-manager">shadowsocks-manager</a>要部署邮箱才行, 放弃.</del><br><del><a target="_blank" rel="noopener" href="https://github.com/shadowsocks/shadowsocks-hub">shadowsocks-hub</a>依赖于<a target="_blank" rel="noopener" href="https://github.com/shadowsocks/shadowsocks-restful-api">shadowsocks-restful-api</a>, 也是依赖于原生的<code>manager API</code>接口.(虽然我跑<code>docker</code>失败了)</del></p>
+<p><code>shadowsocks-libev</code>提供了原生的<code>manager API</code>接口, 可以统计流量使用情况.接口文档在这里<a target="_blank" rel="noopener" href="https://github.com/shadowsocks/shadowsocks-libev/blob/master/doc/ss-manager.asciidoc#protocol">protocol</a>.</p>
+<h1 id="优化"><a href="#优化" class="headerlink" title="优化"></a>优化</h1><h2 id="开启BBR"><a href="#开启BBR" class="headerlink" title="开启BBR"></a>开启BBR</h2><p><code>BBR</code>需要内核<code>4.9</code>以上.</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 1. 查看内核</span></span><br><span class="line"><span class="built_in">uname</span> -r</span><br><span class="line"></span><br><span class="line"><span class="comment"># 2. 启动BBR</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;net.core.default_qdisc=fq&quot;</span> &gt;&gt; /etc/sysctl.conf</span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;net.ipv4.tcp_congestion_control=bbr&quot;</span> &gt;&gt; /etc/sysctl.conf</span><br><span class="line">sysctl -p</span><br><span class="line"></span><br><span class="line"><span class="comment"># 3. 如果以下两条命令都有bbr说明开启成功</span></span><br><span class="line">sysctl net.ipv4.tcp_available_congestion_control</span><br><span class="line">lsmod | grep bbr</span><br></pre></td></tr></table></figure>
+
+<h2 id="部署一个正常的网站到80端口"><a href="#部署一个正常的网站到80端口" class="headerlink" title="部署一个正常的网站到80端口"></a>部署一个正常的网站到80端口</h2><p>也可以用来部署一些自己的<code>web</code>应用</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">apt install nginx -y</span><br><span class="line">nginx reload</span><br></pre></td></tr></table></figure>
+
+<h2 id="备用端口"><a href="#备用端口" class="headerlink" title="备用端口"></a>备用端口</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 配置端口转发</span></span><br><span class="line">iptables -t nat -A PREROUTING -p tcp --dport 18452 -j REDIRECT --to-port 8452</span><br><span class="line">iptables -t nat -A PREROUTING -p udp --dport 18452 -j REDIRECT --to-port 8452</span><br><span class="line">iptables -t nat -L PREROUTING -nv --line-number <span class="comment"># 查看状态</span></span><br><span class="line"><span class="comment"># iptables -t nat -D PREROUTING 1 # 删除num为1的规则 </span></span><br></pre></td></tr></table></figure>
+
+<h2 id="开启防火墙"><a href="#开启防火墙" class="headerlink" title="开启防火墙"></a>开启防火墙</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">apt update &amp;&amp; sudo apt install -y ufw</span><br><span class="line">ufw allow ssh</span><br><span class="line">ufw allow 8452 <span class="comment"># 这里配置堆外暴露的端口号</span></span><br><span class="line">ufw allow 80</span><br><span class="line">ufw <span class="built_in">enable</span></span><br><span class="line">ufw status <span class="comment"># 查看状态</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="封禁恶意访问IP"><a href="#封禁恶意访问IP" class="headerlink" title="封禁恶意访问IP"></a>封禁恶意访问IP</h2><p>使用 <code>fail2ban</code></p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 1. 安装 fail2ban</span></span><br><span class="line">apt install fail2ban -y</span><br><span class="line"></span><br><span class="line"><span class="comment"># 2. ssh 安全规则</span></span><br><span class="line">vim /etc/fail2ban/jail.d/ssh.conf</span><br><span class="line">[ssh-iptables]</span><br><span class="line">enabled = <span class="literal">true</span></span><br><span class="line">filter     = sshd</span><br><span class="line">action   = iptables[name=SSH, port=ssh, protocol=tcp]</span><br><span class="line">logpath = /var/log/secure</span><br><span class="line"></span><br><span class="line"><span class="comment"># 3. 重启服务</span></span><br><span class="line">service fail2ban restart</span><br></pre></td></tr></table></figure>
+
+<h1 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h1><p>吐槽下, <code>libev</code>关于<code>config.json</code>的配置没有一个完整的<code>example</code>, 也没有<code>wiki</code>页, 还是我翻了下<code>issue</code>才发现了文档位置. 并且有些参数配置在<code>config.json</code>还没有对应位置.</p>
+<p>开发者觉得我弄出来能用就好了, 不懂就去看源码全在那.<br>小白则是素质三连, 怎么用不了了, 报错了, 打不开怎么办.</p>
+<p>开源不易, 珍惜每个用心写文档的开发者和每个用心写复现步骤的小白.</p>
+
+    </div>
+
+    
+    
+    
+      
+
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>很高兴得到您的赞赏</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="/images/config/wechatpay.jpg" alt="Ahaochan 微信">
+        <span>微信</span>
+      </div>
+      <div>
+        <img src="/images/config/alipay.jpg" alt="Ahaochan 支付宝">
+        <span>支付宝</span>
+      </div>
+
+  </div>
+</div>
+
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>Ahaochan
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://blog.ahao.moe/posts/multi_user_of_shadowsocks_libev.html" title="基于shadowsocks-libev+simple-obfs的单机多用户搭建">https://blog.ahao.moe/posts/multi_user_of_shadowsocks_libev.html</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="followme">
+  <span>欢迎关注我的其它发布渠道</span>
+
+  <div class="social-list">
+
+      <div class="social-item">
+        <a target="_blank" class="social-link" href="/images/config/wechat_channel.jpg">
+          <span class="icon">
+            <i class="fab fa-weixin"></i>
+          </span>
+
+          <span class="label">WeChat</span>
+        </a>
+      </div>
+
+      <div class="social-item">
+        <a target="_blank" class="social-link" href="/rss.xml">
+          <span class="icon">
+            <i class="fa fa-rss"></i>
+          </span>
+
+          <span class="label">RSS</span>
+        </a>
+      </div>
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/Linux/" rel="tag"><i class="fa fa-tag"></i> Linux</a>
+              <a href="/tags/shadowsocks/" rel="tag"><i class="fa fa-tag"></i> shadowsocks</a>
+          </div>
+
+        
+  <div class="post-widgets">
+    <div class="wpac-rating-container">
+      <div id="wpac-rating"></div>
+    </div>
+  </div>
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/posts/MongoDB_simple_use.html" rel="prev" title="MongoDB学习笔记">
+                  <i class="fa fa-chevron-left"></i> MongoDB学习笔记
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/posts/ThreadPoolExecutor_source_code.html" rel="next" title="ThreadPoolExecutor源码分析">
+                  ThreadPoolExecutor源码分析 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    
+  <div class="comments disqusjs">
+    <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+  </div>
+  
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2016 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ahaochan</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">172k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">10:25</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+  <div class="addthis_inline_share_toolbox">
+    <script src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-59047aaab9bddb67" async="async"></script>
+  </div><script color="0,0,255" opacity="0.5" zIndex="-1" count="99" src="https://cdn.jsdelivr.net/npm/canvas-nest.js@1/dist/canvas-nest.js"></script>
+
+
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js" integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lozad.js/1.16.0/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script>
+
+  
+  <script src="https://embed.widgetpack.com/widget.js" async></script>
+  <script class="next-config" data-name="rating" type="application/json">{"enable":true,"id":33332,"color":"#fc6423"}</script>
+  <script src="/js/third-party/rating.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.0/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/9.1.7/mermaid.min.js","integrity":"sha256-G58AID1YoX5YaEtWfXSI0VLrZ6N4kvNvwg0BI8zUFxE="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/quicklink/2.3.0/quicklink.umd.js" integrity="sha256-yvJQOINiH9fWemHn0vCA5lsHWJaHs6/ZmO+1Ft04SvM=" crossorigin="anonymous"></script>
+  <script class="next-config" data-name="quicklink" type="application/json">{"enable":true,"home":true,"archive":true,"delay":true,"timeout":3000,"priority":true,"url":"https://blog.ahao.moe/posts/multi_user_of_shadowsocks_libev.html"}</script>
+  <script src="/js/third-party/quicklink.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/disqusjs/3.0.2/styles/disqusjs.css" integrity="sha256-71XarXwNr1Td27HmZI9zjY+rMzRdush6/glo6VFXp7o=" crossorigin="anonymous">
+
+<script class="next-config" data-name="disqusjs" type="application/json">{"enable":true,"api":"https://disqus.skk.moe/disqus/","apikey":"OC1zbKiBF5cPo1EJObILJmZftsWl4ZbbAh9YqV0qNxiMq8rQFqBiw8PYcXQCyG9S","shortname":"ahaochan-blog","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/disqusjs/3.0.2/disqusjs.es2015.umd.min.js","integrity":"sha256-okP99ZQKVpIy7+NogAMpGlIQzJa9XKXhIJcFgdju5bU="}}</script>
+<script src="/js/third-party/comments/disqusjs.js"></script>
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"scale":1.2,"jsonPath":"https://cdn.jsdelivr.net/npm/live2d-widget-model-shizuku@1.0.5/assets/shizuku.model.json"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":false},"react":{"opacity":0.7},"log":false});</script></body>
+</html>

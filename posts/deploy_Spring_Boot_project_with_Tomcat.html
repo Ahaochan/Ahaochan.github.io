@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/config/favicon-32x32-next.jpg">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/config/favicon-16x16-next.jpg">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="google-site-verification" content="ZmER9fymckNfZ_Zxw6p3fpvqhvR6LitG9pR-cNVflx0">
+  <meta name="msvalidate.01" content="5351f65e5e79bb62584189a5e6906b8b">
+  <meta name="baidu-site-verification" content="jgtczlqzuk">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic%7CConsolas:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" integrity="sha256-AbA177XfpSnFEvgpYu1jMygiLabzPCJCRIBtR5jGc0k=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"blog.ahao.moe","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.13.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"disqusjs","storage":true,"lazyload":true,"nav":null,"activeClass":"disqusjs"},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":true}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="前言一般的教程都是直接运行main方法, 看似脱离了Tomcat运行实际上是使用的是内嵌的Tomcat 123456@SpringBootApplicationpublic class App &amp;#123;    public static void main(String[] args) &amp;#123;        SpringApplication.run(App.class, args);">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Spring Boot在Tomcat上使用">
+<meta property="og:url" content="https://blog.ahao.moe/posts/deploy_Spring_Boot_project_with_Tomcat.html">
+<meta property="og:site_name" content="Ahaochan&#39;s Blog">
+<meta property="og:description" content="前言一般的教程都是直接运行main方法, 看似脱离了Tomcat运行实际上是使用的是内嵌的Tomcat 123456@SpringBootApplicationpublic class App &amp;#123;    public static void main(String[] args) &amp;#123;        SpringApplication.run(App.class, args);">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://yuml.me/diagram/nofunky/class/[WebApplicationInitializer]^-[SpringBootServletInitializer],[SpringBootServletInitializer]^-[%E6%88%91%E7%9A%84%E5%90%AF%E5%8A%A8%E7%B1%BB]">
+<meta property="article:published_time" content="2017-08-30T13:48:53.000Z">
+<meta property="article:modified_time" content="2022-11-21T02:35:06.076Z">
+<meta property="article:author" content="Ahaochan">
+<meta property="article:tag" content="源码分析">
+<meta property="article:tag" content="Tomcat">
+<meta property="article:tag" content="Spring Boot">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://yuml.me/diagram/nofunky/class/[WebApplicationInitializer]^-[SpringBootServletInitializer],[SpringBootServletInitializer]^-[%E6%88%91%E7%9A%84%E5%90%AF%E5%8A%A8%E7%B1%BB]">
+
+
+<link rel="canonical" href="https://blog.ahao.moe/posts/deploy_Spring_Boot_project_with_Tomcat.html">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://blog.ahao.moe/posts/deploy_Spring_Boot_project_with_Tomcat.html","path":"posts/deploy_Spring_Boot_project_with_Tomcat.html","title":"Spring Boot在Tomcat上使用"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Spring Boot在Tomcat上使用 | Ahaochan's Blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-108454440-1"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"UA-108454440-1","only_pageview":false}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+  <script src="/js/third-party/analytics/baidu-analytics.js"></script>
+  <script async src="https://hm.baidu.com/hm.js?32635d85cec06e8822234c4d2aec2b54"></script>
+
+
+
+
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+  (adsbygoogle = window.adsbygoogle || []).push({
+    google_ad_client: "ca-pub-5208025300813046",
+    enable_page_level_ads: true
+  });
+</script>
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/rss.xml" title="Ahaochan's Blog" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Ahaochan's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">你也是程序猿friends呢~</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">91</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">30</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">217</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88%E6%98%AF"><span class="nav-number">2.</span> <span class="nav-text">解决方案是</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81-%E7%BB%A7%E6%89%BFSpringBootServletInitializer"><span class="nav-number">3.</span> <span class="nav-text">为什么要 继承SpringBootServletInitializer ?</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E4%B8%8D%E7%94%A8%E9%87%8D%E5%86%99configure%E6%96%B9%E6%B3%95"><span class="nav-number">4.</span> <span class="nav-text">为什么不用重写configure方法</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Ahaochan"
+      src="/images/config/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Ahaochan</p>
+  <div class="site-description" itemprop="description">你也是程序猿friends呢~</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">217</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">30</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">91</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Ahaochan" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Ahaochan" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:844394093@qq.com" title="E-Mail → mailto:844394093@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://greasyfork.org/zh-CN/users/30831" title="Greasyfork → https:&#x2F;&#x2F;greasyfork.org&#x2F;zh-CN&#x2F;users&#x2F;30831" rel="noopener" target="_blank"><i class="fab fa-google fa-fw"></i>Greasyfork</a>
+      </span>
+  </div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/Ahaochan" class="github-corner" title="我的Github" aria-label="我的Github" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blog.ahao.moe/posts/deploy_Spring_Boot_project_with_Tomcat.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/config/avatar.jpg">
+      <meta itemprop="name" content="Ahaochan">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ahaochan's Blog">
+      <meta itemprop="description" content="你也是程序猿friends呢~">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Spring Boot在Tomcat上使用 | Ahaochan's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Spring Boot在Tomcat上使用<a href="https://github.com/Ahaochan/Ahaochan.github.io/blob/source/source/_posts/java/Java_Web-Spring_Boot%E5%9C%A8Tomcat%E4%B8%8A%E4%BD%BF%E7%94%A8.md" class="post-edit-link" title="编辑" rel="noopener" target="_blank"><i class="fa fa-pen-nib"></i></a>
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2017-08-30 21:48:53" itemprop="dateCreated datePublished" datetime="2017-08-30T21:48:53+08:00">2017-08-30</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Java-Web/" itemprop="url" rel="index"><span itemprop="name">Java Web</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>978</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>4 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>一般的教程都是直接运行<code>main</code>方法, 看似脱离了<code>Tomcat</code>运行<br>实际上是使用的是内嵌的<code>Tomcat</code></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@SpringBootApplication</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">App</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        SpringApplication.run(App.class, args);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<span id="more"></span>
+<p>而且打包出来的是<code>jar</code>包, 虽然可以直接运行, 但是如果想放在外部的<code>Tomcat</code>下, 就不太好了。</p>
+<h1 id="解决方案是"><a href="#解决方案是" class="headerlink" title="解决方案是"></a>解决方案是</h1><ol>
+<li>继承 <code> SpringBootServletInitializer</code> 并重写 <code>configure</code> 方法<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@SpringBootApplication</span></span><br><span class="line"><span class="meta">@Controller</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">App</span> <span class="keyword">extends</span> <span class="title class_">SpringBootServletInitializer</span> &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">protected</span> SpringApplicationBuilder <span class="title function_">configure</span><span class="params">(SpringApplicationBuilder builder)</span> &#123;</span><br><span class="line">        <span class="comment">// 可有可无的方法, 之后有解释</span></span><br><span class="line">        <span class="keyword">return</span> builder.sources(getClass());</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        SpringApplication.run(App.class, args);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li>在项目的 <code>pom.xml</code> 设置 <code>&lt;packaging&gt;war&lt;/packaging&gt;</code>, 注意, 多模块项目只需要在该模块的 <code>pom.xml</code> 设置即可</li>
+<li>添加<a target="_blank" rel="noopener" href="https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-tomcat/">spring-boot-starter-tomcat依赖</a>, 并设置 <code>&lt;scope&gt;provided&lt;/scope&gt;</code> <figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-tomcat<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">scope</span>&gt;</span>provided<span class="tag">&lt;/<span class="name">scope</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure></li>
+<li>打<code>war包</code>部署到<code>Tomcat</code></li>
+</ol>
+<h1 id="为什么要-继承SpringBootServletInitializer"><a href="#为什么要-继承SpringBootServletInitializer" class="headerlink" title="为什么要 继承SpringBootServletInitializer ?"></a>为什么要 继承SpringBootServletInitializer ?</h1><p><img data-src="https://yuml.me/diagram/nofunky/class/[WebApplicationInitializer]^-[SpringBootServletInitializer],[SpringBootServletInitializer]^-[%E6%88%91%E7%9A%84%E5%90%AF%E5%8A%A8%E7%B1%BB]" alt="继承树 "><br>首先明确一点, <code>Spring Boot </code>只是许多个<code>Spring</code>项目和其他项目整合起来, 并不是一个额外的项目, 你可以理解成一个封装了<code>Spring</code>、<code>SpringMVC</code>等项目的新项目。<br>那么, <code>Spring</code>有入口<code>ContextLoaderListener</code>、 <code>Spring MVC</code>有入口<code>DispatcherServlet</code>。那<code>Spring Boot</code>的入口当然就是<code>SpringBootServletInitializer</code>。<br>(当然如果你不用<code>war包</code>可以忽略这段话, 也不用看这篇文章)</p>
+<p>看到熟悉的<code>ServletInitializer</code>, 这是<a target="_blank" rel="noopener" href="https://ahaochan.github.io/Java/JavaWeb/JSP/Servlet3.0%E6%96%B0%E7%89%B9%E6%80%A7.html#%E9%80%9A%E8%BF%87ServletContainerInitializer%E6%B3%A8%E5%86%8C">Servlet3.0新特性</a>,  <code>Tomcat</code>会自动查找并运行实现了 <code>ServletContainerInitializer</code> 接口的类。<br>但是能自动加载的是 <code>ServletContainerInitializer</code> 及其子类, 和<code>SpringBootServletInitializer</code>及其父类<code>WebApplicationInitializer</code><br>可是丝毫没有联系的, 能想到的就是有<strong>另一个类</strong>连接了这两个类。<br>这个类就是<code>SpringServletContainerInitializer</code>, 它会去加载所有的<code>WebApplicationInitializer</code>及其子类<code>SpringBootServletInitializer</code>。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// org.springframework.web.SpringServletContainerInitializer</span></span><br><span class="line"><span class="meta">@HandlesTypes(WebApplicationInitializer.class)</span></span><br><span class="line"><span class="comment">// 继承了 ServletContainerInitializer , 所以能自动加载</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">SpringServletContainerInitializer</span> <span class="keyword">implements</span> <span class="title class_">ServletContainerInitializer</span> &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="comment">// 1. 扫描HandlesTypes注解中的类或它的子类, 注入Set集合</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">onStartup</span><span class="params">(Set&lt;Class&lt;?&gt;&gt; webAppInitializerClasses, ServletContext servletContext)</span> <span class="keyword">throws</span> ServletException &#123;</span><br><span class="line">        </span><br><span class="line">        List&lt;WebApplicationInitializer&gt; initializers = <span class="keyword">new</span> <span class="title class_">LinkedList</span>&lt;WebApplicationInitializer&gt;();</span><br><span class="line">        <span class="keyword">for</span> (Class&lt;?&gt; waiClass : webAppInitializerClasses) &#123;</span><br><span class="line">            <span class="keyword">if</span> (!waiClass.isInterface() &amp;&amp; !Modifier.isAbstract(waiClass.getModifiers()) &amp;&amp;</span><br><span class="line">                    WebApplicationInitializer.class.isAssignableFrom(waiClass)) &#123;</span><br><span class="line">                initializers.add((WebApplicationInitializer) waiClass.newInstance());</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        AnnotationAwareOrderComparator.sort(initializers);</span><br><span class="line">        <span class="keyword">for</span> (WebApplicationInitializer initializer : initializers) &#123;</span><br><span class="line">            <span class="comment">// 2. 核心方法, 调用WebApplicationInitializer的onStartup方法</span></span><br><span class="line">            initializer.onStartup(servletContext);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>HandlesTypes</code> 注解中的 <code>WebApplicationInitializer</code> 被注入到 <code>Set集合</code>中, 然后调用 <code> WebApplicationInitializer</code>的<code>onStartup</code>方法。<br>至此, <code>SpringBootServletInitializer</code> 已经能随着<code>Tomcat</code>的启动而启动了。</p>
+<h1 id="为什么不用重写configure方法"><a href="#为什么不用重写configure方法" class="headerlink" title="为什么不用重写configure方法"></a>为什么不用重写configure方法</h1><p>很多网上的文章, 都说要重写 <code>configure方法</code>, 但是这对我上面那个<code>Hello world</code>例子是不需要的, 从源码中可以窥视一二。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// org.springframework.boot.web.support.SpringBootServletInitializer</span></span><br><span class="line"><span class="comment">// 实现了 WebApplicationInitializer 接口, 所以也能间接的自动加载</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">class</span> <span class="title class_">SpringBootServletInitializer</span> <span class="keyword">implements</span> <span class="title class_">WebApplicationInitializer</span> &#123;</span><br><span class="line">    <span class="comment">// 省略部分代码</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">onStartup</span><span class="params">(ServletContext servletContext)</span> <span class="keyword">throws</span> ServletException &#123;</span><br><span class="line">        <span class="comment">// 1. 入口</span></span><br><span class="line">        <span class="type">WebApplicationContext</span> <span class="variable">rootAppContext</span> <span class="operator">=</span> createRootApplicationContext(servletContext);</span><br><span class="line">        <span class="keyword">if</span> (rootAppContext != <span class="literal">null</span>) &#123;</span><br><span class="line">            <span class="comment">// 由于 application context 已被初始化，因此无操作</span></span><br><span class="line">            <span class="comment">// 这里加载了 ContextLoaderListener , 所以也不能自己再去实现 ContextLoaderListener</span></span><br><span class="line">            servletContext.addListener(<span class="keyword">new</span> <span class="title class_">ContextLoaderListener</span>(rootAppContext) &#123;</span><br><span class="line">                <span class="meta">@Override</span></span><br><span class="line">                <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">contextInitialized</span><span class="params">(ServletContextEvent event)</span> &#123;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 2. 创建 ApplicationContext</span></span><br><span class="line">    <span class="keyword">protected</span> WebApplicationContext <span class="title function_">createRootApplicationContext</span><span class="params">(ServletContext servletContext)</span> &#123;</span><br><span class="line">        <span class="comment">// 设计模式 之 建造器Builder模式</span></span><br><span class="line">        <span class="type">SpringApplicationBuilder</span> <span class="variable">builder</span> <span class="operator">=</span> createSpringApplicationBuilder();</span><br><span class="line">        builder.main(getClass());</span><br><span class="line">        <span class="type">ApplicationContext</span> <span class="variable">parent</span> <span class="operator">=</span> getExistingRootWebApplicationContext(servletContext);</span><br><span class="line">        <span class="keyword">if</span> (parent != <span class="literal">null</span>) &#123;</span><br><span class="line">            <span class="built_in">this</span>.logger.info(<span class="string">&quot;Root context already created (using as parent).&quot;</span>);</span><br><span class="line">            servletContext.setAttribute(</span><br><span class="line">                    WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE, <span class="literal">null</span>);</span><br><span class="line">            builder.initializers(<span class="keyword">new</span> <span class="title class_">ParentContextApplicationContextInitializer</span>(parent));</span><br><span class="line">        &#125;</span><br><span class="line">        builder.initializers(</span><br><span class="line">                <span class="keyword">new</span> <span class="title class_">ServletContextApplicationContextInitializer</span>(servletContext));</span><br><span class="line">        builder.listeners(<span class="keyword">new</span> <span class="title class_">ServletContextApplicationListener</span>(servletContext));</span><br><span class="line">        builder.contextClass(AnnotationConfigEmbeddedWebApplicationContext.class);</span><br><span class="line">        <span class="comment">// 调用 configure 方法, 默认不操作builder</span></span><br><span class="line">        builder = configure(builder);</span><br><span class="line">        <span class="type">SpringApplication</span> <span class="variable">application</span> <span class="operator">=</span> builder.build();</span><br><span class="line">        <span class="comment">// 如果没有重写 configure 方法给 builder 添加 source </span></span><br><span class="line">        <span class="comment">// 即 application 的 source(Set集合) 为空</span></span><br><span class="line">        <span class="keyword">if</span> (application.getSources().isEmpty() &amp;&amp; AnnotationUtils</span><br><span class="line">                .findAnnotation(getClass(), Configuration.class) != <span class="literal">null</span>) &#123;</span><br><span class="line">            <span class="comment">// 且继承 SpringBootServletInitializer 自身的子类添加了 Configuration 注解</span></span><br><span class="line">            <span class="comment">// 因为 SpringBootApplication 注解继承了 Configuration 注解</span></span><br><span class="line">            <span class="comment">// 所以不用重写 configure方法 也可以加入 source 中</span></span><br><span class="line">            application.getSources().add(getClass());</span><br><span class="line">        &#125;</span><br><span class="line">        Assert.state(!application.getSources().isEmpty(),</span><br><span class="line">                <span class="string">&quot;No SpringApplication sources have been defined. Either override the &quot;</span></span><br><span class="line">                        + <span class="string">&quot;configure method or add an @Configuration annotation&quot;</span>);</span><br><span class="line">        <span class="comment">// Ensure error pages are registered</span></span><br><span class="line">        <span class="keyword">if</span> (<span class="built_in">this</span>.registerErrorPageFilter) &#123;</span><br><span class="line">            application.getSources().add(ErrorPageFilterConfiguration.class);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> run(application);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 默认不操作builder</span></span><br><span class="line">    <span class="keyword">protected</span> SpringApplicationBuilder <span class="title function_">configure</span><span class="params">(SpringApplicationBuilder builder)</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> builder;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>从<code>Configuration</code>注解的<strong>类</strong>可以注入 <code>source</code> 发现, 这个 <code>source</code> 就是存储<code>Spring</code>配置的, 当然, <strong>不是<code>xml</code></strong>, 而是<code>java</code>配置。<br>也就是说</p>
+<ol>
+<li>只有一个<code>Java</code>配置类, 则直接继承 <code> SpringBootServletInitializer</code> 即可。</li>
+<li>如果有多个<code>Java</code>配置类, 则继承 <code> SpringBootServletInitializer</code> 之外，还要重写 <code>configure</code> 方法, 将配置类都注入进去, 包括 <code>SpringBootServletInitializer</code> 的子类。</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+      
+
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>很高兴得到您的赞赏</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="/images/config/wechatpay.jpg" alt="Ahaochan 微信">
+        <span>微信</span>
+      </div>
+      <div>
+        <img src="/images/config/alipay.jpg" alt="Ahaochan 支付宝">
+        <span>支付宝</span>
+      </div>
+
+  </div>
+</div>
+
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>Ahaochan
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://blog.ahao.moe/posts/deploy_Spring_Boot_project_with_Tomcat.html" title="Spring Boot在Tomcat上使用">https://blog.ahao.moe/posts/deploy_Spring_Boot_project_with_Tomcat.html</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="followme">
+  <span>欢迎关注我的其它发布渠道</span>
+
+  <div class="social-list">
+
+      <div class="social-item">
+        <a target="_blank" class="social-link" href="/images/config/wechat_channel.jpg">
+          <span class="icon">
+            <i class="fab fa-weixin"></i>
+          </span>
+
+          <span class="label">WeChat</span>
+        </a>
+      </div>
+
+      <div class="social-item">
+        <a target="_blank" class="social-link" href="/rss.xml">
+          <span class="icon">
+            <i class="fa fa-rss"></i>
+          </span>
+
+          <span class="label">RSS</span>
+        </a>
+      </div>
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/" rel="tag"><i class="fa fa-tag"></i> 源码分析</a>
+              <a href="/tags/Tomcat/" rel="tag"><i class="fa fa-tag"></i> Tomcat</a>
+              <a href="/tags/Spring-Boot/" rel="tag"><i class="fa fa-tag"></i> Spring Boot</a>
+          </div>
+
+        
+  <div class="post-widgets">
+    <div class="wpac-rating-container">
+      <div id="wpac-rating"></div>
+    </div>
+  </div>
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/posts/Best_Practices_of_deploys_Outside_Application_with_Tomcat.html" rel="prev" title="Tomcat部署外部应用最佳实践">
+                  <i class="fa fa-chevron-left"></i> Tomcat部署外部应用最佳实践
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/posts/How_to_get_FlashMap_in_Spring_MVC.html" rel="next" title="获取FlashMap的3种方法">
+                  获取FlashMap的3种方法 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    
+  <div class="comments disqusjs">
+    <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+  </div>
+  
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2016 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ahaochan</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">172k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">10:25</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+  <div class="addthis_inline_share_toolbox">
+    <script src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-59047aaab9bddb67" async="async"></script>
+  </div><script color="0,0,255" opacity="0.5" zIndex="-1" count="99" src="https://cdn.jsdelivr.net/npm/canvas-nest.js@1/dist/canvas-nest.js"></script>
+
+
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js" integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lozad.js/1.16.0/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script>
+
+  
+  <script src="https://embed.widgetpack.com/widget.js" async></script>
+  <script class="next-config" data-name="rating" type="application/json">{"enable":true,"id":33332,"color":"#fc6423"}</script>
+  <script src="/js/third-party/rating.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.0/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/9.1.7/mermaid.min.js","integrity":"sha256-G58AID1YoX5YaEtWfXSI0VLrZ6N4kvNvwg0BI8zUFxE="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/quicklink/2.3.0/quicklink.umd.js" integrity="sha256-yvJQOINiH9fWemHn0vCA5lsHWJaHs6/ZmO+1Ft04SvM=" crossorigin="anonymous"></script>
+  <script class="next-config" data-name="quicklink" type="application/json">{"enable":true,"home":true,"archive":true,"delay":true,"timeout":3000,"priority":true,"url":"https://blog.ahao.moe/posts/deploy_Spring_Boot_project_with_Tomcat.html"}</script>
+  <script src="/js/third-party/quicklink.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/disqusjs/3.0.2/styles/disqusjs.css" integrity="sha256-71XarXwNr1Td27HmZI9zjY+rMzRdush6/glo6VFXp7o=" crossorigin="anonymous">
+
+<script class="next-config" data-name="disqusjs" type="application/json">{"enable":true,"api":"https://disqus.skk.moe/disqus/","apikey":"OC1zbKiBF5cPo1EJObILJmZftsWl4ZbbAh9YqV0qNxiMq8rQFqBiw8PYcXQCyG9S","shortname":"ahaochan-blog","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/disqusjs/3.0.2/disqusjs.es2015.umd.min.js","integrity":"sha256-okP99ZQKVpIy7+NogAMpGlIQzJa9XKXhIJcFgdju5bU="}}</script>
+<script src="/js/third-party/comments/disqusjs.js"></script>
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"scale":1.2,"jsonPath":"https://cdn.jsdelivr.net/npm/live2d-widget-model-shizuku@1.0.5/assets/shizuku.model.json"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":false},"react":{"opacity":0.7},"log":false});</script></body>
+</html>

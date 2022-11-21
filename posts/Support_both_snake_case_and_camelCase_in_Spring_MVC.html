@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/config/favicon-32x32-next.jpg">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/config/favicon-16x16-next.jpg">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="google-site-verification" content="ZmER9fymckNfZ_Zxw6p3fpvqhvR6LitG9pR-cNVflx0">
+  <meta name="msvalidate.01" content="5351f65e5e79bb62584189a5e6906b8b">
+  <meta name="baidu-site-verification" content="jgtczlqzuk">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic%7CConsolas:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" integrity="sha256-AbA177XfpSnFEvgpYu1jMygiLabzPCJCRIBtR5jGc0k=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"blog.ahao.moe","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.13.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"disqusjs","storage":true,"lazyload":true,"nav":null,"activeClass":"disqusjs"},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":true}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="前言PHP是下划线命名变量, Java是驼峰命名变量.对于前端来说, 服务端有两种命名规则, 这是不合理的, 他们希望有一种统一的命名规则.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Spring MVC同时支持驼峰和下划线">
+<meta property="og:url" content="https://blog.ahao.moe/posts/Support_both_snake_case_and_camelCase_in_Spring_MVC.html">
+<meta property="og:site_name" content="Ahaochan&#39;s Blog">
+<meta property="og:description" content="前言PHP是下划线命名变量, Java是驼峰命名变量.对于前端来说, 服务端有两种命名规则, 这是不合理的, 他们希望有一种统一的命名规则.">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-07-31T10:44:03.000Z">
+<meta property="article:modified_time" content="2022-11-21T02:35:06.076Z">
+<meta property="article:author" content="Ahaochan">
+<meta property="article:tag" content="源码分析">
+<meta property="article:tag" content="Spring MVC">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://blog.ahao.moe/posts/Support_both_snake_case_and_camelCase_in_Spring_MVC.html">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://blog.ahao.moe/posts/Support_both_snake_case_and_camelCase_in_Spring_MVC.html","path":"posts/Support_both_snake_case_and_camelCase_in_Spring_MVC.html","title":"Spring MVC同时支持驼峰和下划线"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Spring MVC同时支持驼峰和下划线 | Ahaochan's Blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-108454440-1"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"UA-108454440-1","only_pageview":false}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+  <script src="/js/third-party/analytics/baidu-analytics.js"></script>
+  <script async src="https://hm.baidu.com/hm.js?32635d85cec06e8822234c4d2aec2b54"></script>
+
+
+
+
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+  (adsbygoogle = window.adsbygoogle || []).push({
+    google_ad_client: "ca-pub-5208025300813046",
+    enable_page_level_ads: true
+  });
+</script>
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/rss.xml" title="Ahaochan's Blog" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Ahaochan's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">你也是程序猿friends呢~</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">91</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">30</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">217</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%AD%AA%E8%B7%AF1-%E7%94%A8ObjectMapper%E5%9C%A8Controller%E5%B1%82%E5%81%9A%E8%BD%AC%E6%8D%A2"><span class="nav-number">2.</span> <span class="nav-text">歪路1: 用ObjectMapper在Controller层做转换</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%AD%AA%E8%B7%AF2-Hack-ResponseBody-%E5%A4%84%E7%90%86%E5%99%A8"><span class="nav-number">3.</span> <span class="nav-text">歪路2: Hack @ResponseBody 处理器</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%AD%A3%E8%A7%A3-%E4%BD%BF%E7%94%A8Accept%E8%AF%B7%E6%B1%82%E5%A4%B4%E5%86%B3%E5%AE%9A%E5%93%8D%E5%BA%94%E4%BD%93%E6%98%AF%E9%A9%BC%E5%B3%B0%E8%BF%98%E6%98%AF%E4%B8%8B%E5%88%92%E7%BA%BF"><span class="nav-number">4.</span> <span class="nav-text">正解: 使用Accept请求头决定响应体是驼峰还是下划线</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%AD%A3%E8%A7%A3-%E4%BD%BF%E7%94%A8Content-Type%E8%AF%B7%E6%B1%82%E5%A4%B4%E5%86%B3%E5%AE%9A%E8%AF%B7%E6%B1%82%E4%BD%93%E6%98%AF%E9%A9%BC%E5%B3%B0%E8%BF%98%E6%98%AF%E4%B8%8B%E5%88%92%E7%BA%BF"><span class="nav-number">5.</span> <span class="nav-text">正解: 使用Content-Type请求头决定请求体是驼峰还是下划线</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%87%AA%E5%AE%9A%E4%B9%89-MessageConverter-%E4%B8%8D%E8%83%BD%E5%A4%84%E7%90%86%E7%9A%84%E6%83%85%E5%86%B5"><span class="nav-number">6.</span> <span class="nav-text">自定义 MessageConverter 不能处理的情况</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#GET-%E8%AF%B7%E6%B1%82%E5%A6%82%E4%BD%95%E5%A4%84%E7%90%86"><span class="nav-number">6.1.</span> <span class="nav-text">GET 请求如何处理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Content-Type-application-x-www-form-urlencoded-%E8%AF%B7%E6%B1%82%E5%A6%82%E4%BD%95%E5%A4%84%E7%90%86"><span class="nav-number">6.2.</span> <span class="nav-text">Content-Type: application&#x2F;x-www-form-urlencoded 请求如何处理</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">7.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">8.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Ahaochan"
+      src="/images/config/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Ahaochan</p>
+  <div class="site-description" itemprop="description">你也是程序猿friends呢~</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">217</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">30</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">91</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Ahaochan" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Ahaochan" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:844394093@qq.com" title="E-Mail → mailto:844394093@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://greasyfork.org/zh-CN/users/30831" title="Greasyfork → https:&#x2F;&#x2F;greasyfork.org&#x2F;zh-CN&#x2F;users&#x2F;30831" rel="noopener" target="_blank"><i class="fab fa-google fa-fw"></i>Greasyfork</a>
+      </span>
+  </div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/Ahaochan" class="github-corner" title="我的Github" aria-label="我的Github" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blog.ahao.moe/posts/Support_both_snake_case_and_camelCase_in_Spring_MVC.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/config/avatar.jpg">
+      <meta itemprop="name" content="Ahaochan">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ahaochan's Blog">
+      <meta itemprop="description" content="你也是程序猿friends呢~">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Spring MVC同时支持驼峰和下划线 | Ahaochan's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Spring MVC同时支持驼峰和下划线<a href="https://github.com/Ahaochan/Ahaochan.github.io/blob/source/source/_posts/java/Java_Web-Spring%20MVC%E5%90%8C%E6%97%B6%E6%94%AF%E6%8C%81%E9%A9%BC%E5%B3%B0%E5%92%8C%E4%B8%8B%E5%88%92%E7%BA%BF.md" class="post-edit-link" title="编辑" rel="noopener" target="_blank"><i class="fa fa-pen-nib"></i></a>
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2020-07-31 18:44:03" itemprop="dateCreated datePublished" datetime="2020-07-31T18:44:03+08:00">2020-07-31</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Java-Web/" itemprop="url" rel="index"><span itemprop="name">Java Web</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>1.9k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>7 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p><code>PHP</code>是下划线命名变量, <code>Java</code>是驼峰命名变量.<br>对于前端来说, 服务端有两种命名规则, 这是不合理的, 他们希望有一种统一的命名规则.</p>
+<span id="more"></span>
+
+<h1 id="歪路1-用ObjectMapper在Controller层做转换"><a href="#歪路1-用ObjectMapper在Controller层做转换" class="headerlink" title="歪路1: 用ObjectMapper在Controller层做转换"></a>歪路1: 用ObjectMapper在Controller层做转换</h1><p>为了赶进度, 我直接在<code>Controller</code>层做了转换.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RestController</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">MyController</span> &#123;</span><br><span class="line">    <span class="meta">@PostMapping(&quot;/post1&quot;)</span></span><br><span class="line">    <span class="keyword">public</span> Object <span class="title function_">post1</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="comment">// 1. 获取数据</span></span><br><span class="line">        <span class="type">MyObj</span> <span class="variable">obj</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">MyObj</span>();</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 2. 创建一个 SNAKE_CASE 下划线风格的 ObjectMapper, 转为 Map</span></span><br><span class="line">        <span class="type">ObjectMapper</span> <span class="variable">om</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ObjectMapper</span>();</span><br><span class="line">        om.setPropertyNamingStrategy(PropertyNamingStrategy.SNAKE_CASE);</span><br><span class="line">        <span class="type">Object</span> <span class="variable">o</span> <span class="operator">=</span> om.convertValue(result, <span class="keyword">new</span> <span class="title class_">TypeReference</span>&lt;Map&lt;String, Object&gt;&gt;() &#123;&#125;);</span><br><span class="line">        <span class="keyword">return</span> o;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>问题迎刃而解, 简单粗暴.<br>但是这里有个待优化的地方</p>
+<ol>
+<li>每个方法都要写一套转换代码, 就算转成<code>AOP</code>的实现, 也不够优雅</li>
+<li>每次都要<code>new ObjectMapper()</code>和转换.</li>
+</ol>
+<h1 id="歪路2-Hack-ResponseBody-处理器"><a href="#歪路2-Hack-ResponseBody-处理器" class="headerlink" title="歪路2: Hack @ResponseBody 处理器"></a>歪路2: Hack @ResponseBody 处理器</h1><p><code>Jackson</code>提供了一个<code>@JsonNaming</code>的注解, 用于修饰<code>POJO</code>的序列化命名方式.<br>但是这个<code>@JsonNaming</code>注解只能修饰在类上, 不能修饰在方法级别.</p>
+<p>我们猜测, 可以创建一个<code>@MyJsonNaming</code>的注解, 仿照<code>@ResponseBody</code>处理器对返回体做处理.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RestController</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">MyController</span> &#123;</span><br><span class="line">    <span class="meta">@PostMapping(&quot;/post2&quot;)</span></span><br><span class="line">    <span class="meta">@MyJsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)</span></span><br><span class="line">    <span class="keyword">public</span> Object <span class="title function_">post2</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="comment">// 1. 获取数据</span></span><br><span class="line">        <span class="type">MyObj</span> <span class="variable">obj</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">MyObj</span>();</span><br><span class="line">        <span class="keyword">return</span> obj;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>我们看看<code>Spring MVC</code>是怎么拦截<code>@ResponseBody</code>注解的?</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">RequestMappingHandlerAdapter</span> <span class="keyword">extends</span> <span class="title class_">AbstractHandlerMethodAdapter</span> <span class="keyword">implements</span> <span class="title class_">BeanFactoryAware</span>, InitializingBean &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">afterPropertiesSet</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="comment">// 省略其他代码</span></span><br><span class="line">        <span class="keyword">if</span> (<span class="built_in">this</span>.returnValueHandlers == <span class="literal">null</span>) &#123;</span><br><span class="line">            <span class="comment">// 这里初始化一堆默认的返回值处理器, 其中就包括了 @ResponseBody 的处理器</span></span><br><span class="line">            List&lt;HandlerMethodReturnValueHandler&gt; handlers = getDefaultReturnValueHandlers();</span><br><span class="line">            <span class="built_in">this</span>.returnValueHandlers = <span class="keyword">new</span> <span class="title class_">HandlerMethodReturnValueHandlerComposite</span>().addHandlers(handlers);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">private</span> List&lt;HandlerMethodReturnValueHandler&gt; <span class="title function_">getDefaultReturnValueHandlers</span><span class="params">()</span> &#123;</span><br><span class="line">        List&lt;HandlerMethodReturnValueHandler&gt; handlers = <span class="keyword">new</span> <span class="title class_">ArrayList</span>&lt;&gt;();</span><br><span class="line">        <span class="comment">// 省略其他代码</span></span><br><span class="line">        handlers.add(<span class="keyword">new</span> <span class="title class_">RequestResponseBodyMethodProcessor</span>(getMessageConverters(), <span class="built_in">this</span>.contentNegotiationManager, <span class="built_in">this</span>.requestResponseBodyAdvice));</span><br><span class="line">        <span class="comment">// WebMvcConfigurer 自定义处理器</span></span><br><span class="line">        <span class="keyword">if</span> (getCustomReturnValueHandlers() != <span class="literal">null</span>) &#123;</span><br><span class="line">            handlers.addAll(getCustomReturnValueHandlers());</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> handlers;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里就有个问题了, 我通过实现<code>WebMvcConfigurer</code>自定义的处理器, 它的优先级永远比<code>RequestResponseBodyMethodProcessor</code>处理器的优先级要低.<br>也就是说, 我如果想使用<code>@MyJsonNaming</code>注解覆盖<code>@ResponseBody</code>的处理逻辑, 只能这样做.</p>
+<ol>
+<li>所有代码里, 不允许使用<code>@ResponseBody</code>和<code>@RestController</code>, 只允许使用<code>@MyJsonNaming</code>. 这是不可能也不允许的事情.</li>
+<li>使用<code>BeanPostProcessor</code>调整<code>RequestMappingHandlerAdapter</code>的<code>HandlerMethodReturnValueHandler</code>列表顺序. 看起来可行, 但总感觉走了弯路.</li>
+</ol>
+<p>并且这样也有弊端, 如果同一个接口, 前端想用下划线的命名格式, 另一个<code>Java</code>服务想用驼峰的命名格式.<br>使用这种方式也实现不了.</p>
+<h1 id="正解-使用Accept请求头决定响应体是驼峰还是下划线"><a href="#正解-使用Accept请求头决定响应体是驼峰还是下划线" class="headerlink" title="正解: 使用Accept请求头决定响应体是驼峰还是下划线"></a>正解: 使用Accept请求头决定响应体是驼峰还是下划线</h1><p>换个思路, <code>Spring MVC</code>是支持<code>xml</code>和<code>json</code>的返回格式的.<br><code>Spring MVC</code>里面是怎么做到同一套代码支持不同的返回格式的? 本质上我们这个需求也是不同的返回格式.<br>我们前面已经知道, <code>@ResponseBody</code>的处理类是<code>RequestResponseBodyMethodProcessor</code>.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// org.springframework.web.servlet.mvc.method.annotation.RequestResponseBodyMethodProcessor</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">RequestResponseBodyMethodProcessor</span> <span class="keyword">extends</span> <span class="title class_">AbstractMessageConverterMethodProcessor</span> &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">handleReturnValue</span><span class="params">(<span class="meta">@Nullable</span> Object returnValue, MethodParameter returnType, ModelAndViewContainer mavContainer, NativeWebRequest webRequest)</span> <span class="keyword">throws</span> IOException, HttpMediaTypeNotAcceptableException, HttpMessageNotWritableException &#123;</span><br><span class="line">        <span class="comment">// 调用父类的方法</span></span><br><span class="line">        <span class="built_in">super</span>.writeWithMessageConverters(returnValue, returnType, inputMessage, outputMessage);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// org.springframework.web.servlet.mvc.method.annotation.AbstractMessageConverterMethodProcessor</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">class</span> <span class="title class_">AbstractMessageConverterMethodProcessor</span> <span class="keyword">extends</span> <span class="title class_">AbstractMessageConverterMethodArgumentResolver</span> <span class="keyword">implements</span> <span class="title class_">HandlerMethodReturnValueHandler</span> &#123;</span><br><span class="line">    <span class="keyword">protected</span> &lt;T&gt; <span class="keyword">void</span> <span class="title function_">writeWithMessageConverters</span><span class="params">(T value, MethodParameter returnType, ServletServerHttpRequest inputMessage, ServletServerHttpResponse outputMessage)</span> <span class="keyword">throws</span> IOException, HttpMediaTypeNotAcceptableException, HttpMessageNotWritableException &#123;</span><br><span class="line">        <span class="comment">// 省略其他代码</span></span><br><span class="line">        <span class="comment">// 1. 获取请求头的 Accept</span></span><br><span class="line">        <span class="type">MediaType</span> <span class="variable">selectedMediaType</span> <span class="operator">=</span> <span class="literal">null</span>;</span><br><span class="line">        <span class="comment">// 2. 遍历 messageConverters, 找到支持该 MediaType 的 HttpMessageConverter 实现</span></span><br><span class="line">        <span class="keyword">for</span> (HttpMessageConverter&lt;?&gt; converter : <span class="built_in">this</span>.messageConverters) &#123;</span><br><span class="line">            <span class="type">GenericHttpMessageConverter</span> <span class="variable">genericConverter</span> <span class="operator">=</span> (converter <span class="keyword">instanceof</span> GenericHttpMessageConverter ? (GenericHttpMessageConverter&lt;?&gt;) converter : <span class="literal">null</span>);</span><br><span class="line">            <span class="keyword">if</span> (genericConverter != <span class="literal">null</span> ? ((GenericHttpMessageConverter) converter).canWrite(targetType, valueType, selectedMediaType) : converter.canWrite(valueType, selectedMediaType)) &#123;</span><br><span class="line">               <span class="keyword">if</span> (genericConverter != <span class="literal">null</span>) &#123;</span><br><span class="line">                   genericConverter.write(body, targetType, selectedMediaType, outputMessage);</span><br><span class="line">               &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                   ((HttpMessageConverter) converter).write(body, selectedMediaType, outputMessage);</span><br><span class="line">               &#125;</span><br><span class="line">                <span class="keyword">return</span>; <span class="comment">// 注意这里!!! 匹配上就直接return</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>最终请求头<code>Accept:application/json</code>会匹配到<code>MappingJackson2HttpMessageConverter</code>.<br>它支持<code>application/json</code>和<code>application/*+json</code>, 注意这个通配符, 它会导致下面我的自定义请求头失效.<br>因为 <code>HttpMessageConverter</code> 匹配到第一个就直接 <code>return</code> 了.</p>
+<table>
+<thead>
+<tr>
+<th align="center">请求头</th>
+<th align="center">例子</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center"><code>application/vnd.snake.case+json</code></td>
+<td align="center"><code>my_name</code></td>
+</tr>
+<tr>
+<td align="center"><code>application/vnd.upper.camel.case+json</code></td>
+<td align="center"><code>MyName</code></td>
+</tr>
+<tr>
+<td align="center"><code>application/vnd.lower.camel.case+json</code></td>
+<td align="center"><code>myName</code></td>
+</tr>
+<tr>
+<td align="center"><code>application/vnd.lower.case+json</code></td>
+<td align="center"><code>myname</code></td>
+</tr>
+<tr>
+<td align="center"><code>application/vnd.kebab+json</code></td>
+<td align="center"><code>my-name</code></td>
+</tr>
+<tr>
+<td align="center"><code>application/vnd.lower.dot+json</code></td>
+<td align="center"><code>my.name</code></td>
+</tr>
+</tbody></table>
+<p>所以我们要做几个事情</p>
+<ol>
+<li>修改原有的<code>MappingJackson2HttpMessageConverter</code>, 让它只支持<code>application/json</code></li>
+<li>在原有的<code>MappingJackson2HttpMessageConverter</code>后面追加我的自定义请求体的<code>MessageConverter</code>实现类.</li>
+<li>在最后添加一个处理<code>application/*+json</code>的兜底<code>MessageConverter</code>实现类.</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// https://github.com/Ahaochan/ahao-common-utils/blob/master/src/main/java/com/ahao/spring/web/config/JacksonHttpMessageConvertersWebMvcConfigurer.java</span></span><br><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">JacksonHttpMessageConvertersWebMvcConfigurer</span> <span class="keyword">implements</span> <span class="title class_">WebMvcConfigurer</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> ObjectMapper objectMapper;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 覆盖 &#123;<span class="doctag">@link</span> JacksonHttpMessageConvertersConfiguration&#125; 的配置, 移除 application/*+json 的支持</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@see</span> JacksonHttpMessageConvertersConfiguration.MappingJackson2HttpMessageConverterConfiguration#mappingJackson2HttpMessageConverter(com.fasterxml.jackson.databind.ObjectMapper)</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="keyword">public</span> MappingJackson2HttpMessageConverter <span class="title function_">mappingJackson2HttpMessageConverter</span><span class="params">(ObjectMapper objectMapper)</span> &#123;</span><br><span class="line">        <span class="type">MappingJackson2HttpMessageConverter</span> <span class="variable">converter</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">MappingJackson2HttpMessageConverter</span>(objectMapper);</span><br><span class="line">        List&lt;MediaType&gt; mediaTypes = Arrays.asList(</span><br><span class="line">            MediaType.APPLICATION_JSON</span><br><span class="line">            <span class="comment">// new MediaType(&quot;application&quot;, &quot;*+json&quot;) // 移除 application/*+json 的支持</span></span><br><span class="line">        );</span><br><span class="line">        converter.setSupportedMediaTypes(mediaTypes);</span><br><span class="line">        <span class="keyword">return</span> converter;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">configureMessageConverters</span><span class="params">(List&lt;HttpMessageConverter&lt;?&gt;&gt; converters)</span> &#123;</span><br><span class="line">        <span class="comment">// 1. 找到插入位置</span></span><br><span class="line">        List&lt;MediaType&gt; exceptMediaTypes = Collections.singletonList(MediaType.APPLICATION_JSON);</span><br><span class="line">        <span class="type">int</span> <span class="variable">index</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; converters.size(); i++) &#123;</span><br><span class="line">            HttpMessageConverter&lt;?&gt; converter = converters.get(i);</span><br><span class="line">            <span class="keyword">if</span> (converter <span class="keyword">instanceof</span> MappingJackson2HttpMessageConverter) &#123;</span><br><span class="line">                index = i;</span><br><span class="line">                List&lt;MediaType&gt; supportedMediaTypes = converter.getSupportedMediaTypes();</span><br><span class="line">                Assert.isTrue(Objects.equals(exceptMediaTypes, supportedMediaTypes), <span class="string">&quot;第 1 个 MappingJackson2HttpMessageConverter 支持的 MediaType:&quot;</span> + supportedMediaTypes + <span class="string">&quot;应为&quot;</span> + exceptMediaTypes);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        index++;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 2. 补充多种 PropertyNamingStrategy</span></span><br><span class="line">        <span class="type">PropertyNamingStrategy</span> <span class="variable">strategy</span> <span class="operator">=</span> PropertyNamingStrategy.SNAKE_CASE;</span><br><span class="line">        <span class="type">ObjectMapper</span> <span class="variable">clone</span> <span class="operator">=</span> objectMapper.copy();</span><br><span class="line">        clone.setPropertyNamingStrategy(strategy);</span><br><span class="line"></span><br><span class="line">        <span class="type">MediaType</span> <span class="variable">mediaType</span> <span class="operator">=</span> ExtMappingJackson2HttpMessageConverter.createMediaType(strategy);</span><br><span class="line">        <span class="type">ExtMappingJackson2HttpMessageConverter</span> <span class="variable">converter</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ExtMappingJackson2HttpMessageConverter</span>(clone, mediaType);</span><br><span class="line"></span><br><span class="line">        converters.add(index, converter);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>至此, 响应体已经能根据请求头<code>Accept</code>来判断返回的数据格式是下划线命名还是驼峰命名了.</p>
+<h1 id="正解-使用Content-Type请求头决定请求体是驼峰还是下划线"><a href="#正解-使用Content-Type请求头决定请求体是驼峰还是下划线" class="headerlink" title="正解: 使用Content-Type请求头决定请求体是驼峰还是下划线"></a>正解: 使用Content-Type请求头决定请求体是驼峰还是下划线</h1><p>请求参数也一样可以根据请求头<code>Content-Type</code>来判断.<br>还是<code>RequestResponseBodyMethodProcessor</code>这个类来处理.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// org.springframework.web.servlet.mvc.method.annotation.RequestResponseBodyMethodProcessor</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">RequestResponseBodyMethodProcessor</span> <span class="keyword">extends</span> <span class="title class_">AbstractMessageConverterMethodProcessor</span> &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">handleReturnValue</span><span class="params">(<span class="meta">@Nullable</span> Object returnValue, MethodParameter returnType, ModelAndViewContainer mavContainer, NativeWebRequest webRequest)</span> <span class="keyword">throws</span> IOException, HttpMediaTypeNotAcceptableException, HttpMessageNotWritableException &#123;</span><br><span class="line">        <span class="comment">// 调用父类的方法</span></span><br><span class="line">        <span class="type">Object</span> <span class="variable">arg</span> <span class="operator">=</span> readWithMessageConverters(inputMessage, parameter, paramType);</span><br><span class="line">        <span class="keyword">return</span> arg;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// org.springframework.web.servlet.mvc.method.annotation.AbstractMessageConverterMethodProcessor</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">class</span> <span class="title class_">AbstractMessageConverterMethodProcessor</span> <span class="keyword">extends</span> <span class="title class_">AbstractMessageConverterMethodArgumentResolver</span> <span class="keyword">implements</span> <span class="title class_">HandlerMethodReturnValueHandler</span> &#123;</span><br><span class="line">    <span class="keyword">protected</span> &lt;T&gt; Object <span class="title function_">readWithMessageConverters</span><span class="params">(HttpInputMessage inputMessage, MethodParameter parameter, Type targetType)</span> <span class="keyword">throws</span> IOException, HttpMediaTypeNotSupportedException, HttpMessageNotReadableException &#123;</span><br><span class="line">        <span class="comment">// 省略其他代码</span></span><br><span class="line">        <span class="comment">// 1. 获取请求头的 Content-Type</span></span><br><span class="line">        <span class="type">MediaType</span> <span class="variable">contentType</span> <span class="operator">=</span> inputMessage.getHeaders().getContentType();</span><br><span class="line">       </span><br><span class="line">        <span class="comment">// 2. 遍历 messageConverters, 找到支持该 MediaType 的 HttpMessageConverter 实现</span></span><br><span class="line">        <span class="type">Object</span> <span class="variable">body</span> <span class="operator">=</span> NO_VALUE;</span><br><span class="line">        <span class="type">EmptyBodyCheckingHttpInputMessage</span> <span class="variable">message</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">EmptyBodyCheckingHttpInputMessage</span>(inputMessage);</span><br><span class="line">        <span class="keyword">for</span> (HttpMessageConverter&lt;?&gt; converter : <span class="built_in">this</span>.messageConverters) &#123;</span><br><span class="line">            Class&lt;HttpMessageConverter&lt;?&gt;&gt; converterType = (Class&lt;HttpMessageConverter&lt;?&gt;&gt;) converter.getClass();</span><br><span class="line">            GenericHttpMessageConverter&lt;?&gt; genericConverter = (converter <span class="keyword">instanceof</span> GenericHttpMessageConverter ? (GenericHttpMessageConverter&lt;?&gt;) converter : <span class="literal">null</span>);</span><br><span class="line">            <span class="keyword">if</span> (genericConverter != <span class="literal">null</span> ? genericConverter.canRead(targetType, contextClass, contentType) : (targetClass != <span class="literal">null</span> &amp;&amp; converter.canRead(targetClass, contentType))) &#123;</span><br><span class="line">                <span class="keyword">if</span> (message.hasBody()) &#123;</span><br><span class="line">                    body = (genericConverter != <span class="literal">null</span> ? genericConverter.read(targetType, contextClass, msgToUse) : ((HttpMessageConverter&lt;T&gt;) converter).read(targetClass, msgToUse));</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">break</span>; <span class="comment">// 注意这里!!! 匹配上就直接return</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> body;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可以看到和响应体的处理逻辑差不多, 也是筛选<code>MessageConverter</code>.<br>那么我们之前的配置, 也可以派上用场了. 直接在请求头<code>Content-Type</code>添加自定义的参数即可.</p>
+<h1 id="自定义-MessageConverter-不能处理的情况"><a href="#自定义-MessageConverter-不能处理的情况" class="headerlink" title="自定义 MessageConverter 不能处理的情况"></a>自定义 MessageConverter 不能处理的情况</h1><p>现在的<code>Web</code>开发, 基本都是前后端分离的架构, 所以基本每个请求都是用<code>@ResponseBody</code>修饰的.<br>但是请求的话, 不一定都是<code>application/json</code>的请求, 也不一定都是<code>@RequestBody</code>修饰的请求参数.</p>
+<p>对于客户端来说, 它可能会发送<code>GET</code>请求过来, 也可能发请求头为<code>application/x-www-form-urlencoded</code>的请求过来, 也可能发请求头为<code>application/json</code>的请求过来.</p>
+<h2 id="GET-请求如何处理"><a href="#GET-请求如何处理" class="headerlink" title="GET 请求如何处理"></a>GET 请求如何处理</h2><p>对于<code>GET</code>请求, 会走<code>RequestParamMethodArgumentResolver</code>这个参数处理器.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// org.springframework.web.method.annotation.AbstractNamedValueMethodArgumentResolver</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">class</span> <span class="title class_">AbstractNamedValueMethodArgumentResolver</span> <span class="keyword">implements</span> <span class="title class_">HandlerMethodArgumentResolver</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> NamedValueInfo <span class="title function_">getNamedValueInfo</span><span class="params">(MethodParameter parameter)</span> &#123;</span><br><span class="line">        <span class="comment">// 1. 交给子类实现, 从 @RequestParam 获取参数名</span></span><br><span class="line">        <span class="type">NamedValueInfo</span> <span class="variable">namedValueInfo</span> <span class="operator">=</span> createNamedValueInfo(parameter);</span><br><span class="line">        <span class="comment">// 2. 如果没有配置 @RequestParam, 就反射获取变量名</span></span><br><span class="line">        namedValueInfo = updateNamedValueInfo(parameter, namedValueInfo);</span><br><span class="line">        <span class="keyword">return</span> namedValueInfo;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">private</span> NamedValueInfo <span class="title function_">updateNamedValueInfo</span><span class="params">(MethodParameter parameter, NamedValueInfo info)</span> &#123;</span><br><span class="line">        <span class="type">String</span> <span class="variable">name</span> <span class="operator">=</span> info.name;</span><br><span class="line">        <span class="keyword">if</span> (info.name.isEmpty()) &#123;</span><br><span class="line">            name = parameter.getParameterName();</span><br><span class="line">            <span class="keyword">if</span> (name == <span class="literal">null</span>) &#123;</span><br><span class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">IllegalArgumentException</span>();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="type">String</span> <span class="variable">defaultValue</span> <span class="operator">=</span> (ValueConstants.DEFAULT_NONE.equals(info.defaultValue) ? <span class="literal">null</span> : info.defaultValue);</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">NamedValueInfo</span>(name, info.required, defaultValue);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// org.springframework.web.method.annotation.RequestParamMethodArgumentResolver</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">RequestParamMethodArgumentResolver</span> <span class="keyword">extends</span> <span class="title class_">AbstractNamedValueMethodArgumentResolver</span> <span class="keyword">implements</span> <span class="title class_">UriComponentsContributor</span> &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">protected</span> NamedValueInfo <span class="title function_">createNamedValueInfo</span><span class="params">(MethodParameter parameter)</span> &#123;</span><br><span class="line">        <span class="comment">// 从 @RequestParam 获取参数名</span></span><br><span class="line">        <span class="type">RequestParam</span> <span class="variable">ann</span> <span class="operator">=</span> parameter.getParameterAnnotation(RequestParam.class);</span><br><span class="line">        <span class="keyword">return</span> (ann != <span class="literal">null</span> ? <span class="keyword">new</span> <span class="title class_">RequestParamNamedValueInfo</span>(ann) : <span class="keyword">new</span> <span class="title class_">RequestParamNamedValueInfo</span>());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><code>GET</code> 请求并不会根据请求头<code>Content-Type</code>的不同而选择不同的命名规则. 代码里写的是什么就是什么.<br>如果想让<code>GET</code>请求也支持根据请求头<code>Content-Type</code>选择不同的命名规则, 只能写一个<strong>过滤器</strong>来处理了.<br>可以参考这个实现: <a target="_blank" rel="noopener" href="https://gist.github.com/azhawkes/3db84b194b3e47423df2">https://gist.github.com/azhawkes/3db84b194b3e47423df2</a></p>
+<h2 id="Content-Type-application-x-www-form-urlencoded-请求如何处理"><a href="#Content-Type-application-x-www-form-urlencoded-请求如何处理" class="headerlink" title="Content-Type: application/x-www-form-urlencoded 请求如何处理"></a>Content-Type: application/x-www-form-urlencoded 请求如何处理</h2><p><code>form data</code>的请求方式会走<code>ModelAttributeMethodProcessor</code>这个参数处理器.<br>同样的也不会受请求头<code>Content-Type</code>影响, 代码里写的是什么参数就是什么参数.<br>同样也只能写一个<strong>过滤器</strong>来处理.</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>从<code>RequestResponseBodyMethodProcessor</code>这个处理器的名字也可以看出, 它只支持<code>@RequestBody</code>和<code>@ResponseBody</code>.<br>其他格式的请求参数, 就只能用过滤器的形式<code>Hack</code>了.</p>
+<h1 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h1><ul>
+<li><a target="_blank" rel="noopener" href="http://www.baeldung.com/spring-httpmessageconverter-rest">Http Message Converters with the Spring Framework</a></li>
+<li><a target="_blank" rel="noopener" href="https://stackoverflow.com/a/43085405">Hot to make jackson to use snake_case / camelCase on demand in a Spring Boot REST API?</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+      
+
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>很高兴得到您的赞赏</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="/images/config/wechatpay.jpg" alt="Ahaochan 微信">
+        <span>微信</span>
+      </div>
+      <div>
+        <img src="/images/config/alipay.jpg" alt="Ahaochan 支付宝">
+        <span>支付宝</span>
+      </div>
+
+  </div>
+</div>
+
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>Ahaochan
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://blog.ahao.moe/posts/Support_both_snake_case_and_camelCase_in_Spring_MVC.html" title="Spring MVC同时支持驼峰和下划线">https://blog.ahao.moe/posts/Support_both_snake_case_and_camelCase_in_Spring_MVC.html</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="followme">
+  <span>欢迎关注我的其它发布渠道</span>
+
+  <div class="social-list">
+
+      <div class="social-item">
+        <a target="_blank" class="social-link" href="/images/config/wechat_channel.jpg">
+          <span class="icon">
+            <i class="fab fa-weixin"></i>
+          </span>
+
+          <span class="label">WeChat</span>
+        </a>
+      </div>
+
+      <div class="social-item">
+        <a target="_blank" class="social-link" href="/rss.xml">
+          <span class="icon">
+            <i class="fa fa-rss"></i>
+          </span>
+
+          <span class="label">RSS</span>
+        </a>
+      </div>
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/" rel="tag"><i class="fa fa-tag"></i> 源码分析</a>
+              <a href="/tags/Spring-MVC/" rel="tag"><i class="fa fa-tag"></i> Spring MVC</a>
+          </div>
+
+        
+  <div class="post-widgets">
+    <div class="wpac-rating-container">
+      <div id="wpac-rating"></div>
+    </div>
+  </div>
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/posts/Docker_Swarm_mode_overview.html" rel="prev" title="Docker Swarm容器编排">
+                  <i class="fa fa-chevron-left"></i> Docker Swarm容器编排
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/posts/How_to_use_Apache_Bench.html" rel="next" title="Apache Bench使用">
+                  Apache Bench使用 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    
+  <div class="comments disqusjs">
+    <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+  </div>
+  
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2016 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ahaochan</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">172k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">10:25</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+  <div class="addthis_inline_share_toolbox">
+    <script src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-59047aaab9bddb67" async="async"></script>
+  </div><script color="0,0,255" opacity="0.5" zIndex="-1" count="99" src="https://cdn.jsdelivr.net/npm/canvas-nest.js@1/dist/canvas-nest.js"></script>
+
+
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js" integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lozad.js/1.16.0/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script>
+
+  
+  <script src="https://embed.widgetpack.com/widget.js" async></script>
+  <script class="next-config" data-name="rating" type="application/json">{"enable":true,"id":33332,"color":"#fc6423"}</script>
+  <script src="/js/third-party/rating.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.0/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/9.1.7/mermaid.min.js","integrity":"sha256-G58AID1YoX5YaEtWfXSI0VLrZ6N4kvNvwg0BI8zUFxE="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/quicklink/2.3.0/quicklink.umd.js" integrity="sha256-yvJQOINiH9fWemHn0vCA5lsHWJaHs6/ZmO+1Ft04SvM=" crossorigin="anonymous"></script>
+  <script class="next-config" data-name="quicklink" type="application/json">{"enable":true,"home":true,"archive":true,"delay":true,"timeout":3000,"priority":true,"url":"https://blog.ahao.moe/posts/Support_both_snake_case_and_camelCase_in_Spring_MVC.html"}</script>
+  <script src="/js/third-party/quicklink.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/disqusjs/3.0.2/styles/disqusjs.css" integrity="sha256-71XarXwNr1Td27HmZI9zjY+rMzRdush6/glo6VFXp7o=" crossorigin="anonymous">
+
+<script class="next-config" data-name="disqusjs" type="application/json">{"enable":true,"api":"https://disqus.skk.moe/disqus/","apikey":"OC1zbKiBF5cPo1EJObILJmZftsWl4ZbbAh9YqV0qNxiMq8rQFqBiw8PYcXQCyG9S","shortname":"ahaochan-blog","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/disqusjs/3.0.2/disqusjs.es2015.umd.min.js","integrity":"sha256-okP99ZQKVpIy7+NogAMpGlIQzJa9XKXhIJcFgdju5bU="}}</script>
+<script src="/js/third-party/comments/disqusjs.js"></script>
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"scale":1.2,"jsonPath":"https://cdn.jsdelivr.net/npm/live2d-widget-model-shizuku@1.0.5/assets/shizuku.model.json"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":false},"react":{"opacity":0.7},"log":false});</script></body>
+</html>

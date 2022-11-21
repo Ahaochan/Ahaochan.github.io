@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/config/favicon-32x32-next.jpg">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/config/favicon-16x16-next.jpg">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="google-site-verification" content="ZmER9fymckNfZ_Zxw6p3fpvqhvR6LitG9pR-cNVflx0">
+  <meta name="msvalidate.01" content="5351f65e5e79bb62584189a5e6906b8b">
+  <meta name="baidu-site-verification" content="jgtczlqzuk">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic%7CConsolas:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" integrity="sha256-AbA177XfpSnFEvgpYu1jMygiLabzPCJCRIBtR5jGc0k=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"blog.ahao.moe","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.13.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"disqusjs","storage":true,"lazyload":true,"nav":null,"activeClass":"disqusjs"},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":true}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="dimens.xml经常需要使用到一些尺寸，这里就记录一下，方便拷贝。直接在values中的dimens.xml文件中粘贴即可使用方法，如：Android:TextSize&#x3D;&quot;@dimens&#x2F;offset_2dp&quot;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="常用配置文件">
+<meta property="og:url" content="https://blog.ahao.moe/posts/Android_common_xml.html">
+<meta property="og:site_name" content="Ahaochan&#39;s Blog">
+<meta property="og:description" content="dimens.xml经常需要使用到一些尺寸，这里就记录一下，方便拷贝。直接在values中的dimens.xml文件中粘贴即可使用方法，如：Android:TextSize&#x3D;&quot;@dimens&#x2F;offset_2dp&quot;">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2016-06-23T01:07:59.000Z">
+<meta property="article:modified_time" content="2022-11-21T02:35:06.052Z">
+<meta property="article:author" content="Ahaochan">
+<meta property="article:tag" content="配置文件">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://blog.ahao.moe/posts/Android_common_xml.html">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://blog.ahao.moe/posts/Android_common_xml.html","path":"posts/Android_common_xml.html","title":"常用配置文件"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>常用配置文件 | Ahaochan's Blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-108454440-1"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"UA-108454440-1","only_pageview":false}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+  <script src="/js/third-party/analytics/baidu-analytics.js"></script>
+  <script async src="https://hm.baidu.com/hm.js?32635d85cec06e8822234c4d2aec2b54"></script>
+
+
+
+
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+  (adsbygoogle = window.adsbygoogle || []).push({
+    google_ad_client: "ca-pub-5208025300813046",
+    enable_page_level_ads: true
+  });
+</script>
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/rss.xml" title="Ahaochan's Blog" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Ahaochan's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">你也是程序猿friends呢~</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">91</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">30</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">217</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#dimens-xml"><span class="nav-number">1.</span> <span class="nav-text">dimens.xml</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#colors-xml"><span class="nav-number">2.</span> <span class="nav-text">colors.xml</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Ahaochan"
+      src="/images/config/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Ahaochan</p>
+  <div class="site-description" itemprop="description">你也是程序猿friends呢~</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">217</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">30</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">91</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Ahaochan" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Ahaochan" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:844394093@qq.com" title="E-Mail → mailto:844394093@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://greasyfork.org/zh-CN/users/30831" title="Greasyfork → https:&#x2F;&#x2F;greasyfork.org&#x2F;zh-CN&#x2F;users&#x2F;30831" rel="noopener" target="_blank"><i class="fab fa-google fa-fw"></i>Greasyfork</a>
+      </span>
+  </div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/Ahaochan" class="github-corner" title="我的Github" aria-label="我的Github" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blog.ahao.moe/posts/Android_common_xml.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/config/avatar.jpg">
+      <meta itemprop="name" content="Ahaochan">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ahaochan's Blog">
+      <meta itemprop="description" content="你也是程序猿friends呢~">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="常用配置文件 | Ahaochan's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          常用配置文件<a href="https://github.com/Ahaochan/Ahaochan.github.io/blob/source/source/_posts/andorid/Android-Android%E5%B8%B8%E7%94%A8%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6.md" class="post-edit-link" title="编辑" rel="noopener" target="_blank"><i class="fa fa-pen-nib"></i></a>
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2016-06-23 09:07:59" itemprop="dateCreated datePublished" datetime="2016-06-23T09:07:59+08:00">2016-06-23</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Android/" itemprop="url" rel="index"><span itemprop="name">Android</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>1.4k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>5 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="dimens-xml"><a href="#dimens-xml" class="headerlink" title="dimens.xml"></a>dimens.xml</h1><p>经常需要使用到一些尺寸，这里就记录一下，方便拷贝。<br>直接在<code>values中</code>的<code>dimens.xml</code>文件中粘贴即可<br>使用方法，如：<code>Android:TextSize=&quot;@dimens/offset_2dp&quot;</code></p>
+<span id="more"></span>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">resources</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- text size --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dimen</span> <span class="attr">name</span>=<span class="string">&quot;font_size_tiny&quot;</span>&gt;</span>10sp<span class="tag">&lt;/<span class="name">dimen</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dimen</span> <span class="attr">name</span>=<span class="string">&quot;font_size_small&quot;</span>&gt;</span>12sp<span class="tag">&lt;/<span class="name">dimen</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dimen</span> <span class="attr">name</span>=<span class="string">&quot;font_size_normal&quot;</span>&gt;</span>14sp<span class="tag">&lt;/<span class="name">dimen</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dimen</span> <span class="attr">name</span>=<span class="string">&quot;font_size_normal_high&quot;</span>&gt;</span>16sp<span class="tag">&lt;/<span class="name">dimen</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dimen</span> <span class="attr">name</span>=<span class="string">&quot;font_size_large&quot;</span>&gt;</span>18sp<span class="tag">&lt;/<span class="name">dimen</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dimen</span> <span class="attr">name</span>=<span class="string">&quot;font_size_large_high&quot;</span>&gt;</span>20sp<span class="tag">&lt;/<span class="name">dimen</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dimen</span> <span class="attr">name</span>=<span class="string">&quot;font_size_xlarge&quot;</span>&gt;</span>22sp<span class="tag">&lt;/<span class="name">dimen</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!--边距--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dimen</span> <span class="attr">name</span>=<span class="string">&quot;offset_2dp&quot;</span>&gt;</span>2dp<span class="tag">&lt;/<span class="name">dimen</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dimen</span> <span class="attr">name</span>=<span class="string">&quot;offset_4dp&quot;</span>&gt;</span>4dp<span class="tag">&lt;/<span class="name">dimen</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dimen</span> <span class="attr">name</span>=<span class="string">&quot;offset_6dp&quot;</span>&gt;</span>6dp<span class="tag">&lt;/<span class="name">dimen</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">resources</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h1 id="colors-xml"><a href="#colors-xml" class="headerlink" title="colors.xml"></a>colors.xml</h1><p>经常需要使用到一些颜色，这里就记录一下，方便拷贝。<br>直接在values中的colors.xml文件中粘贴即可<br>使用方法，如：<code>Android:background=&quot;@color/yellow&quot;</code></p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!--values中的colors.xml文件--&gt;</span>  </span><br><span class="line"><span class="meta">&lt;?xml version=<span class="string">&quot;1.0&quot;</span> encoding=<span class="string">&quot;utf-8&quot;</span>?&gt;</span>  </span><br><span class="line"><span class="tag">&lt;<span class="name">resources</span>&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;colorPrimary&quot;</span>&gt;</span>#3F51B5<span class="tag">&lt;/<span class="name">color</span>&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;colorPrimaryDark&quot;</span>&gt;</span>#303F9F<span class="tag">&lt;/<span class="name">color</span>&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;colorAccent&quot;</span>&gt;</span>#FF4081<span class="tag">&lt;/<span class="name">color</span>&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;white&quot;</span>&gt;</span>#FFFFFF<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--白色 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;ivory&quot;</span>&gt;</span>#FFFFF0<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--象牙色 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;lightyellow&quot;</span>&gt;</span>#FFFFE0<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--亮黄色--&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;yellow&quot;</span>&gt;</span>#FFFF00<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--黄色 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;snow&quot;</span>&gt;</span>#FFFAFA<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--雪白色 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;floralwhite&quot;</span>&gt;</span>#FFFAF0<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--花白色 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;lemonchiffon&quot;</span>&gt;</span>#FFFACD<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--柠檬绸色 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;cornsilk&quot;</span>&gt;</span>#FFF8DC<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--米绸色 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;seashell&quot;</span>&gt;</span>#FFF5EE<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--海贝色 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;lavenderblush&quot;</span>&gt;</span>#FFF0F5<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--淡紫红 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;papayawhip&quot;</span>&gt;</span>#FFEFD5<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--番木色 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;blanchedalmond&quot;</span>&gt;</span>#FFEBCD<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--白杏色 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;mistyrose&quot;</span>&gt;</span>#FFE4E1<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--浅玫瑰色 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;bisque&quot;</span>&gt;</span>#FFE4C4<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--桔黄色 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;moccasin&quot;</span>&gt;</span>#FFE4B5<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--鹿皮色 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;navajowhite&quot;</span>&gt;</span>#FFDEAD<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--纳瓦白 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;peachpuff&quot;</span>&gt;</span>#FFDAB9<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--桃色 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;gold&quot;</span>&gt;</span>#FFD700<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--金色 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;pink&quot;</span>&gt;</span>#FFC0CB<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--粉红色 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;lightpink&quot;</span>&gt;</span>#FFB6C1<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--亮粉红色--&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;orange&quot;</span>&gt;</span>#FFA500<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--橙色 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;lightsalmon&quot;</span>&gt;</span>#FFA07A<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--亮肉色 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;darkorange&quot;</span>&gt;</span>#FF8C00<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--暗桔黄色 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;coral&quot;</span>&gt;</span>#FF7F50<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--珊瑚色 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;hotpink&quot;</span>&gt;</span>#FF69B4<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--热粉红色 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;tomato&quot;</span>&gt;</span>#FF6347<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--西红柿色 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;orangered&quot;</span>&gt;</span>#FF4500<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--红橙色 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;deeppink&quot;</span>&gt;</span>#FF1493<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--深粉红色 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;fuchsia&quot;</span>&gt;</span>#FF00FF<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--紫红色 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;magenta&quot;</span>&gt;</span>#FF00FF<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--红紫色 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;red&quot;</span>&gt;</span>#FF0000<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--红色 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;oldlace&quot;</span>&gt;</span>#FDF5E6<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--老花色 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;lightgoldenrodyellow&quot;</span>&gt;</span>#FAFAD2<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--亮金黄色 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;linen&quot;</span>&gt;</span>#FAF0E6<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--亚麻色 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;antiquewhite&quot;</span>&gt;</span>#FAEBD7<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--古董白 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;salmon&quot;</span>&gt;</span>#FA8072<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--鲜肉色 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;ghostwhite&quot;</span>&gt;</span>#F8F8FF<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--幽灵白 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;mintcream&quot;</span>&gt;</span>#F5FFFA<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--薄荷色 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;whitesmoke&quot;</span>&gt;</span>#F5F5F5<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--烟白色 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;beige&quot;</span>&gt;</span>#F5F5DC<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--米色 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;wheat&quot;</span>&gt;</span>#F5DEB3<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--浅黄色 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;sandybrown&quot;</span>&gt;</span>#F4A460<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--沙褐色--&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;azure&quot;</span>&gt;</span>#F0FFFF<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--天蓝色 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;honeydew&quot;</span>&gt;</span>#F0FFF0<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--蜜色 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;aliceblue&quot;</span>&gt;</span>#F0F8FF<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--艾利斯兰 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;khaki&quot;</span>&gt;</span>#F0E68C<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--黄褐色 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;lightcoral&quot;</span>&gt;</span>#F08080<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--亮珊瑚色 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;palegoldenrod&quot;</span>&gt;</span>#EEE8AA<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--苍麒麟色 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;violet&quot;</span>&gt;</span>#EE82EE<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--紫罗兰色 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;darksalmon&quot;</span>&gt;</span>#E9967A<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--暗肉色 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;lavender&quot;</span>&gt;</span>#E6E6FA<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--淡紫色 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;lightcyan&quot;</span>&gt;</span>#E0FFFF<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--亮青色 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;burlywood&quot;</span>&gt;</span>#DEB887<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--实木色 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;plum&quot;</span>&gt;</span>#DDA0DD<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--洋李色 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;gainsboro&quot;</span>&gt;</span>#DCDCDC<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--淡灰色 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;crimson&quot;</span>&gt;</span>#DC143C<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--暗深红色 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;palevioletred&quot;</span>&gt;</span>#DB7093<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--苍紫罗兰色 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;goldenrod&quot;</span>&gt;</span>#DAA520<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--金麒麟色 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;orchid&quot;</span>&gt;</span>#DA70D6<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--淡紫色 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;thistle&quot;</span>&gt;</span>#D8BFD8<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--蓟色 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;lightgray&quot;</span>&gt;</span>#D3D3D3<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--亮灰色 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;lightgrey&quot;</span>&gt;</span>#D3D3D3<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--亮灰色 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;tan&quot;</span>&gt;</span>#D2B48C<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--茶色 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;chocolate&quot;</span>&gt;</span>#D2691E<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--巧可力色 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;peru&quot;</span>&gt;</span>#CD853F<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--秘鲁色 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;indianred&quot;</span>&gt;</span>#CD5C5C<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--印第安红 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;mediumvioletred&quot;</span>&gt;</span>#C71585<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--中紫罗兰色 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;silver&quot;</span>&gt;</span>#C0C0C0<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--银色 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;darkkhaki&quot;</span>&gt;</span>#BDB76B<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--暗黄褐色 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;rosybrown&quot;</span>&gt;</span>#BC8F8F<span class="tag">&lt;/<span class="name">color</span>&gt;</span> <span class="comment">&lt;!--褐玫瑰红 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;mediumorchid&quot;</span>&gt;</span>#BA55D3<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--中粉紫色 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;darkgoldenrod&quot;</span>&gt;</span>#B8860B<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--暗金黄色 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;firebrick&quot;</span>&gt;</span>#B22222<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--火砖色 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;powderblue&quot;</span>&gt;</span>#B0E0E6<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--粉蓝色 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;lightsteelblue&quot;</span>&gt;</span>#B0C4DE<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--亮钢兰色 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;paleturquoise&quot;</span>&gt;</span>#AFEEEE<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--苍宝石绿 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;greenyellow&quot;</span>&gt;</span>#ADFF2F<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--黄绿色 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;lightblue&quot;</span>&gt;</span>#ADD8E6<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--亮蓝色 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;darkgray&quot;</span>&gt;</span>#A9A9A9<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--暗灰色 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;darkgrey&quot;</span>&gt;</span>#A9A9A9<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--暗灰色 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;brown&quot;</span>&gt;</span>#A52A2A<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--褐色 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;sienna&quot;</span>&gt;</span>#A0522D<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--赭色 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;darkorchid&quot;</span>&gt;</span>#9932CC<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--暗紫色--&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;palegreen&quot;</span>&gt;</span>#98FB98<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--苍绿色 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;darkviolet&quot;</span>&gt;</span>#9400D3<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--暗紫罗兰色 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;mediumpurple&quot;</span>&gt;</span>#9370DB<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--中紫色 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;lightgreen&quot;</span>&gt;</span>#90EE90<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--亮绿色 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;darkseagreen&quot;</span>&gt;</span>#8FBC8F<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--暗海兰色 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;saddlebrown&quot;</span>&gt;</span>#8B4513<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--重褐色 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;darkmagenta&quot;</span>&gt;</span>#8B008B<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--暗洋红 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;darkred&quot;</span>&gt;</span>#8B0000<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--暗红色 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;blueviolet&quot;</span>&gt;</span>#8A2BE2<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--紫罗兰蓝色 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;lightskyblue&quot;</span>&gt;</span>#87CEFA<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--亮天蓝色 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;skyblue&quot;</span>&gt;</span>#87CEEB<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--天蓝色 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;gray&quot;</span>&gt;</span>#808080<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--灰色 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;grey&quot;</span>&gt;</span>#808080<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--灰色 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;olive&quot;</span>&gt;</span>#808000<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--橄榄色 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;purple&quot;</span>&gt;</span>#800080<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--紫色 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;maroon&quot;</span>&gt;</span>#800000<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--粟色 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;aquamarine&quot;</span>&gt;</span>#7FFFD4<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--碧绿色--&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;chartreuse&quot;</span>&gt;</span>#7FFF00<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--黄绿色 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;lawngreen&quot;</span>&gt;</span>#7CFC00<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--草绿色 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;mediumslateblue&quot;</span>&gt;</span>#7B68EE<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--中暗蓝色 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;lightslategray&quot;</span>&gt;</span>#778899<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--亮蓝灰 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;lightslategrey&quot;</span>&gt;</span>#778899<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--亮蓝灰 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;slategray&quot;</span>&gt;</span>#708090<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--灰石色 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;slategrey&quot;</span>&gt;</span>#708090<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--灰石色 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;olivedrab&quot;</span>&gt;</span>#6B8E23<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--深绿褐色 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;slateblue&quot;</span>&gt;</span>#6A5ACD<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--石蓝色 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;dimgray&quot;</span>&gt;</span>#696969<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--暗灰色 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;dimgrey&quot;</span>&gt;</span>#696969<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--暗灰色 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;mediumaquamarine&quot;</span>&gt;</span>#66CDAA<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--中绿色 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;cornflowerblue&quot;</span>&gt;</span>#6495ED<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--菊兰色 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;cadetblue&quot;</span>&gt;</span>#5F9EA0<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--军兰色 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;darkolivegreen&quot;</span>&gt;</span>#556B2F<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--暗橄榄绿  --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;indigo&quot;</span>&gt;</span>#4B0082<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--靛青色 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;mediumturquoise&quot;</span>&gt;</span>#48D1CC<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--中绿宝石 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;darkslateblue&quot;</span>&gt;</span>#483D8B<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--暗灰蓝色 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;steelblue&quot;</span>&gt;</span>#4682B4<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--钢兰色 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;royalblue&quot;</span>&gt;</span>#4169E1<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--皇家蓝 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;turquoise&quot;</span>&gt;</span>#40E0D0<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--青绿色 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;mediumseagreen&quot;</span>&gt;</span>#3CB371<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--中海蓝 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;limegreen&quot;</span>&gt;</span>#32CD32<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--橙绿色 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;darkslategray&quot;</span>&gt;</span>#2F4F4F<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--暗瓦灰色 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;darkslategrey&quot;</span>&gt;</span>#2F4F4F<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--暗瓦灰色 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;seagreen&quot;</span>&gt;</span>#2E8B57<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--海绿色 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;forestgreen&quot;</span>&gt;</span>#228B22<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--森林绿 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;lightseagreen&quot;</span>&gt;</span>#20B2AA<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--亮海蓝色 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;dodgerblue&quot;</span>&gt;</span>#1E90FF<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--闪兰色 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;midnightblue&quot;</span>&gt;</span>#191970<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--中灰兰色 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;aqua&quot;</span>&gt;</span>#00FFFF<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--浅绿色 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;cyan&quot;</span>&gt;</span>#00FFFF<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--青色 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;springgreen&quot;</span>&gt;</span>#00FF7F<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--春绿色--&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;lime&quot;</span>&gt;</span>#00FF00<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--酸橙色 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;mediumspringgreen&quot;</span>&gt;</span>#00FA9A<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--中春绿色 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;darkturquoise&quot;</span>&gt;</span>#00CED1<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--暗宝石绿 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;deepskyblue&quot;</span>&gt;</span>#00BFFF<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--深天蓝色 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;darkcyan&quot;</span>&gt;</span>#008B8B<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--暗青色 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;teal&quot;</span>&gt;</span>#008080<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--水鸭色 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;green&quot;</span>&gt;</span>#008000<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--绿色 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;darkgreen&quot;</span>&gt;</span>#006400<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--暗绿色 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;blue&quot;</span>&gt;</span>#0000FF<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--蓝色 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;mediumblue&quot;</span>&gt;</span>#0000CD<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--中兰色 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;darkblue&quot;</span>&gt;</span>#00008B<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--暗蓝色 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;navy&quot;</span>&gt;</span>#000080<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--海军色 --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">&quot;black&quot;</span>&gt;</span>#000000<span class="tag">&lt;/<span class="name">color</span>&gt;</span><span class="comment">&lt;!--黑色 --&gt;</span>  </span><br><span class="line"><span class="tag">&lt;/<span class="name">resources</span>&gt;</span>  </span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+      
+
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>很高兴得到您的赞赏</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="/images/config/wechatpay.jpg" alt="Ahaochan 微信">
+        <span>微信</span>
+      </div>
+      <div>
+        <img src="/images/config/alipay.jpg" alt="Ahaochan 支付宝">
+        <span>支付宝</span>
+      </div>
+
+  </div>
+</div>
+
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>Ahaochan
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://blog.ahao.moe/posts/Android_common_xml.html" title="常用配置文件">https://blog.ahao.moe/posts/Android_common_xml.html</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="followme">
+  <span>欢迎关注我的其它发布渠道</span>
+
+  <div class="social-list">
+
+      <div class="social-item">
+        <a target="_blank" class="social-link" href="/images/config/wechat_channel.jpg">
+          <span class="icon">
+            <i class="fab fa-weixin"></i>
+          </span>
+
+          <span class="label">WeChat</span>
+        </a>
+      </div>
+
+      <div class="social-item">
+        <a target="_blank" class="social-link" href="/rss.xml">
+          <span class="icon">
+            <i class="fa fa-rss"></i>
+          </span>
+
+          <span class="label">RSS</span>
+        </a>
+      </div>
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/" rel="tag"><i class="fa fa-tag"></i> 配置文件</a>
+          </div>
+
+        
+  <div class="post-widgets">
+    <div class="wpac-rating-container">
+      <div id="wpac-rating"></div>
+    </div>
+  </div>
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/posts/rotate,translate,save_and_restore_of_Canvas.html" rel="prev" title="Canvas中rotate,translate,save和restore">
+                  <i class="fa fa-chevron-left"></i> Canvas中rotate,translate,save和restore
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/posts/Android_naming_conventions_and_coding_specifications.html" rel="next" title="Android命名规范和编码规范">
+                  Android命名规范和编码规范 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    
+  <div class="comments disqusjs">
+    <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+  </div>
+  
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2016 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ahaochan</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">172k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">10:25</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+  <div class="addthis_inline_share_toolbox">
+    <script src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-59047aaab9bddb67" async="async"></script>
+  </div><script color="0,0,255" opacity="0.5" zIndex="-1" count="99" src="https://cdn.jsdelivr.net/npm/canvas-nest.js@1/dist/canvas-nest.js"></script>
+
+
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js" integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lozad.js/1.16.0/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script>
+
+  
+  <script src="https://embed.widgetpack.com/widget.js" async></script>
+  <script class="next-config" data-name="rating" type="application/json">{"enable":true,"id":33332,"color":"#fc6423"}</script>
+  <script src="/js/third-party/rating.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.0/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/9.1.7/mermaid.min.js","integrity":"sha256-G58AID1YoX5YaEtWfXSI0VLrZ6N4kvNvwg0BI8zUFxE="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/quicklink/2.3.0/quicklink.umd.js" integrity="sha256-yvJQOINiH9fWemHn0vCA5lsHWJaHs6/ZmO+1Ft04SvM=" crossorigin="anonymous"></script>
+  <script class="next-config" data-name="quicklink" type="application/json">{"enable":true,"home":true,"archive":true,"delay":true,"timeout":3000,"priority":true,"url":"https://blog.ahao.moe/posts/Android_common_xml.html"}</script>
+  <script src="/js/third-party/quicklink.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/disqusjs/3.0.2/styles/disqusjs.css" integrity="sha256-71XarXwNr1Td27HmZI9zjY+rMzRdush6/glo6VFXp7o=" crossorigin="anonymous">
+
+<script class="next-config" data-name="disqusjs" type="application/json">{"enable":true,"api":"https://disqus.skk.moe/disqus/","apikey":"OC1zbKiBF5cPo1EJObILJmZftsWl4ZbbAh9YqV0qNxiMq8rQFqBiw8PYcXQCyG9S","shortname":"ahaochan-blog","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/disqusjs/3.0.2/disqusjs.es2015.umd.min.js","integrity":"sha256-okP99ZQKVpIy7+NogAMpGlIQzJa9XKXhIJcFgdju5bU="}}</script>
+<script src="/js/third-party/comments/disqusjs.js"></script>
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"scale":1.2,"jsonPath":"https://cdn.jsdelivr.net/npm/live2d-widget-model-shizuku@1.0.5/assets/shizuku.model.json"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":false},"react":{"opacity":0.7},"log":false});</script></body>
+</html>
